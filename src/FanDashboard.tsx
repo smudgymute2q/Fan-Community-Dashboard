@@ -359,15 +359,15 @@ function KpiTile({ platform, value, delta, isTotal }) {
 }
 
 const ARTIST_ICONS: Record<string, string> = {
-  "opium-00":       "/Fan-Community-Dashboard/icons/opium-00.png",
+  "opium-00":       "/Fan-Community-Dashboard/icons/opium.png",
   "ken-carson":     "/Fan-Community-Dashboard/icons/ken-carson.png",
   "destroy-lonely": "/Fan-Community-Dashboard/icons/destroy-lonely.png",
-  "homixide-gang":  "/Fan-Community-Dashboard/icons/homixide-gang.png",
+  "homixide-gang":  "/Fan-Community-Dashboard/icons/hxg.png",
   "pierre-bourne":  "/Fan-Community-Dashboard/icons/pierre-bourne.png",
   "rema":           "/Fan-Community-Dashboard/icons/rema.png",
   "untiljapan":     "/Fan-Community-Dashboard/icons/untiljapan.png",
-  "apollo":         "/Fan-Community-Dashboard/icons/apollo.png",
-  "pfe-project":    "/Fan-Community-Dashboard/icons/pfe-project.png",
+  "apollo":         "/Fan-Community-Dashboard/icons/apollored1.png",
+  "pfe-project":    "/Fan-Community-Dashboard/icons/jim-legxacy.png",
   "destin-laurel":  "/Fan-Community-Dashboard/icons/destin-laurel.png",
 };
 
