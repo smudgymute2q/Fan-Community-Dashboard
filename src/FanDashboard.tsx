@@ -207,7 +207,6 @@ function ArtistPill({ artist, active, onClick }) {
         <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm ${active ? "bg-white/20 text-white" : "bg-slate-100 text-slate-700"}`}>{initial}</div>
         <div>
           <div className={`text-sm font-semibold ${active ? "text-white" : "text-slate-900"}`}>{artist.name}</div>
-          <div className={`text-[10px] ${active ? "text-violet-100" : "text-slate-500"}`}>{artist.tagline}</div>
         </div>
       </div>
       <div className="flex items-center gap-2 mt-2 pl-12">
