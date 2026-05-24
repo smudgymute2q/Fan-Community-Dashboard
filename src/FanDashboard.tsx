@@ -140,11 +140,15 @@ function parseDateToYearMonth(raw: string): string | null {
   return null;
 }
 
+// Rows where "platform" is actually a computed summary — skip these
+const SKIP_PLATFORMS = new Set(["Total", "total", "TOTAL", "Grand Total"]);
+
 function parseNetworkTab(rows: string[][]) {
   const dataRows = rows.slice(1).filter((r) => r.length >= 3 && r[0] && r[1]);
   const dateMap: Map<string, Record<string, number>> = new Map();
   for (const row of dataRows) {
     const platform = row[0].trim();
+    if (SKIP_PLATFORMS.has(platform)) continue;
     const date = parseDateToYearMonth(row[1]);
     const followers = parseInt(row[2].replace(/[^\d]/g, ""), 10);
     if (!platform || !date || isNaN(followers)) continue;
