@@ -689,14 +689,14 @@ export default function FanDashboard() {
               <span className="text-xs text-slate-400 font-medium">{artists.length} artists tracked</span>
             </div>
           </div>
-          <div className="relative">
-            <button onClick={() => rosterRef.current?.scrollBy({ left: -320, behavior: "smooth" })} className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition -translate-x-1">
+          <div className="flex items-center gap-2">
+            <button onClick={() => rosterRef.current?.scrollBy({ left: -320, behavior: "smooth" })} className="shrink-0 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition">
               <ChevronDown size={13} className="rotate-90 text-slate-500" />
             </button>
-            <div ref={rosterRef} className="flex gap-3 overflow-x-auto marquee-fade pb-2 -mx-2 px-2 scroll-smooth" style={{ scrollbarWidth: "none" }}>
+            <div ref={rosterRef} className="flex gap-3 overflow-x-auto marquee-fade pb-1 scroll-smooth flex-1" style={{ scrollbarWidth: "none" }}>
               {artists.map((a) => <ArtistPill key={a.slug} artist={a} active={a.slug === selectedSlug} onClick={() => setSelectedSlug(a.slug)} />)}
             </div>
-            <button onClick={() => rosterRef.current?.scrollBy({ left: 320, behavior: "smooth" })} className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition translate-x-1">
+            <button onClick={() => rosterRef.current?.scrollBy({ left: 320, behavior: "smooth" })} className="shrink-0 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition">
               <ChevronDown size={13} className="-rotate-90 text-slate-500" />
             </button>
           </div>
