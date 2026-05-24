@@ -351,7 +351,8 @@ export default function FanDashboard() {
     }
     return { startTotal, endTotal, net, pct, bestMonth, bestGain };
   }, [history, artist]);
-  const orderedPlats = [...Object.keys(artist.platforms)].sort((a, b) => artist.platforms[b].value - artist.platforms[a].value);
+  const PLAT_ORDER = ["Discord", "Reddit", "Instagram", "Instagram Channels", "X", "X Communities", "TikTok"];
+  const orderedPlats = PLAT_ORDER.filter((p) => artist.platforms[p] !== undefined);
 
   const togglePlat = (p) => {
     const next = new Set(hiddenPlats);
