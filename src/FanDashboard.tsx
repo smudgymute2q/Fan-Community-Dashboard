@@ -423,7 +423,7 @@ export default function FanDashboard() {
             <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-violet-500 via-fuchsia-500 to-pink-500 p-6 text-white shadow-xl shadow-violet-300/40">
               <div className="absolute top-0 right-0 w-72 h-72 opacity-20 -mr-20 -mt-20"><div className="w-full h-full rounded-full bg-white blur-3xl" /></div>
               <div className="absolute bottom-0 left-1/2 w-64 h-64 opacity-10 -mb-32"><div className="w-full h-full rounded-full bg-yellow-200 blur-3xl" /></div>
-              <div className="relative flex items-end justify-between gap-6">
+              <div className="relative flex items-center justify-between gap-6">
                 <div>
                   <div className="text-[10px] uppercase tracking-[0.2em] text-white/70 font-bold mb-2">Now viewing</div>
                   <h3 className="font-display text-5xl font-bold tracking-tight leading-none">{artist.name}</h3>
