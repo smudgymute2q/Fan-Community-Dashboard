@@ -69,6 +69,7 @@ const SHEET_TABS: Record<string, { network: string; pages: string }> = {
   "untiljapan":     { network: "untiljapan (Fan Network)",      pages: "untiljapan (Fan Pages)" },
   "apollo":         { network: "ApolloRed1 (Fan Network)",      pages: "ApolloRed1 (Fan Pages)" },
   "pfe-project":    { network: "Jim Legxacy (Fan Network)",     pages: "Jim Legxacy (Fan Pages)" },
+  "destin-laurel":  { network: "Destin Laurel (Fan Network)",  pages: "Destin Laurel (Fan Pages)" },
 };
 
 // ---- CSV fetch + parse utilities ----
@@ -217,6 +218,7 @@ const STATIC_ARTISTS = [
   { slug: "untiljapan", name: "untiljapan", tagline: "Emerging · Underground", totals: { value: 6802, delta: 136 }, platforms: { Discord: { value: 2039, delta: 44 }, Reddit: { value: 1416, delta: -7 }, Instagram: { value: 1713, delta: 22 }, X: { value: 1079, delta: 60 }, "X Communities": { value: 555, delta: 17 }, TikTok: { value: 9, delta: 0 } }, pages: [{ name: "/untiljapan", followers: 2039, latest: "Apr 1, 2026", platform: "Discord" }] },
   { slug: "pfe-project", name: "Jim Legxacy", tagline: "Emerging · Discord-native", totals: { value: 10144, delta: 2202 }, platforms: { Discord: { value: 6089, delta: 1410 }, Reddit: { value: 359, delta: 39 }, Instagram: { value: 322, delta: 131 }, X: { value: 2362, delta: 235 }, "X Communities": { value: 261, delta: 23 }, TikTok: { value: 751, delta: 364 } }, pages: [{ name: "/PfeRaWF4bG", followers: 6089, latest: "Apr 1, 2026", platform: "Discord" }] },
   { slug: "apollo", name: "ApolloRed1", tagline: "Emerging · SoundCloud era", totals: { value: 1659, delta: 80 }, platforms: { Discord: { value: 283, delta: 44 }, Reddit: { value: 56, delta: 8 }, Instagram: { value: 1320, delta: 28 } }, pages: [{ name: "/apollohub", followers: 564, latest: "Apr 9, 2026", platform: "Discord" }, { name: "/apollored1", followers: 283, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "destin-laurel", name: "Destin Laurel", tagline: "Emerging", totals: { value: 0, delta: 0 }, platforms: {}, pages: [] },
 ];
 
 const MOCK_FEED = {
