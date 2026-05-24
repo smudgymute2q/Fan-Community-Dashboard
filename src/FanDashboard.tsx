@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   LineChart,
   Line,
@@ -42,7 +42,7 @@ import {
   Sparkles,
 } from "lucide-react";
 
-// ---- Platform tokens (light-theme friendly) ----
+// ---- Platform tokens ----
 const PLATFORMS = {
   Discord: { color: "#5865F2", soft: "#E8EAFD" },
   Reddit: { color: "#FF4500", soft: "#FFECE3" },
@@ -53,7 +53,123 @@ const PLATFORMS = {
   TikTok: { color: "#06B6D4", soft: "#E0F7FB" },
 };
 
-const ARTISTS = [
+// ---- Google Sheets config ----
+const SHEET_ID = "1Q-ui-KKcCiS8x4YHScORYx-qjFr8sRb3sRYlMqtr3l0";
+
+// Tab names: "{ArtistName} (Fan Network)" / "{ArtistName} (Fan Pages)"
+const SHEET_TABS: Record<string, { network: string; pages: string }> = {
+  "opium-00":       { network: "Opium (Fan Network)",          pages: "Opium (Fan Pages)" },
+  "playboi-carti":  { network: "Playboi Carti (Fan Network)",  pages: "Playboi Carti (Fan Pages)" },
+  "ken-carson":     { network: "Ken Carson (Fan Network)",      pages: "Ken Carson (Fan Pages)" },
+  "destroy-lonely": { network: "Destroy Lonely (Fan Network)",  pages: "Destroy Lonely (Fan Pages)" },
+  "homixide-gang":  { network: "HXG (Fan Network)",             pages: "HXG (Fan Pages)" },
+  "pierre-bourne":  { network: "Pi'erre Bourne (Fan Network)",  pages: "Pi'erre Bourne (Fan Pages)" },
+  "rema":           { network: "Rema (Fan Network)",            pages: "Rema (Fan Pages)" },
+  "untiljapan":     { network: "untiljapan (Fan Network)",      pages: "untiljapan (Fan Pages)" },
+  "apollo":         { network: "ApolloRed1 (Fan Network)",      pages: "ApolloRed1 (Fan Pages)" },
+  "pfe-project":    { network: "Jim Legxacy (Fan Network)",     pages: "Jim Legxacy (Fan Pages)" },
+};
+
+// ---- CSV fetch + parse utilities ----
+function parseCSVText(text: string): string[][] {
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let cell = "";
+  let inQuote = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    const next = text[i + 1];
+    if (ch === '"') {
+      if (inQuote && next === '"') { cell += '"'; i++; }
+      else inQuote = !inQuote;
+    } else if (ch === "," && !inQuote) {
+      row.push(cell.trim()); cell = "";
+    } else if ((ch === "\n" || ch === "\r") && !inQuote) {
+      if (ch === "\r" && next === "\n") i++;
+      row.push(cell.trim());
+      if (row.some((c) => c !== "")) rows.push(row);
+      row = []; cell = "";
+    } else {
+      cell += ch;
+    }
+  }
+  if (cell || row.length > 0) { row.push(cell.trim()); if (row.some((c) => c !== "")) rows.push(row); }
+  return rows;
+}
+
+async function fetchSheetCSV(sheetId: string, tab: string): Promise<string[][]> {
+  const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tab)}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return parseCSVText(await res.text());
+}
+
+function parseDateToYearMonth(raw: string): string | null {
+  const s = raw.trim();
+  if (/^\d{4}-\d{2}$/.test(s)) return s;
+  const iso = s.match(/^(\d{4})-(\d{2})-\d{2}$/);
+  if (iso) return `${iso[1]}-${iso[2]}`;
+  const us = s.match(/^(\d{1,2})\/\d{1,2}\/(\d{4})$/);
+  if (us) return `${us[2]}-${us[1].padStart(2, "0")}`;
+  const my = s.match(/^(\d{1,2})\/(\d{4})$/);
+  if (my) return `${my[2]}-${my[1].padStart(2, "0")}`;
+  const MONTHS: Record<string, string> = {
+    jan:"01",feb:"02",mar:"03",apr:"04",may:"05",jun:"06",
+    jul:"07",aug:"08",sep:"09",oct:"10",nov:"11",dec:"12",
+  };
+  const mon = s.match(/^([A-Za-z]+)\s+(\d{4})$/);
+  if (mon) {
+    const m = MONTHS[mon[1].toLowerCase().slice(0, 3)];
+    if (m) return `${mon[2]}-${m}`;
+  }
+  return null;
+}
+
+function parseNetworkTab(rows: string[][]) {
+  const dataRows = rows.slice(1).filter((r) => r.length >= 3 && r[0] && r[1]);
+  const dateMap: Map<string, Record<string, number>> = new Map();
+  for (const row of dataRows) {
+    const platform = row[0].trim();
+    const date = parseDateToYearMonth(row[1]);
+    const followers = parseInt(row[2].replace(/[^\d]/g, ""), 10);
+    if (!platform || !date || isNaN(followers)) continue;
+    if (!dateMap.has(date)) dateMap.set(date, {});
+    dateMap.get(date)![platform] = followers;
+  }
+  const sortedDates = Array.from(dateMap.keys()).sort();
+  const history = sortedDates.map((date) => ({ date, ...dateMap.get(date)! }));
+  const platforms: Record<string, { value: number; delta: number }> = {};
+  if (history.length > 0) {
+    const latest = history[history.length - 1];
+    const prev = history.length >= 2 ? history[history.length - 2] : null;
+    for (const [key, val] of Object.entries(latest)) {
+      if (key === "date") continue;
+      const value = val as number;
+      const prevVal = prev && typeof prev[key] === "number" ? (prev[key] as number) : value;
+      platforms[key] = { value, delta: value - prevVal };
+    }
+  }
+  const totalValue = Object.values(platforms).reduce((s, p) => s + p.value, 0);
+  const totalDelta = Object.values(platforms).reduce((s, p) => s + p.delta, 0);
+  return { history, platforms, totals: { value: totalValue, delta: totalDelta } };
+}
+
+function parsePagesTab(rows: string[][]) {
+  return rows
+    .slice(1)
+    .filter((r) => r.length >= 4 && r[0] && r[1])
+    .map((row) => ({
+      platform: row[0].trim(),
+      name: row[1].trim(),
+      // row[2] = Link
+      followers: parseInt(row[3]?.replace(/[^\d]/g, "") || "0", 10),
+      latest: row[4]?.trim() || "",
+    }))
+    .filter((p) => !isNaN(p.followers));
+}
+
+// ---- Static fallback artist data (used while sheets are loading or on fetch error) ----
+const STATIC_ARTISTS = [
   { slug: "opium-00", name: "Opium", tagline: "Label · Core fanbase", totals: { value: 168074, delta: 808 }, platforms: { Discord: { value: 8809, delta: 1 }, Reddit: { value: 19795, delta: 425 }, Instagram: { value: 95339, delta: 415 }, "Instagram Channels": { value: 9400, delta: -200 }, X: { value: 1775, delta: 154 }, TikTok: { value: 32956, delta: 13 } }, pages: [{ name: "/opium00", followers: 8809, latest: "Apr 1, 2026", platform: "Discord" }] },
   { slug: "playboi-carti", name: "Playboi Carti", tagline: "Opium · Rage principal", totals: { value: 1495905, delta: 4537 }, platforms: { Discord: { value: 182148, delta: 338 }, Reddit: { value: 1029516, delta: 8064 }, Instagram: { value: 253236, delta: -3425 }, "Instagram Channels": { value: 23900, delta: -400 }, X: { value: 6995, delta: -38 }, "X Communities": { value: 110, delta: -2 } }, pages: [{ name: "/playboicarti", followers: 182148, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/pbc00", followers: 13193, latest: "Apr 1, 2026", platform: "Discord" }] },
   { slug: "ken-carson", name: "Ken Carson", tagline: "Opium · Project X", totals: { value: 536568, delta: 11932 }, platforms: { Discord: { value: 76270, delta: 236 }, Reddit: { value: 75448, delta: 904 }, Instagram: { value: 212157, delta: 8336 }, "Instagram Channels": { value: 22500, delta: 1000 }, X: { value: 45700, delta: 300 }, "X Communities": { value: 79146, delta: 9 }, TikTok: { value: 24300, delta: 100 } }, pages: [{ name: "/kencarson", followers: 76270, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/BuZYYKZQ", followers: 153, latest: "Apr 1, 2026", platform: "Discord" }] },
@@ -165,10 +281,10 @@ function monthlyVelocity(history, plats) {
     return { date: row.date, net: total - totalPrev };
   });
 }
-function platformRadar(artist) {
+function platformRadar(artist, allArtists) {
   const allPlats = ["Discord", "Reddit", "Instagram", "Instagram Channels", "X", "X Communities", "TikTok"];
   const maxes = {};
-  allPlats.forEach((p) => { maxes[p] = Math.max(...ARTISTS.map((a) => a.platforms[p]?.value || 0), 1); });
+  allPlats.forEach((p) => { maxes[p] = Math.max(...allArtists.map((a) => a.platforms[p]?.value || 0), 1); });
   return allPlats.map((p) => ({ platform: p.replace("Instagram Channels", "IG Ch.").replace("X Communities", "X Comm."), value: Math.round(((artist.platforms[p]?.value || 0) / maxes[p]) * 100) }));
 }
 
@@ -300,20 +416,72 @@ export default function FanDashboard() {
   const [selectedSlug, setSelectedSlug] = useState("opium-00");
   const [hiddenPlats, setHiddenPlats] = useState(new Set());
   const [feedFilter, setFeedFilter] = useState("All");
-  const [yearRange, setYearRange] = useState("all"); // "all" | "2026" | "2025" | "2024" | "2023" | "2022" | "ytd" | "12m" | "6m" | "3m"
+  const [yearRange, setYearRange] = useState("all");
+
+  // ---- Sheets data loading ----
+  const [sheetsData, setSheetsData] = useState<Record<string, any>>({});
+  const [sheetsLoading, setSheetsLoading] = useState(true);
+  const [syncedAt, setSyncedAt] = useState<Date | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    let pending = STATIC_ARTISTS.length;
+
+    const onDone = () => {
+      pending--;
+      if (pending === 0 && !cancelled) {
+        setSheetsLoading(false);
+        setSyncedAt(new Date());
+      }
+    };
+
+    for (const a of STATIC_ARTISTS) {
+      const tabs = SHEET_TABS[a.slug];
+      if (!tabs) { onDone(); continue; }
+
+      Promise.all([
+        fetchSheetCSV(SHEET_ID, tabs.network),
+        fetchSheetCSV(SHEET_ID, tabs.pages),
+      ])
+        .then(([networkRows, pagesRows]) => {
+          if (cancelled) return;
+          const { history, platforms, totals } = parseNetworkTab(networkRows);
+          const pages = parsePagesTab(pagesRows);
+          setSheetsData((prev) => ({
+            ...prev,
+            [a.slug]: { history, platforms, totals, pages },
+          }));
+        })
+        .catch((err) => console.warn(`[sheets] ${a.name}:`, err))
+        .finally(onDone);
+    }
+
+    return () => { cancelled = true; };
+  }, []);
+
+  // Merge static fallback with live sheets data
+  const artists = useMemo(
+    () => STATIC_ARTISTS.map((a) => ({ ...a, ...(sheetsData[a.slug] || {}) })),
+    [sheetsData]
+  );
 
   React.useEffect(() => { setFeedFilter("All"); }, [selectedSlug]);
 
-  const artist = ARTISTS.find((a) => a.slug === selectedSlug);
-  const fullHistory = useMemo(() => buildHistory(artist), [artist]);
+  const artist = artists.find((a) => a.slug === selectedSlug)!;
 
-  // Filter history by selected range
+  // Use sheets history if loaded, otherwise fall back to generated curve
+  const fullHistory = useMemo(
+    () =>
+      sheetsData[selectedSlug]?.history?.length
+        ? sheetsData[selectedSlug].history
+        : buildHistory(artist),
+    [sheetsData, selectedSlug, artist]
+  );
+
   const history = useMemo(() => {
     if (yearRange === "all") return fullHistory;
-    const now = new Date(2026, 2, 1); // Mar 2026 (end of data)
-    if (yearRange === "ytd") {
-      return fullHistory.filter((r) => r.date >= "2026-01");
-    }
+    const now = new Date(2026, 2, 1);
+    if (yearRange === "ytd") return fullHistory.filter((r) => r.date >= "2026-01");
     if (yearRange === "12m") {
       const cutoff = new Date(now); cutoff.setMonth(cutoff.getMonth() - 12);
       return fullHistory.filter((r) => new Date(r.date + "-01") >= cutoff);
@@ -326,11 +494,9 @@ export default function FanDashboard() {
       const cutoff = new Date(now); cutoff.setMonth(cutoff.getMonth() - 3);
       return fullHistory.filter((r) => new Date(r.date + "-01") >= cutoff);
     }
-    // year-specific: "2025" etc
     return fullHistory.filter((r) => r.date.startsWith(yearRange));
   }, [fullHistory, yearRange]);
 
-  // Stats derived from the filtered range
   const rangeStats = useMemo(() => {
     if (history.length < 2) return null;
     const first = history[0];
@@ -340,7 +506,6 @@ export default function FanDashboard() {
     const endTotal = plats.reduce((s, p) => s + (last[p] || 0), 0);
     const net = endTotal - startTotal;
     const pct = startTotal > 0 ? ((net / startTotal) * 100) : 0;
-    // best month
     let bestMonth = null;
     let bestGain = -Infinity;
     for (let i = 1; i < history.length; i++) {
@@ -351,6 +516,7 @@ export default function FanDashboard() {
     }
     return { startTotal, endTotal, net, pct, bestMonth, bestGain };
   }, [history, artist]);
+
   const PLAT_ORDER = ["Discord", "Reddit", "Instagram", "Instagram Channels", "X", "X Communities", "TikTok"];
   const orderedPlats = PLAT_ORDER.filter((p) => artist.platforms[p] !== undefined);
 
@@ -359,6 +525,13 @@ export default function FanDashboard() {
     if (next.has(p)) next.delete(p); else next.add(p);
     setHiddenPlats(next);
   };
+
+  // Sync indicator label
+  const syncLabel = sheetsLoading
+    ? "syncing…"
+    : syncedAt
+    ? `synced ${Math.round((Date.now() - syncedAt.getTime()) / 60000) || "<1"}m ago`
+    : "live";
 
   return (
     <div className="min-h-screen w-full text-slate-800" style={{ background: "linear-gradient(180deg, #fef7ff 0%, #f0f9ff 50%, #fdf4ff 100%)", fontFamily: "'Plus Jakarta Sans', 'Inter', system-ui, sans-serif" }}>
@@ -371,6 +544,16 @@ export default function FanDashboard() {
         .recharts-polar-grid-angle line { stroke: #e2e8f0; }
         .recharts-polar-angle-axis-tick text { fill: #64748b; font-size: 10px; font-weight: 600; }
       `}</style>
+
+      {/* Loading overlay — fades away once all sheets are fetched */}
+      {sheetsLoading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/60 backdrop-blur-sm pointer-events-none">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-8 h-8 rounded-full border-2 border-violet-500 border-t-transparent animate-spin" />
+            <span className="text-xs font-semibold text-slate-600">Loading your Google Sheets data…</span>
+          </div>
+        </div>
+      )}
 
       <div className="max-w-[1400px] mx-auto px-6 py-6">
         {/* Header */}
@@ -393,8 +576,8 @@ export default function FanDashboard() {
             </div>
             <div className="h-8 w-px bg-slate-200" />
             <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-full">
-              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-[11px] font-semibold text-emerald-700">Live · synced 2m ago</span>
+              <div className={`w-2 h-2 rounded-full ${sheetsLoading ? "bg-amber-400" : "bg-emerald-500 animate-pulse"}`} />
+              <span className="text-[11px] font-semibold text-emerald-700">Live · {syncLabel}</span>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -408,11 +591,11 @@ export default function FanDashboard() {
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-baseline gap-3">
               <h2 className="text-xs uppercase tracking-[0.15em] text-slate-500 font-bold">Roster</h2>
-              <span className="text-xs text-slate-400 font-medium">{ARTISTS.length} artists tracked</span>
+              <span className="text-xs text-slate-400 font-medium">{artists.length} artists tracked</span>
             </div>
           </div>
           <div className="flex gap-3 overflow-x-auto marquee-fade pb-2 -mx-2 px-2">
-            {ARTISTS.map((a) => <ArtistPill key={a.slug} artist={a} active={a.slug === selectedSlug} onClick={() => setSelectedSlug(a.slug)} />)}
+            {artists.map((a) => <ArtistPill key={a.slug} artist={a} active={a.slug === selectedSlug} onClick={() => setSelectedSlug(a.slug)} />)}
           </div>
         </section>
 
@@ -453,7 +636,6 @@ export default function FanDashboard() {
                     </div>
                   </div>
 
-                  {/* Time range selector */}
                   <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
                     {[
                       { key: "3m", label: "3M" },
@@ -466,9 +648,7 @@ export default function FanDashboard() {
                         key={opt.key}
                         onClick={() => setYearRange(opt.key)}
                         className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition ${
-                          yearRange === opt.key
-                            ? "bg-white text-slate-900 shadow-sm"
-                            : "text-slate-600 hover:text-slate-900"
+                          yearRange === opt.key ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-900"
                         }`}
                       >
                         {opt.label}
@@ -477,7 +657,6 @@ export default function FanDashboard() {
                   </div>
                 </div>
 
-                {/* Year chips */}
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Year:</span>
                   {["2022", "2023", "2024", "2025", "2026"].map((yr) => (
@@ -503,7 +682,6 @@ export default function FanDashboard() {
                   )}
                 </div>
 
-                {/* Platform legend */}
                 <div className="flex flex-wrap gap-1.5">
                   {orderedPlats.map((p) => {
                     const off = hiddenPlats.has(p);
@@ -517,7 +695,6 @@ export default function FanDashboard() {
                 </div>
               </div>
 
-              {/* Range stats strip */}
               {rangeStats && (
                 <div className="grid grid-cols-4 gap-3 mb-4 p-4 bg-gradient-to-r from-violet-50 via-fuchsia-50 to-pink-50 rounded-2xl border border-violet-100">
                   <div>
@@ -532,18 +709,14 @@ export default function FanDashboard() {
                     <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Net growth</div>
                     <div className={`text-base font-bold tabular-nums flex items-center gap-1 ${rangeStats.net >= 0 ? "text-emerald-600" : "text-rose-500"}`}>
                       {rangeStats.net >= 0 ? "+" : ""}{fmt(rangeStats.net)}
-                      <span className="text-[10px] font-semibold">
-                        ({rangeStats.pct >= 0 ? "+" : ""}{rangeStats.pct.toFixed(1)}%)
-                      </span>
+                      <span className="text-[10px] font-semibold">({rangeStats.pct >= 0 ? "+" : ""}{rangeStats.pct.toFixed(1)}%)</span>
                     </div>
                   </div>
                   <div>
                     <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Best month</div>
                     <div className="text-base font-bold text-slate-900">
                       {rangeStats.bestMonth ? monthLabel(rangeStats.bestMonth) : "—"}
-                      {rangeStats.bestGain > 0 && (
-                        <span className="text-xs text-emerald-600 ml-1.5 font-semibold">+{fmt(rangeStats.bestGain)}</span>
-                      )}
+                      {rangeStats.bestGain > 0 && <span className="text-xs text-emerald-600 ml-1.5 font-semibold">+{fmt(rangeStats.bestGain)}</span>}
                     </div>
                   </div>
                 </div>
@@ -551,9 +724,7 @@ export default function FanDashboard() {
 
               <div className="h-[320px] -mx-2">
                 {history.length === 0 ? (
-                  <div className="h-full flex items-center justify-center text-slate-400 text-sm">
-                    No data in the selected range
-                  </div>
+                  <div className="h-full flex items-center justify-center text-slate-400 text-sm">No data in the selected range</div>
                 ) : (
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={history} margin={{ top: 8, right: 16, left: 0, bottom: 8 }}>
@@ -573,7 +744,7 @@ export default function FanDashboard() {
               <div className="mb-5">
                 <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Current Reach</div>
                 <div className="text-base font-semibold text-slate-900 mt-0.5">Per-platform follower counts</div>
-                <div className="text-xs text-slate-500">Change vs 28 days ago</div>
+                <div className="text-xs text-slate-500">Change vs previous month</div>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {orderedPlats.map((p) => <KpiTile key={p} platform={p} value={artist.platforms[p].value} delta={artist.platforms[p].delta} />)}
@@ -589,27 +760,31 @@ export default function FanDashboard() {
                   <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Fan Page Tracker</div>
                   <div className="text-sm font-semibold text-slate-900 mt-0.5">Admin-run pages</div>
                 </div>
-                <button className="text-[10px] font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 px-2.5 py-1.5 rounded-full flex items-center gap-1">Discord <ChevronDown size={10} /></button>
+                <button className="text-[10px] font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 px-2.5 py-1.5 rounded-full flex items-center gap-1">All <ChevronDown size={10} /></button>
               </div>
               <div className="p-2">
-                {artist.pages.map((p, i) => {
-                  const platCfg = PLATFORMS[p.platform];
-                  return (
-                    <div key={p.name} className="p-3 flex items-center gap-3 hover:bg-slate-50 transition cursor-pointer group rounded-xl">
-                      <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: platCfg.soft }}>
-                        <span className="text-sm font-bold" style={{ color: platCfg.color }}>{String(i + 1).padStart(2, "0")}</span>
+                {artist.pages.length === 0 ? (
+                  <div className="px-3 py-6 text-center text-xs text-slate-400">No pages tracked yet</div>
+                ) : (
+                  artist.pages.map((p, i) => {
+                    const platCfg = PLATFORMS[p.platform] || { soft: "#f1f5f9", color: "#64748b" };
+                    return (
+                      <div key={p.name} className="p-3 flex items-center gap-3 hover:bg-slate-50 transition cursor-pointer group rounded-xl">
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: platCfg.soft }}>
+                          <span className="text-sm font-bold" style={{ color: platCfg.color }}>{String(i + 1).padStart(2, "0")}</span>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-semibold text-slate-900 group-hover:text-violet-600 transition truncate">{p.name}</div>
+                          <div className="text-[10px] text-slate-500 mt-0.5">{p.platform}{p.latest ? ` · ${p.latest}` : ""}</div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-sm font-bold tabular-nums text-slate-900">{fmtFull(p.followers)}</div>
+                          <div className="text-[10px] text-slate-500">followers</div>
+                        </div>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-sm font-semibold text-slate-900 group-hover:text-violet-600 transition truncate">{p.name}</div>
-                        <div className="text-[10px] text-slate-500 mt-0.5">posted {p.latest}</div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-sm font-bold tabular-nums text-slate-900">{fmtFull(p.followers)}</div>
-                        <div className="text-[10px] text-slate-500">followers</div>
-                      </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })
+                )}
               </div>
             </div>
 
@@ -619,7 +794,7 @@ export default function FanDashboard() {
                 <div className="text-sm font-semibold text-slate-900 mt-0.5">Biggest swings across the roster</div>
               </div>
               <div className="p-2">
-                {ARTISTS.slice().sort((a, b) => Math.abs(b.totals.delta) - Math.abs(a.totals.delta)).slice(0, 5).map((a, i) => {
+                {artists.slice().sort((a, b) => Math.abs(b.totals.delta) - Math.abs(a.totals.delta)).slice(0, 5).map((a, i) => {
                   const up = a.totals.delta >= 0;
                   return (
                     <button key={a.slug} onClick={() => setSelectedSlug(a.slug)} className="w-full p-3 flex items-center gap-3 hover:bg-slate-50 transition text-left rounded-xl">
@@ -743,7 +918,7 @@ export default function FanDashboard() {
               <div className="text-sm font-semibold text-slate-900 mb-3">Normalized vs roster top</div>
               <div className="h-[240px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  <RadarChart data={platformRadar(artist)}>
+                  <RadarChart data={platformRadar(artist, artists)}>
                     <PolarGrid stroke="#e2e8f0" />
                     <PolarAngleAxis dataKey="platform" />
                     <PolarRadiusAxis angle={90} domain={[0, 100]} tick={false} axisLine={false} />
@@ -790,7 +965,7 @@ export default function FanDashboard() {
               <div className="text-sm font-semibold text-slate-900 mb-3">Total reach — all tracked artists</div>
               <div className="h-[360px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={ARTISTS.slice().sort((a, b) => b.totals.value - a.totals.value).map((a) => { const row = { name: a.name }; Object.entries(a.platforms).forEach(([p, v]) => { row[p] = v.value; }); return row; })} layout="vertical" margin={{ top: 0, right: 24, left: 0, bottom: 0 }}>
+                  <BarChart data={artists.slice().sort((a, b) => b.totals.value - a.totals.value).map((a) => { const row = { name: a.name }; Object.entries(a.platforms).forEach(([p, v]) => { row[p] = v.value; }); return row; })} layout="vertical" margin={{ top: 0, right: 24, left: 0, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 4" horizontal={false} />
                     <XAxis type="number" tickFormatter={fmt} axisLine={false} tickLine={false} />
                     <YAxis type="category" dataKey="name" width={140} axisLine={false} tickLine={false} tick={{ fill: "#475569", fontSize: 12, fontWeight: 500 }} />
@@ -854,9 +1029,9 @@ export default function FanDashboard() {
           <div className="flex items-center gap-3">
             <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-500 tracking-wider">FANINTEL PRO</span>
             <span className="text-slate-300">·</span>
-            <span>Data snapshot · Apr 18, 2026</span>
+            <span>Data synced from Google Sheets</span>
           </div>
-          <span className="font-medium">v0.3 · Community Intelligence Platform</span>
+          <span className="font-medium">v0.4 · Community Intelligence Platform</span>
         </footer>
       </div>
     </div>
