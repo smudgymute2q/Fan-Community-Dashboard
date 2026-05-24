@@ -54,7 +54,8 @@ const PLATFORMS = {
 };
 
 // ---- Google Sheets config ----
-const SHEET_ID = "1Q-ui-KKcCiS8x4YHScORYx-qjFr8sRb3sRYlMqtr3l0";
+// Published ID from File → Share → Publish to the web
+const SHEET_ID = "2PACX-1vRX8lP3Nb-LWMmUoTtHDHihOX-SkhFMUXoQJIuinbUhctXSjgJ1CCI9NvO1MQZKdgy9jtG33DgrOtre";
 
 // Tab names: "{ArtistName} (Fan Network)" / "{ArtistName} (Fan Pages)"
 const SHEET_TABS: Record<string, { network: string; pages: string }> = {
@@ -98,7 +99,7 @@ function parseCSVText(text: string): string[][] {
 }
 
 async function fetchSheetCSV(sheetId: string, tab: string): Promise<string[][]> {
-  const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tab)}`;
+  const url = `https://docs.google.com/spreadsheets/d/e/${sheetId}/pub?tqx=out:csv&sheet=${encodeURIComponent(tab)}`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return parseCSVText(await res.text());
