@@ -838,7 +838,8 @@ export default function FanDashboard() {
                 : availablePlatforms[0] || "Discord";
               const filteredPages = artist.pages
                 .filter((p) => p.platform === effectivePlatform)
-                .sort((a, b) => b.followers - a.followers);
+                .sort((a, b) => b.followers - a.followers)
+                .slice(0, 10);
               return (
                 <div className="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden">
                   <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
