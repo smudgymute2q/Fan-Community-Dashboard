@@ -1,1 +1,8 @@
 @import "tailwindcss";
+
+@font-face {
+  font-family: 'Nudge';
+  src: url('/Fan-Community-Dashboard/fonts/NudgeBold.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+}

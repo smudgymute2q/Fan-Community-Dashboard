@@ -173,27 +173,25 @@ function platformRadar(artist) {
 }
 
 function DeltaPill({ value, small = false }) {
-  if (value === 0 || value === null || value === undefined) return <span className={`inline-flex items-center gap-0.5 text-slate-500 ${small ? "text-[10px]" : "text-xs"} font-medium`}><Minus size={small ? 10 : 12} strokeWidth={2.5} /> flat</span>;
+  if (value === 0 || value === null || value === undefined) return <span className={`inline-flex items-center gap-0.5 text-[#999] ${small ? "text-[10px]" : "text-xs"} font-medium`}><Minus size={small ? 10 : 12} strokeWidth={2.5} /> flat</span>;
   const up = value > 0;
-  return <span className={`inline-flex items-center gap-0.5 font-semibold ${small ? "text-[10px]" : "text-xs"} ${up ? "text-emerald-600" : "text-rose-500"}`}>{up ? <ArrowUpRight size={small ? 10 : 12} strokeWidth={3} /> : <ArrowDownRight size={small ? 10 : 12} strokeWidth={3} />}{up ? "+" : ""}{fmt(value)}</span>;
+  return <span className={`inline-flex items-center gap-0.5 font-semibold ${small ? "text-[10px]" : "text-xs"} ${up ? "text-green-700" : "text-red-600"}`}>{up ? <ArrowUpRight size={small ? 10 : 12} strokeWidth={3} /> : <ArrowDownRight size={small ? 10 : 12} strokeWidth={3} />}{up ? "+" : ""}{fmt(value)}</span>;
 }
 
 function KpiTile({ platform, value, delta, isTotal }) {
   const cfg = PLATFORMS[platform];
   return (
-    <div className={`relative rounded-2xl p-4 transition hover:-translate-y-0.5 hover:shadow-lg ${isTotal ? "bg-gradient-to-br from-amber-100 to-orange-100 border border-amber-200" : "bg-white border border-slate-200 hover:border-slate-300"}`}>
-      {!isTotal && (
-        <div className="absolute top-4 right-4 w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: cfg.soft }}>
-          <span className="w-2 h-2 rounded-full" style={{ background: cfg.color }} />
-        </div>
+    <div className={`relative p-4 transition border ${isTotal ? "bg-black border-black text-white" : "bg-white border-[#e0e0e0] hover:border-black"}`}>
+      {!isTotal && cfg && (
+        <div className="absolute top-4 right-4 w-2 h-2 rounded-full" style={{ background: cfg.color }} />
       )}
       {isTotal && (
-        <div className="absolute top-4 right-4 w-8 h-8 rounded-xl bg-amber-200/60 flex items-center justify-center">
-          <Sparkles size={14} className="text-amber-700" />
+        <div className="absolute top-4 right-4">
+          <Sparkles size={14} className="text-white/60" />
         </div>
       )}
-      <div className={`text-[11px] font-semibold uppercase tracking-wider mb-2 ${isTotal ? "text-amber-800" : "text-slate-500"}`}>{isTotal ? "Total Reach" : platform}</div>
-      <div className={`font-bold tabular-nums leading-none ${isTotal ? "text-3xl text-amber-900" : "text-2xl text-slate-900"}`}>{fmtFull(value)}</div>
+      <div className={`text-[10px] font-bold uppercase tracking-widest mb-2 ${isTotal ? "text-white/60" : "text-[#999]"}`}>{isTotal ? "Total Reach" : platform}</div>
+      <div className={`font-bold tabular-nums leading-none ${isTotal ? "text-3xl text-white" : "text-2xl text-black"}`}>{fmtFull(value)}</div>
       <div className="mt-2"><DeltaPill value={delta} small /></div>
     </div>
   );
@@ -202,17 +200,17 @@ function KpiTile({ platform, value, delta, isTotal }) {
 function ArtistPill({ artist, active, onClick }) {
   const initial = artist.name.charAt(0);
   return (
-    <button onClick={onClick} className={`group relative shrink-0 text-left px-4 py-3 rounded-2xl transition-all ${active ? "bg-gradient-to-br from-violet-500 to-fuchsia-500 text-white shadow-lg shadow-violet-300/40" : "bg-white border border-slate-200 hover:border-slate-300 hover:shadow-md"}`}>
+    <button onClick={onClick} className={`group relative shrink-0 text-left px-4 py-3 transition-all border ${active ? "bg-black text-white border-black" : "bg-white border-[#e0e0e0] hover:border-black"}`}>
       <div className="flex items-center gap-3">
-        <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm ${active ? "bg-white/20 text-white" : "bg-slate-100 text-slate-700"}`}>{initial}</div>
+        <div className={`w-9 h-9 flex items-center justify-center font-bold text-sm ${active ? "bg-white/20 text-white" : "bg-[#f0f0f0] text-black"}`}>{initial}</div>
         <div>
-          <div className={`text-sm font-semibold ${active ? "text-white" : "text-slate-900"}`}>{artist.name}</div>
-          <div className={`text-[10px] ${active ? "text-violet-100" : "text-slate-500"}`}>{artist.tagline}</div>
+          <div className={`text-sm font-semibold ${active ? "text-white" : "text-black"}`}>{artist.name}</div>
+          <div className={`text-[10px] ${active ? "text-white/60" : "text-[#999]"}`}>{artist.tagline}</div>
         </div>
       </div>
       <div className="flex items-center gap-2 mt-2 pl-12">
-        <span className={`text-xs font-semibold tabular-nums ${active ? "text-white" : "text-slate-700"}`}>{fmt(artist.totals.value)}</span>
-        <span className={`text-[10px] font-semibold ${active ? "text-violet-100" : artist.totals.delta >= 0 ? "text-emerald-600" : "text-rose-500"}`}>{artist.totals.delta >= 0 ? "+" : ""}{fmt(artist.totals.delta)}</span>
+        <span className={`text-xs font-semibold tabular-nums ${active ? "text-white" : "text-black"}`}>{fmt(artist.totals.value)}</span>
+        <span className={`text-[10px] font-semibold ${active ? "text-white/60" : artist.totals.delta >= 0 ? "text-green-700" : "text-red-600"}`}>{artist.totals.delta >= 0 ? "+" : ""}{fmt(artist.totals.delta)}</span>
       </div>
     </button>
   );
@@ -221,14 +219,14 @@ function ArtistPill({ artist, active, onClick }) {
 function ChartTooltip({ active, payload, label }) {
   if (!active || !payload || !payload.length) return null;
   return (
-    <div className="bg-white border border-slate-200 rounded-xl shadow-xl p-3 text-xs">
-      <div className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider mb-2">{label && typeof label === "string" && label.includes("-") ? monthLabel(label) : label}</div>
+    <div className="bg-white border border-black shadow-lg p-3 text-xs">
+      <div className="text-[10px] text-[#666] font-bold uppercase tracking-widest mb-2">{label && typeof label === "string" && label.includes("-") ? monthLabel(label) : label}</div>
       <div className="space-y-1.5">
         {payload.slice().sort((a, b) => b.value - a.value).map((p) => (
           <div key={p.dataKey || p.name} className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full shrink-0" style={{ background: p.color || p.fill }} />
-            <span className="text-slate-600 flex-1">{p.dataKey || p.name}</span>
-            <span className="font-semibold tabular-nums text-slate-900 ml-3">{fmtFull(p.value)}</span>
+            <span className="text-[#666] flex-1">{p.dataKey || p.name}</span>
+            <span className="font-semibold tabular-nums text-black ml-3">{fmtFull(p.value)}</span>
           </div>
         ))}
       </div>
@@ -246,51 +244,49 @@ function engagementSummary(post) {
 }
 
 const SENTIMENT_STYLE = {
-  hype: { bg: "bg-amber-100", text: "text-amber-700", label: "HYPE" },
-  positive: { bg: "bg-emerald-100", text: "text-emerald-700", label: "POSITIVE" },
-  neutral: { bg: "bg-slate-100", text: "text-slate-600", label: "NEUTRAL" },
-  negative: { bg: "bg-rose-100", text: "text-rose-700", label: "WATCH" },
+  hype: { bg: "bg-black", text: "text-white", label: "HYPE" },
+  positive: { bg: "bg-[#f0f0f0]", text: "text-black", label: "POSITIVE" },
+  neutral: { bg: "bg-[#f0f0f0]", text: "text-[#666]", label: "NEUTRAL" },
+  negative: { bg: "bg-[#f0f0f0]", text: "text-black", label: "WATCH" },
 };
 
 function FeedCard({ post }) {
   const cfg = PLATFORMS[post.platform];
   const sent = SENTIMENT_STYLE[post.sentiment];
   return (
-    <div className="group relative bg-white border border-slate-200 rounded-2xl hover:border-slate-300 hover:shadow-lg hover:-translate-y-0.5 transition-all overflow-hidden">
+    <div className="group relative bg-white border border-[#e0e0e0] hover:border-black transition-all overflow-hidden">
       <div className="p-4">
         <div className="flex items-center justify-between gap-2 mb-3">
           <div className="flex items-center gap-2 min-w-0">
-            <div className="w-7 h-7 rounded-xl flex items-center justify-center shrink-0" style={{ background: cfg.soft }}>
-              <span className="w-2 h-2 rounded-full" style={{ background: cfg.color }} />
-            </div>
+            <div className="w-2 h-2 rounded-full shrink-0 mt-0.5" style={{ background: cfg.color }} />
             <div className="min-w-0">
-              <div className="text-xs font-semibold text-slate-900 truncate">{post.page}</div>
-              <div className="text-[10px] text-slate-500 truncate">@{post.author.replace(/^u\//, "").replace(/^@/, "")} · {post.time}</div>
+              <div className="text-xs font-semibold text-black truncate">{post.page}</div>
+              <div className="text-[10px] text-[#999] truncate">@{post.author.replace(/^u\//, "").replace(/^@/, "")} · {post.time}</div>
             </div>
           </div>
-          <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full ${sent.bg} ${sent.text} shrink-0`}>{sent.label}</span>
+          <span className={`text-[9px] font-bold px-2 py-0.5 ${sent.bg} ${sent.text} shrink-0 uppercase tracking-widest`}>{sent.label}</span>
         </div>
-        {post.title && <div className="text-[13px] text-slate-900 font-semibold leading-snug mb-1">{post.title}</div>}
-        <div className="text-xs text-slate-600 leading-relaxed line-clamp-3">{post.body}</div>
+        {post.title && <div className="text-[13px] text-black font-semibold leading-snug mb-1">{post.title}</div>}
+        <div className="text-xs text-[#555] leading-relaxed line-clamp-3">{post.body}</div>
         {post.media && (
-          <div className="mt-3 flex items-center gap-1.5 text-[10px] text-slate-500 bg-slate-50 px-2 py-1 rounded-lg w-fit">
+          <div className="mt-3 flex items-center gap-1.5 text-[10px] text-[#666] bg-[#f5f5f5] px-2 py-1 w-fit">
             {post.media === "video" ? <Play size={10} /> : <ImageIcon size={10} />}
-            <span className="uppercase tracking-wider font-semibold">{post.media}</span>
+            <span className="uppercase tracking-widest font-semibold">{post.media}</span>
           </div>
         )}
-        <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100">
+        <div className="flex items-center justify-between mt-3 pt-3 border-t border-[#f0f0f0]">
           <div className="flex items-center gap-3.5">
             {engagementSummary(post).map((e, i) => {
               const Icon = e.icon;
               return (
-                <div key={i} className="flex items-center gap-1 text-[11px] text-slate-600 font-medium">
+                <div key={i} className="flex items-center gap-1 text-[11px] text-[#666] font-medium">
                   <Icon size={11} strokeWidth={2.2} />
                   <span className="tabular-nums">{e.label}</span>
                 </div>
               );
             })}
           </div>
-          <button className="opacity-0 group-hover:opacity-100 transition text-[10px] text-slate-500 hover:text-slate-900 flex items-center gap-1 font-medium">open <ExternalLink size={10} /></button>
+          <button className="opacity-0 group-hover:opacity-100 transition text-[10px] text-[#999] hover:text-black flex items-center gap-1 font-medium">open <ExternalLink size={10} /></button>
         </div>
       </div>
     </div>
@@ -361,45 +357,42 @@ export default function FanDashboard() {
   };
 
   return (
-    <div className="min-h-screen w-full text-slate-800" style={{ background: "linear-gradient(180deg, #fef7ff 0%, #f0f9ff 50%, #fdf4ff 100%)", fontFamily: "'Plus Jakarta Sans', 'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen w-full text-black" style={{ background: "#fff", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&display=swap');
-        .font-display { font-family: 'Fraunces', Georgia, serif; font-optical-sizing: auto; }
+        .font-display { font-family: 'Nudge', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: bold; text-transform: uppercase; letter-spacing: -0.01em; }
         .marquee-fade { mask-image: linear-gradient(90deg, transparent 0, black 3%, black 97%, transparent 100%); }
-        .recharts-cartesian-axis-tick text { fill: #94a3b8; font-size: 10px; font-weight: 500; }
-        .recharts-cartesian-grid line { stroke: #e2e8f0; }
-        .recharts-polar-grid-angle line { stroke: #e2e8f0; }
-        .recharts-polar-angle-axis-tick text { fill: #64748b; font-size: 10px; font-weight: 600; }
+        .recharts-cartesian-axis-tick text { fill: #999; font-size: 10px; font-weight: 500; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+        .recharts-cartesian-grid line { stroke: #e8e8e8; }
+        .recharts-polar-grid-angle line { stroke: #e8e8e8; }
+        .recharts-polar-angle-axis-tick text { fill: #555; font-size: 10px; font-weight: 600; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
       `}</style>
 
       <div className="max-w-[1400px] mx-auto px-6 py-6">
         {/* Header */}
-        <header className="flex items-center justify-between mb-6">
+        <header className="flex items-center justify-between mb-6 pb-4 border-b border-black">
           <div className="flex items-center gap-5">
             <div className="flex items-center gap-3">
-              <div className="relative w-11 h-11 rounded-2xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-violet-300/50">
+              <div className="relative w-11 h-11 bg-black flex items-center justify-center">
                 <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none">
                   <path d="M4 20 L4 4 L12 4 L12 11 L20 11 L20 20 Z" stroke="white" strokeWidth="1.8" strokeLinejoin="round" />
                   <circle cx="12" cy="11" r="1.5" fill="white" />
                 </svg>
-                <div className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full ring-2 ring-white animate-pulse" />
+                <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 ring-2 ring-white animate-pulse" />
               </div>
               <div className="leading-none">
-                <div className="font-display text-xl font-bold text-slate-900 tracking-tight">
-                  FANINTEL <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-500">PRO</span>
-                </div>
-                <div className="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-semibold mt-1">Community Intelligence</div>
+                <div className="font-display text-xl text-black">FANINTEL PRO</div>
+                <div className="text-[10px] uppercase tracking-[0.2em] text-[#999] mt-1">Community Intelligence</div>
               </div>
             </div>
-            <div className="h-8 w-px bg-slate-200" />
-            <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-full">
-              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-[11px] font-semibold text-emerald-700">Live · synced 2m ago</span>
+            <div className="h-6 w-px bg-[#e0e0e0]" />
+            <div className="flex items-center gap-2 border border-[#e0e0e0] px-3 py-1.5">
+              <div className="w-1.5 h-1.5 bg-green-500 animate-pulse" />
+              <span className="text-[11px] font-medium text-[#555]">Live · synced 2m ago</span>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <button className="text-xs text-slate-700 bg-white border border-slate-200 hover:border-slate-300 hover:shadow-sm w-9 h-9 rounded-xl flex items-center justify-center transition"><Search size={14} /></button>
-            <button className="text-xs text-slate-700 bg-white border border-slate-200 hover:border-slate-300 hover:shadow-sm w-9 h-9 rounded-xl flex items-center justify-center transition"><Settings2 size={14} /></button>
+            <button className="w-9 h-9 border border-[#e0e0e0] hover:border-black flex items-center justify-center transition"><Search size={14} /></button>
+            <button className="w-9 h-9 border border-[#e0e0e0] hover:border-black flex items-center justify-center transition"><Settings2 size={14} /></button>
           </div>
         </header>
 
@@ -407,11 +400,11 @@ export default function FanDashboard() {
         <section className="mb-6">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-baseline gap-3">
-              <h2 className="text-xs uppercase tracking-[0.15em] text-slate-500 font-bold">Roster</h2>
-              <span className="text-xs text-slate-400 font-medium">{ARTISTS.length} artists tracked</span>
+              <h2 className="text-[10px] uppercase tracking-[0.2em] text-[#999] font-bold">Roster</h2>
+              <span className="text-[10px] text-[#bbb]">{ARTISTS.length} artists tracked</span>
             </div>
           </div>
-          <div className="flex gap-3 overflow-x-auto marquee-fade pb-2 -mx-2 px-2">
+          <div className="flex gap-2 overflow-x-auto marquee-fade pb-2 -mx-2 px-2">
             {ARTISTS.map((a) => <ArtistPill key={a.slug} artist={a} active={a.slug === selectedSlug} onClick={() => setSelectedSlug(a.slug)} />)}
           </div>
         </section>
@@ -420,42 +413,39 @@ export default function FanDashboard() {
         <div className="grid grid-cols-12 gap-5">
           <section className="col-span-12 lg:col-span-8 space-y-5">
             {/* Hero */}
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-violet-500 via-fuchsia-500 to-pink-500 p-6 text-white shadow-xl shadow-violet-300/40">
-              <div className="absolute top-0 right-0 w-72 h-72 opacity-20 -mr-20 -mt-20"><div className="w-full h-full rounded-full bg-white blur-3xl" /></div>
-              <div className="absolute bottom-0 left-1/2 w-64 h-64 opacity-10 -mb-32"><div className="w-full h-full rounded-full bg-yellow-200 blur-3xl" /></div>
+            <div className="relative overflow-hidden bg-black p-8 text-white">
               <div className="relative flex items-end justify-between gap-6">
                 <div>
-                  <div className="text-[10px] uppercase tracking-[0.2em] text-white/70 font-bold mb-2">Now viewing</div>
-                  <h3 className="font-display text-5xl font-bold tracking-tight leading-none">{artist.name}</h3>
-                  <div className="mt-3 text-sm text-white/80">{artist.tagline}</div>
+                  <div className="text-[10px] uppercase tracking-[0.2em] text-white/50 mb-3">Now viewing</div>
+                  <h3 className="font-display text-6xl leading-none">{artist.name}</h3>
+                  <div className="mt-3 text-sm text-white/60">{artist.tagline}</div>
                 </div>
                 <div className="text-right">
-                  <div className="text-[10px] uppercase tracking-[0.2em] text-white/70 font-bold mb-2">Cumulative reach</div>
-                  <div className="font-bold text-4xl tabular-nums leading-none">{fmtFull(artist.totals.value)}</div>
-                  <div className="mt-2 flex items-center justify-end gap-2">
-                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${artist.totals.delta >= 0 ? "bg-white/20 text-white" : "bg-rose-900/30 text-rose-100"}`}>
+                  <div className="text-[10px] uppercase tracking-[0.2em] text-white/50 mb-3">Cumulative reach</div>
+                  <div className="font-display text-5xl tabular-nums leading-none">{fmtFull(artist.totals.value)}</div>
+                  <div className="mt-3 flex items-center justify-end gap-2">
+                    <span className={`text-xs font-bold px-2 py-0.5 border ${artist.totals.delta >= 0 ? "border-white/30 text-white" : "border-red-400/30 text-red-300"}`}>
                       {artist.totals.delta >= 0 ? "↑" : "↓"} {fmt(Math.abs(artist.totals.delta))}
                     </span>
-                    <span className="text-[10px] text-white/70 font-medium">last 28d</span>
+                    <span className="text-[10px] text-white/40">last 28d</span>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Growth chart */}
-            <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
+            <div className="bg-white border border-[#e0e0e0] p-6">
               <div className="flex flex-col gap-4 mb-5">
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                   <div>
-                    <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Fan Network Growth</div>
-                    <div className="text-base font-semibold text-slate-900 mt-0.5">Followers across platforms</div>
-                    <div className="text-xs text-slate-500">
+                    <div className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-bold">Fan Network Growth</div>
+                    <div className="font-display text-xl text-black mt-0.5">Followers across platforms</div>
+                    <div className="text-xs text-[#999] mt-1">
                       {history.length > 0 ? `${monthLabel(history[0].date)} — ${monthLabel(history[history.length - 1].date)}` : "No data in range"}
                     </div>
                   </div>
 
-                  {/* Time range selector */}
-                  <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
+                  <div className="flex items-center gap-1 border border-[#e0e0e0] p-1">
                     {[
                       { key: "3m", label: "3M" },
                       { key: "6m", label: "6M" },
@@ -466,10 +456,8 @@ export default function FanDashboard() {
                       <button
                         key={opt.key}
                         onClick={() => setYearRange(opt.key)}
-                        className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition ${
-                          yearRange === opt.key
-                            ? "bg-white text-slate-900 shadow-sm"
-                            : "text-slate-600 hover:text-slate-900"
+                        className={`text-[11px] font-semibold px-3 py-1.5 transition uppercase tracking-wider ${
+                          yearRange === opt.key ? "bg-black text-white" : "text-[#666] hover:text-black"
                         }`}
                       >
                         {opt.label}
@@ -478,39 +466,32 @@ export default function FanDashboard() {
                   </div>
                 </div>
 
-                {/* Year chips */}
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Year:</span>
+                  <span className="text-[10px] uppercase tracking-wider text-[#bbb] font-bold">Year:</span>
                   {["2022", "2023", "2024", "2025", "2026"].map((yr) => (
                     <button
                       key={yr}
                       onClick={() => setYearRange(yr)}
-                      className={`text-xs font-semibold px-2.5 py-1 rounded-full transition ${
-                        yearRange === yr
-                          ? "bg-violet-600 text-white"
-                          : "bg-white border border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-900"
+                      className={`text-[11px] font-semibold px-2.5 py-1 transition border ${
+                        yearRange === yr ? "bg-black text-white border-black" : "border-[#e0e0e0] text-[#666] hover:border-black hover:text-black"
                       }`}
                     >
                       {yr}
                     </button>
                   ))}
                   {yearRange !== "all" && (
-                    <button
-                      onClick={() => setYearRange("all")}
-                      className="text-xs font-semibold px-2.5 py-1 rounded-full text-slate-500 hover:text-slate-900 underline-offset-2 hover:underline"
-                    >
+                    <button onClick={() => setYearRange("all")} className="text-[11px] font-semibold px-2.5 py-1 text-[#999] hover:text-black underline-offset-2 hover:underline">
                       Clear
                     </button>
                   )}
                 </div>
 
-                {/* Platform legend */}
                 <div className="flex flex-wrap gap-1.5">
                   {orderedPlats.map((p) => {
                     const off = hiddenPlats.has(p);
                     return (
-                      <button key={p} onClick={() => togglePlat(p)} className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[10px] font-semibold transition ${off ? "border-slate-200 text-slate-400 bg-slate-50" : "border-slate-200 text-slate-700 bg-white hover:border-slate-300"}`}>
-                        <span className="w-1.5 h-1.5 rounded-full" style={{ background: off ? "#cbd5e1" : PLATFORMS[p].color }} />
+                      <button key={p} onClick={() => togglePlat(p)} className={`flex items-center gap-1.5 px-2.5 py-1 border text-[10px] font-semibold transition uppercase tracking-wider ${off ? "border-[#e0e0e0] text-[#ccc]" : "border-[#e0e0e0] text-[#555] hover:border-black"}`}>
+                        <span className="w-1.5 h-1.5 rounded-full" style={{ background: off ? "#ddd" : PLATFORMS[p].color }} />
                         {p}
                       </button>
                     );
@@ -518,50 +499,32 @@ export default function FanDashboard() {
                 </div>
               </div>
 
-              {/* Range stats strip */}
               {rangeStats && (
-                <div className="grid grid-cols-4 gap-3 mb-4 p-4 bg-gradient-to-r from-violet-50 via-fuchsia-50 to-pink-50 rounded-2xl border border-violet-100">
-                  <div>
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Range start</div>
-                    <div className="text-base font-bold tabular-nums text-slate-900">{fmt(rangeStats.startTotal)}</div>
-                  </div>
-                  <div>
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Range end</div>
-                    <div className="text-base font-bold tabular-nums text-slate-900">{fmt(rangeStats.endTotal)}</div>
-                  </div>
-                  <div>
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Net growth</div>
-                    <div className={`text-base font-bold tabular-nums flex items-center gap-1 ${rangeStats.net >= 0 ? "text-emerald-600" : "text-rose-500"}`}>
-                      {rangeStats.net >= 0 ? "+" : ""}{fmt(rangeStats.net)}
-                      <span className="text-[10px] font-semibold">
-                        ({rangeStats.pct >= 0 ? "+" : ""}{rangeStats.pct.toFixed(1)}%)
-                      </span>
+                <div className="grid grid-cols-4 gap-px mb-4 bg-[#e0e0e0]">
+                  {[
+                    { label: "Range start", value: fmt(rangeStats.startTotal) },
+                    { label: "Range end", value: fmt(rangeStats.endTotal) },
+                    { label: "Net growth", value: `${rangeStats.net >= 0 ? "+" : ""}${fmt(rangeStats.net)}`, sub: `(${rangeStats.pct >= 0 ? "+" : ""}${rangeStats.pct.toFixed(1)}%)`, color: rangeStats.net >= 0 ? "text-green-700" : "text-red-600" },
+                    { label: "Best month", value: rangeStats.bestMonth ? monthLabel(rangeStats.bestMonth) : "—", sub: rangeStats.bestGain > 0 ? `+${fmt(rangeStats.bestGain)}` : "" },
+                  ].map((s) => (
+                    <div key={s.label} className="bg-white p-4">
+                      <div className="text-[10px] font-bold uppercase tracking-widest text-[#999] mb-1">{s.label}</div>
+                      <div className={`text-base font-bold tabular-nums ${s.color || "text-black"}`}>{s.value} {s.sub && <span className="text-[11px] font-semibold text-[#999]">{s.sub}</span>}</div>
                     </div>
-                  </div>
-                  <div>
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Best month</div>
-                    <div className="text-base font-bold text-slate-900">
-                      {rangeStats.bestMonth ? monthLabel(rangeStats.bestMonth) : "—"}
-                      {rangeStats.bestGain > 0 && (
-                        <span className="text-xs text-emerald-600 ml-1.5 font-semibold">+{fmt(rangeStats.bestGain)}</span>
-                      )}
-                    </div>
-                  </div>
+                  ))}
                 </div>
               )}
 
               <div className="h-[320px] -mx-2">
                 {history.length === 0 ? (
-                  <div className="h-full flex items-center justify-center text-slate-400 text-sm">
-                    No data in the selected range
-                  </div>
+                  <div className="h-full flex items-center justify-center text-[#999] text-sm">No data in the selected range</div>
                 ) : (
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={history} margin={{ top: 8, right: 16, left: 0, bottom: 8 }}>
                       <CartesianGrid strokeDasharray="3 4" vertical={false} />
-                      <XAxis dataKey="date" tickFormatter={monthLabel} interval={Math.max(0, Math.floor(history.length / 8))} axisLine={{ stroke: "#e2e8f0" }} tickLine={false} />
+                      <XAxis dataKey="date" tickFormatter={monthLabel} interval={Math.max(0, Math.floor(history.length / 8))} axisLine={{ stroke: "#e0e0e0" }} tickLine={false} />
                       <YAxis tickFormatter={fmt} axisLine={false} tickLine={false} width={48} />
-                      <Tooltip content={<ChartTooltip />} cursor={{ stroke: "#cbd5e1", strokeDasharray: "3 3" }} />
+                      <Tooltip content={<ChartTooltip />} cursor={{ stroke: "#ccc", strokeDasharray: "3 3" }} />
                       {orderedPlats.map((p) => hiddenPlats.has(p) ? null : <Line key={p} type="monotone" dataKey={p} stroke={PLATFORMS[p].color} strokeWidth={2.5} dot={false} activeDot={{ r: 4, strokeWidth: 2, stroke: "white" }} />)}
                     </LineChart>
                   </ResponsiveContainer>
@@ -570,13 +533,13 @@ export default function FanDashboard() {
             </div>
 
             {/* Current reach */}
-            <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
+            <div className="bg-white border border-[#e0e0e0] p-6">
               <div className="mb-5">
-                <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Current Reach</div>
-                <div className="text-base font-semibold text-slate-900 mt-0.5">Per-platform follower counts</div>
-                <div className="text-xs text-slate-500">Change vs 28 days ago</div>
+                <div className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-bold">Current Reach</div>
+                <div className="font-display text-xl text-black mt-0.5">Per-platform follower counts</div>
+                <div className="text-xs text-[#999] mt-1">Change vs 28 days ago</div>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-[#e0e0e0]">
                 {orderedPlats.map((p) => <KpiTile key={p} platform={p} value={artist.platforms[p].value} delta={artist.platforms[p].delta} />)}
                 <KpiTile isTotal platform="Total" value={artist.totals.value} delta={artist.totals.delta} />
               </div>
@@ -584,29 +547,29 @@ export default function FanDashboard() {
           </section>
 
           <aside className="col-span-12 lg:col-span-4 space-y-5">
-            <div className="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden">
-              <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+            <div className="bg-white border border-[#e0e0e0] overflow-hidden">
+              <div className="px-5 py-4 border-b border-[#e0e0e0] flex items-center justify-between">
                 <div>
-                  <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Fan Page Tracker</div>
-                  <div className="text-sm font-semibold text-slate-900 mt-0.5">Admin-run pages</div>
+                  <div className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-bold">Fan Page Tracker</div>
+                  <div className="font-display text-lg text-black mt-0.5">Admin-run pages</div>
                 </div>
-                <button className="text-[10px] font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 px-2.5 py-1.5 rounded-full flex items-center gap-1">Discord <ChevronDown size={10} /></button>
+                <button className="text-[10px] font-semibold text-[#555] border border-[#e0e0e0] hover:border-black px-2.5 py-1.5 flex items-center gap-1 transition">Discord <ChevronDown size={10} /></button>
               </div>
-              <div className="p-2">
+              <div>
                 {artist.pages.map((p, i) => {
                   const platCfg = PLATFORMS[p.platform];
                   return (
-                    <div key={p.name} className="p-3 flex items-center gap-3 hover:bg-slate-50 transition cursor-pointer group rounded-xl">
-                      <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: platCfg.soft }}>
-                        <span className="text-sm font-bold" style={{ color: platCfg.color }}>{String(i + 1).padStart(2, "0")}</span>
+                    <div key={p.name} className="px-5 py-3 flex items-center gap-3 hover:bg-[#f5f5f5] transition cursor-pointer group border-b border-[#f0f0f0] last:border-0">
+                      <div className="w-8 h-8 flex items-center justify-center shrink-0 bg-[#f5f5f5]">
+                        <span className="text-xs font-bold text-[#555]">{String(i + 1).padStart(2, "0")}</span>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="text-sm font-semibold text-slate-900 group-hover:text-violet-600 transition truncate">{p.name}</div>
-                        <div className="text-[10px] text-slate-500 mt-0.5">posted {p.latest}</div>
+                        <div className="text-sm font-semibold text-black group-hover:underline truncate">{p.name}</div>
+                        <div className="text-[10px] text-[#999] mt-0.5">posted {p.latest}</div>
                       </div>
                       <div className="text-right">
-                        <div className="text-sm font-bold tabular-nums text-slate-900">{fmtFull(p.followers)}</div>
-                        <div className="text-[10px] text-slate-500">followers</div>
+                        <div className="text-sm font-bold tabular-nums text-black">{fmtFull(p.followers)}</div>
+                        <div className="text-[10px] text-[#999]">followers</div>
                       </div>
                     </div>
                   );
@@ -614,19 +577,19 @@ export default function FanDashboard() {
               </div>
             </div>
 
-            <div className="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden">
-              <div className="px-5 py-4 border-b border-slate-100">
-                <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Fastest Movers · 28d</div>
-                <div className="text-sm font-semibold text-slate-900 mt-0.5">Biggest swings across the roster</div>
+            <div className="bg-white border border-[#e0e0e0] overflow-hidden">
+              <div className="px-5 py-4 border-b border-[#e0e0e0]">
+                <div className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-bold">Fastest Movers · 28d</div>
+                <div className="font-display text-lg text-black mt-0.5">Biggest swings</div>
               </div>
-              <div className="p-2">
+              <div>
                 {ARTISTS.slice().sort((a, b) => Math.abs(b.totals.delta) - Math.abs(a.totals.delta)).slice(0, 5).map((a, i) => {
                   const up = a.totals.delta >= 0;
                   return (
-                    <button key={a.slug} onClick={() => setSelectedSlug(a.slug)} className="w-full p-3 flex items-center gap-3 hover:bg-slate-50 transition text-left rounded-xl">
-                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold ${i === 0 ? "bg-amber-100 text-amber-700" : i === 1 ? "bg-slate-100 text-slate-700" : i === 2 ? "bg-orange-100 text-orange-700" : "bg-slate-50 text-slate-500"}`}>{i + 1}</div>
-                      <span className="flex-1 text-sm font-semibold text-slate-900 truncate">{a.name}</span>
-                      <span className={`text-xs font-bold tabular-nums px-2 py-0.5 rounded-full ${up ? "bg-emerald-100 text-emerald-700" : "bg-rose-100 text-rose-700"}`}>{up ? "+" : ""}{fmt(a.totals.delta)}</span>
+                    <button key={a.slug} onClick={() => setSelectedSlug(a.slug)} className="w-full px-5 py-3 flex items-center gap-3 hover:bg-[#f5f5f5] transition text-left border-b border-[#f0f0f0] last:border-0">
+                      <div className="w-6 h-6 flex items-center justify-center text-xs font-bold text-[#999]">{i + 1}</div>
+                      <span className="flex-1 text-sm font-semibold text-black truncate">{a.name}</span>
+                      <span className={`text-xs font-bold tabular-nums px-2 py-0.5 border ${up ? "border-green-200 text-green-700 bg-green-50" : "border-red-200 text-red-600 bg-red-50"}`}>{up ? "+" : ""}{fmt(a.totals.delta)}</span>
                     </button>
                   );
                 })}
@@ -636,20 +599,20 @@ export default function FanDashboard() {
         </div>
 
         {/* Live Feed */}
-        <section className="mt-8">
-          <div className="flex items-baseline justify-between mb-4">
+        <section className="mt-10">
+          <div className="flex items-baseline justify-between mb-4 pb-3 border-b border-black">
             <div className="flex items-baseline gap-3">
-              <h2 className="font-display text-3xl font-bold text-slate-900 tracking-tight">Live <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-500">Feed</span></h2>
-              <span className="text-xs text-slate-500 font-medium">{artist.name} · recent posts</span>
+              <h2 className="font-display text-4xl text-black">Live Feed</h2>
+              <span className="text-xs text-[#999]">{artist.name} · recent posts</span>
             </div>
-            <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-full">
-              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-[11px] font-semibold text-emerald-700">polling · 2m</span>
+            <div className="flex items-center gap-2 border border-[#e0e0e0] px-3 py-1.5">
+              <div className="w-1.5 h-1.5 bg-green-500 animate-pulse" />
+              <span className="text-[11px] text-[#555]">polling · 2m</span>
             </div>
           </div>
 
           <div className="flex items-center gap-2 mb-4 flex-wrap">
-            <Filter size={14} className="text-slate-400" />
+            <Filter size={12} className="text-[#bbb]" />
             {(() => {
               const posts = MOCK_FEED[artist.slug] || [];
               const platsInFeed = Array.from(new Set(posts.map((p) => p.platform)));
@@ -659,10 +622,10 @@ export default function FanDashboard() {
                 const cfg = f !== "All" ? PLATFORMS[f] : null;
                 const count = f === "All" ? posts.length : posts.filter((p) => p.platform === f).length;
                 return (
-                  <button key={f} onClick={() => setFeedFilter(f)} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition ${active ? "bg-slate-900 text-white" : "bg-white border border-slate-200 text-slate-700 hover:border-slate-300"}`}>
+                  <button key={f} onClick={() => setFeedFilter(f)} className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold transition border uppercase tracking-wider ${active ? "bg-black text-white border-black" : "bg-white border-[#e0e0e0] text-[#555] hover:border-black"}`}>
                     {cfg && <span className="w-1.5 h-1.5 rounded-full" style={{ background: cfg.color }} />}
                     {f}
-                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${active ? "bg-white/20" : "bg-slate-100"}`}>{count}</span>
+                    <span className={`text-[10px] px-1.5 py-0.5 ${active ? "bg-white/20" : "bg-[#f0f0f0] text-[#666]"}`}>{count}</span>
                   </button>
                 );
               });
@@ -674,52 +637,52 @@ export default function FanDashboard() {
             const filtered = feedFilter === "All" ? posts : posts.filter((p) => p.platform === feedFilter);
             if (posts.length === 0) {
               return (
-                <div className="border-2 border-dashed border-slate-200 rounded-3xl bg-white p-10 text-center">
-                  <AlertCircle size={20} className="text-slate-400 mx-auto mb-2" />
-                  <div className="text-sm text-slate-600 font-medium">No feed data for this artist yet</div>
-                  <div className="text-xs text-slate-400 mt-1">Connect a Reddit or Discord page to start tracking</div>
+                <div className="border border-dashed border-[#e0e0e0] bg-white p-10 text-center">
+                  <AlertCircle size={20} className="text-[#ccc] mx-auto mb-2" />
+                  <div className="text-sm text-[#666] font-medium">No feed data for this artist yet</div>
+                  <div className="text-xs text-[#bbb] mt-1">Connect a Reddit or Discord page to start tracking</div>
                 </div>
               );
             }
-            return <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{filtered.map((post, i) => <FeedCard key={i} post={post} />)}</div>;
+            return <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-[#e0e0e0]">{filtered.map((post, i) => <FeedCard key={i} post={post} />)}</div>;
           })()}
 
-          <div className="mt-4 px-4 py-3 bg-amber-50 border border-amber-200 rounded-2xl flex items-start gap-2">
-            <AlertCircle size={14} className="text-amber-600 mt-0.5 shrink-0" />
-            <div className="text-xs text-amber-800 leading-relaxed">
-              <span className="font-semibold">Mock data.</span> In production: Reddit via public API · Discord via bot · X via paid API · Instagram &amp; TikTok via aggregators or manual curation.
+          <div className="mt-4 px-4 py-3 border border-[#e0e0e0] flex items-start gap-2">
+            <AlertCircle size={14} className="text-[#999] mt-0.5 shrink-0" />
+            <div className="text-xs text-[#666] leading-relaxed">
+              <span className="font-semibold text-black">Mock data.</span> In production: Reddit via public API · Discord via bot · X via paid API · Instagram &amp; TikTok via aggregators or manual curation.
             </div>
           </div>
         </section>
 
         {/* Deep Analytics */}
         <section className="mt-10">
-          <div className="flex items-baseline justify-between mb-4">
+          <div className="flex items-baseline justify-between mb-4 pb-3 border-b border-black">
             <div className="flex items-baseline gap-3">
-              <h2 className="font-display text-3xl font-bold text-slate-900 tracking-tight">Deep <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-500">Analytics</span></h2>
-              <span className="text-xs text-slate-500 font-medium">{artist.name} · cross-cuts</span>
+              <h2 className="font-display text-4xl text-black">Deep Analytics</h2>
+              <span className="text-xs text-[#999]">{artist.name} · cross-cuts</span>
             </div>
           </div>
 
           <div className="grid grid-cols-12 gap-4">
-            <div className="col-span-12 md:col-span-4 bg-white border border-slate-200 rounded-3xl p-5 shadow-sm">
+            <div className="col-span-12 md:col-span-4 bg-white border border-[#e0e0e0] p-5">
               <div className="flex items-center gap-2 mb-1">
-                <div className="w-6 h-6 rounded-lg bg-fuchsia-100 flex items-center justify-center"><PieIcon size={12} className="text-fuchsia-600" /></div>
-                <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Platform Share</div>
+                <PieIcon size={12} className="text-[#999]" />
+                <div className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-bold">Platform Share</div>
               </div>
-              <div className="text-sm font-semibold text-slate-900 mb-3">Distribution of total reach</div>
+              <div className="font-display text-lg text-black mb-3">Distribution of total reach</div>
               <div className="relative h-[200px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
-                    <Pie data={platformShareData(artist)} innerRadius={55} outerRadius={85} paddingAngle={3} dataKey="value" stroke="white" strokeWidth={3}>
+                    <Pie data={platformShareData(artist)} innerRadius={55} outerRadius={85} paddingAngle={2} dataKey="value" stroke="white" strokeWidth={2}>
                       {platformShareData(artist).map((d, i) => <Cell key={i} fill={d.fill} />)}
                     </Pie>
                     <Tooltip content={<ChartTooltip />} />
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                  <div className="text-[9px] font-bold uppercase tracking-widest text-slate-500">Total</div>
-                  <div className="font-bold text-lg text-slate-900 tabular-nums">{fmt(artist.totals.value)}</div>
+                  <div className="text-[9px] font-bold uppercase tracking-widest text-[#999]">Total</div>
+                  <div className="font-bold text-lg text-black tabular-nums">{fmt(artist.totals.value)}</div>
                 </div>
               </div>
               <div className="mt-4 space-y-1.5 text-xs">
@@ -728,38 +691,38 @@ export default function FanDashboard() {
                   return (
                     <div key={d.name} className="flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full" style={{ background: d.fill }} />
-                      <span className="text-slate-600 flex-1 font-medium">{d.name}</span>
-                      <span className="font-bold text-slate-900 tabular-nums">{pct}%</span>
+                      <span className="text-[#555] flex-1 font-medium">{d.name}</span>
+                      <span className="font-bold text-black tabular-nums">{pct}%</span>
                     </div>
                   );
                 })}
               </div>
             </div>
 
-            <div className="col-span-12 md:col-span-4 bg-white border border-slate-200 rounded-3xl p-5 shadow-sm">
+            <div className="col-span-12 md:col-span-4 bg-white border border-[#e0e0e0] p-5">
               <div className="flex items-center gap-2 mb-1">
-                <div className="w-6 h-6 rounded-lg bg-violet-100 flex items-center justify-center"><Activity size={12} className="text-violet-600" /></div>
-                <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Platform Presence</div>
+                <Activity size={12} className="text-[#999]" />
+                <div className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-bold">Platform Presence</div>
               </div>
-              <div className="text-sm font-semibold text-slate-900 mb-3">Normalized vs roster top</div>
+              <div className="font-display text-lg text-black mb-3">Normalized vs roster top</div>
               <div className="h-[240px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <RadarChart data={platformRadar(artist)}>
-                    <PolarGrid stroke="#e2e8f0" />
+                    <PolarGrid stroke="#e8e8e8" />
                     <PolarAngleAxis dataKey="platform" />
                     <PolarRadiusAxis angle={90} domain={[0, 100]} tick={false} axisLine={false} />
-                    <Radar dataKey="value" stroke="#a855f7" fill="#a855f7" fillOpacity={0.25} strokeWidth={2} />
+                    <Radar dataKey="value" stroke="#000" fill="#000" fillOpacity={0.1} strokeWidth={2} />
                   </RadarChart>
                 </ResponsiveContainer>
               </div>
             </div>
 
-            <div className="col-span-12 md:col-span-4 bg-white border border-slate-200 rounded-3xl p-5 shadow-sm">
+            <div className="col-span-12 md:col-span-4 bg-white border border-[#e0e0e0] p-5">
               <div className="flex items-center gap-2 mb-1">
-                <div className="w-6 h-6 rounded-lg bg-amber-100 flex items-center justify-center"><Zap size={12} className="text-amber-600" /></div>
-                <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Growth Velocity</div>
+                <Zap size={12} className="text-[#999]" />
+                <div className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-bold">Growth Velocity</div>
               </div>
-              <div className="text-sm font-semibold text-slate-900 mb-3">Net added · trailing 12mo</div>
+              <div className="font-display text-lg text-black mb-3">Net added · trailing 12mo</div>
               <div className="h-[240px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={monthlyVelocity(history, orderedPlats)} margin={{ top: 8, right: 0, left: 0, bottom: 0 }}>
@@ -767,44 +730,44 @@ export default function FanDashboard() {
                     <XAxis dataKey="date" tickFormatter={(ym) => monthLabel(ym).split(" ")[0]} axisLine={false} tickLine={false} interval={1} />
                     <YAxis tickFormatter={fmt} axisLine={false} tickLine={false} width={40} />
                     <Tooltip content={({ active, payload, label }) => active && payload?.length ? (
-                      <div className="bg-white border border-slate-200 rounded-xl shadow-xl p-3 text-xs">
-                        <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">{monthLabel(label)}</div>
-                        <div className="font-bold tabular-nums text-slate-900 text-sm mt-1">{payload[0].value >= 0 ? "+" : ""}{fmtFull(payload[0].value)}</div>
+                      <div className="bg-white border border-black shadow p-3 text-xs">
+                        <div className="text-[10px] text-[#999] font-bold uppercase tracking-widest">{monthLabel(label)}</div>
+                        <div className="font-bold tabular-nums text-black text-sm mt-1">{payload[0].value >= 0 ? "+" : ""}{fmtFull(payload[0].value)}</div>
                       </div>
-                    ) : null} cursor={{ fill: "#f1f5f9" }} />
-                    <Bar dataKey="net" radius={[6, 6, 0, 0]}>
-                      {monthlyVelocity(history, orderedPlats).map((d, i) => <Cell key={i} fill={d.net >= 0 ? "#10b981" : "#f43f5e"} />)}
+                    ) : null} cursor={{ fill: "#f5f5f5" }} />
+                    <Bar dataKey="net" radius={[2, 2, 0, 0]}>
+                      {monthlyVelocity(history, orderedPlats).map((d, i) => <Cell key={i} fill={d.net >= 0 ? "#000" : "#ccc"} />)}
                     </Bar>
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             </div>
 
-            <div className="col-span-12 bg-white border border-slate-200 rounded-3xl p-5 shadow-sm">
+            <div className="col-span-12 bg-white border border-[#e0e0e0] p-5">
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-lg bg-cyan-100 flex items-center justify-center"><BarChart3 size={12} className="text-cyan-600" /></div>
-                  <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Roster Comparison</div>
+                  <BarChart3 size={12} className="text-[#999]" />
+                  <div className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-bold">Roster Comparison</div>
                 </div>
-                <span className="text-[10px] text-slate-400 font-medium">stacked by platform</span>
+                <span className="text-[10px] text-[#bbb]">stacked by platform</span>
               </div>
-              <div className="text-sm font-semibold text-slate-900 mb-3">Total reach — all tracked artists</div>
+              <div className="font-display text-lg text-black mb-3">Total reach — all tracked artists</div>
               <div className="h-[360px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={ARTISTS.slice().sort((a, b) => b.totals.value - a.totals.value).map((a) => { const row = { name: a.name }; Object.entries(a.platforms).forEach(([p, v]) => { row[p] = v.value; }); return row; })} layout="vertical" margin={{ top: 0, right: 24, left: 0, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 4" horizontal={false} />
                     <XAxis type="number" tickFormatter={fmt} axisLine={false} tickLine={false} />
-                    <YAxis type="category" dataKey="name" width={140} axisLine={false} tickLine={false} tick={{ fill: "#475569", fontSize: 12, fontWeight: 500 }} />
-                    <Tooltip content={<ChartTooltip />} cursor={{ fill: "#f1f5f9" }} />
+                    <YAxis type="category" dataKey="name" width={140} axisLine={false} tickLine={false} tick={{ fill: "#333", fontSize: 12, fontWeight: 500 }} />
+                    <Tooltip content={<ChartTooltip />} cursor={{ fill: "#f5f5f5" }} />
                     {Object.keys(PLATFORMS).map((p, i, arr) => (
-                      <Bar key={p} dataKey={p} stackId="a" fill={PLATFORMS[p].color} radius={i === arr.length - 1 ? [0, 8, 8, 0] : i === 0 ? [8, 0, 0, 8] : [0, 0, 0, 0]} />
+                      <Bar key={p} dataKey={p} stackId="a" fill={PLATFORMS[p].color} radius={i === arr.length - 1 ? [0, 2, 2, 0] : i === 0 ? [2, 0, 0, 2] : [0, 0, 0, 0]} />
                     ))}
                   </BarChart>
                 </ResponsiveContainer>
               </div>
               <div className="mt-3 flex flex-wrap gap-3">
                 {Object.keys(PLATFORMS).map((p) => (
-                  <div key={p} className="flex items-center gap-1.5 text-[11px] font-medium text-slate-600">
+                  <div key={p} className="flex items-center gap-1.5 text-[11px] text-[#555]">
                     <span className="w-2 h-2 rounded-full" style={{ background: PLATFORMS[p].color }} />
                     {p}
                   </div>
@@ -812,21 +775,17 @@ export default function FanDashboard() {
               </div>
             </div>
 
-            <div className="col-span-12 bg-white border border-slate-200 rounded-3xl p-5 shadow-sm">
+            <div className="col-span-12 bg-white border border-[#e0e0e0] p-5">
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-lg bg-emerald-100 flex items-center justify-center"><Activity size={12} className="text-emerald-600" /></div>
-                  <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Cumulative Reach</div>
+                  <Activity size={12} className="text-[#999]" />
+                  <div className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-bold">Cumulative Reach</div>
                 </div>
-                <span className="text-[10px] text-slate-400 font-medium">stacked area · all platforms</span>
+                <span className="text-[10px] text-[#bbb]">stacked area · all platforms</span>
               </div>
-              <div className="text-sm font-semibold text-slate-900 mb-3">
+              <div className="font-display text-lg text-black mb-3">
                 How the total fanbase was built over time
-                {yearRange !== "all" && (
-                  <span className="ml-2 text-xs font-medium text-violet-600">
-                    · filtered: {yearRange === "ytd" ? "YTD" : yearRange === "12m" ? "last 12 months" : yearRange === "6m" ? "last 6 months" : yearRange === "3m" ? "last 3 months" : yearRange}
-                  </span>
-                )}
+                {yearRange !== "all" && <span className="ml-2 text-sm font-normal text-[#999]">· filtered: {yearRange === "ytd" ? "YTD" : yearRange === "12m" ? "last 12 months" : yearRange === "6m" ? "last 6 months" : yearRange === "3m" ? "last 3 months" : yearRange}</span>}
               </div>
               <div className="h-[280px]">
                 <ResponsiveContainer width="100%" height="100%">
@@ -834,15 +793,15 @@ export default function FanDashboard() {
                     <defs>
                       {orderedPlats.map((p) => (
                         <linearGradient key={p} id={`grad-${p.replace(/\s/g, "")}`} x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor={PLATFORMS[p].color} stopOpacity={0.65} />
-                          <stop offset="100%" stopColor={PLATFORMS[p].color} stopOpacity={0.1} />
+                          <stop offset="0%" stopColor={PLATFORMS[p].color} stopOpacity={0.6} />
+                          <stop offset="100%" stopColor={PLATFORMS[p].color} stopOpacity={0.05} />
                         </linearGradient>
                       ))}
                     </defs>
                     <CartesianGrid strokeDasharray="3 4" vertical={false} />
-                    <XAxis dataKey="date" tickFormatter={monthLabel} interval={Math.floor(history.length / 8)} axisLine={{ stroke: "#e2e8f0" }} tickLine={false} />
+                    <XAxis dataKey="date" tickFormatter={monthLabel} interval={Math.floor(history.length / 8)} axisLine={{ stroke: "#e0e0e0" }} tickLine={false} />
                     <YAxis tickFormatter={fmt} axisLine={false} tickLine={false} width={48} />
-                    <Tooltip content={<ChartTooltip />} cursor={{ stroke: "#cbd5e1", strokeDasharray: "3 3" }} />
+                    <Tooltip content={<ChartTooltip />} cursor={{ stroke: "#ccc", strokeDasharray: "3 3" }} />
                     {orderedPlats.map((p) => <Area key={p} type="monotone" dataKey={p} stackId="1" stroke={PLATFORMS[p].color} strokeWidth={1.5} fill={`url(#grad-${p.replace(/\s/g, "")})`} />)}
                   </AreaChart>
                 </ResponsiveContainer>
@@ -851,13 +810,13 @@ export default function FanDashboard() {
           </div>
         </section>
 
-        <footer className="mt-10 pt-6 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
+        <footer className="mt-10 pt-6 border-t border-black flex items-center justify-between text-xs text-[#999]">
           <div className="flex items-center gap-3">
-            <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-500 tracking-wider">FANINTEL PRO</span>
-            <span className="text-slate-300">·</span>
+            <span className="font-display text-sm text-black">FANINTEL PRO</span>
+            <span className="text-[#e0e0e0]">·</span>
             <span>Data snapshot · Apr 18, 2026</span>
           </div>
-          <span className="font-medium">v0.3 · Community Intelligence Platform</span>
+          <span>v0.3 · Community Intelligence Platform</span>
         </footer>
       </div>
     </div>
