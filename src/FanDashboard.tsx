@@ -40,6 +40,7 @@ import {
   Play,
   AlertCircle,
   Sparkles,
+  Star,
 } from "lucide-react";
 
 // ---- Platform tokens ----
@@ -203,6 +204,7 @@ function parsePagesTab(rows: string[][]) {
       link: row[2]?.trim() || "",
       followers: parseInt(row[3]?.replace(/[^\d]/g, "") || "0", 10),
       latest: row[4]?.trim() || "",
+      managed: row[5]?.trim().toLowerCase() === "yes",
     }))
     .filter((p) => !isNaN(p.followers));
 }
@@ -891,7 +893,10 @@ export default function FanDashboard() {
                               <span className="text-sm font-bold" style={{ color: platCfg.color }}>{String(i + 1).padStart(2, "0")}</span>
                             </div>
                             <div className="flex-1 min-w-0">
-                              <div className="text-sm font-semibold text-slate-900 group-hover:text-violet-600 transition truncate">{p.name}</div>
+                              <div className="flex items-center gap-1">
+                                <div className="text-sm font-semibold text-slate-900 group-hover:text-violet-600 transition truncate">{p.name}</div>
+                                {p.managed && <Star size={11} className="shrink-0 text-amber-400 fill-amber-400" />}
+                              </div>
                               <div className="text-[10px] text-slate-500 mt-0.5">{p.latest ? `Updated ${p.latest}` : p.platform}</div>
                             </div>
                             <div className="text-right">
