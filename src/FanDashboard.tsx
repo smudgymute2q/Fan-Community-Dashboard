@@ -858,7 +858,7 @@ export default function FanDashboard() {
                         <ChevronDown size={10} className="text-slate-400" />
                       </button>
                       {pagesDropdownOpen && (
-                        <div className="absolute right-0 top-full mt-1.5 z-20 bg-white border border-slate-200 rounded-2xl shadow-lg py-1.5 min-w-[160px]">
+                        <div className="absolute right-0 top-full mt-1.5 z-20 bg-white border border-slate-200 rounded-2xl shadow-lg py-1.5 min-w-[200px]">
                           {availablePlatforms.map((plat) => (
                             <button
                               key={plat}
