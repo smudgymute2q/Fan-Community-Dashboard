@@ -332,7 +332,7 @@ function platformRadar(artist, allArtists) {
 }
 
 function DeltaPill({ value, small = false }) {
-  if (value === 0 || value === null || value === undefined) return <span className={`inline-flex items-center gap-0.5 text-slate-500 ${small ? "text-[10px]" : "text-xs"} font-medium`}><Minus size={small ? 10 : 12} strokeWidth={2.5} /> flat</span>;
+  if (value === 0 || value === null || value === undefined) return <span className={`inline-flex items-center gap-0.5 text-slate-500 ${small ? "text-[10px]" : "text-xs"} font-medium`}><Minus size={small ? 10 : 12} strokeWidth={2.5} /> 0</span>;
   const up = value > 0;
   return <span className={`inline-flex items-center gap-0.5 font-semibold ${small ? "text-[10px]" : "text-xs"} ${up ? "text-emerald-600" : "text-rose-500"}`}>{up ? <ArrowUpRight size={small ? 10 : 12} strokeWidth={3} /> : <ArrowDownRight size={small ? 10 : 12} strokeWidth={3} />}{up ? "+" : ""}{fmt(value)}</span>;
 }
