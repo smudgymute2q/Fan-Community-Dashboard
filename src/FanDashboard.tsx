@@ -375,18 +375,18 @@ function ArtistPill({ artist, active, onClick }) {
   const initial = artist.name.charAt(0);
   const icon = ARTIST_ICONS[artist.slug];
   return (
-    <button onClick={onClick} className={`group relative shrink-0 text-left px-4 py-3 rounded-2xl transition-all ${active ? "bg-gradient-to-br from-violet-500 to-fuchsia-500 text-white shadow-lg shadow-violet-300/40" : "bg-white border border-slate-200 hover:border-slate-300 hover:shadow-md"}`}>
-      <div className="flex items-center gap-3">
-        <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm overflow-hidden ${active ? "bg-white/20 text-white" : "bg-slate-100 text-slate-700"}`}>
+    <button onClick={onClick} className={`group relative shrink-0 text-left px-3.5 py-2.5 rounded-2xl transition-all ${active ? "bg-gradient-to-br from-violet-500 to-fuchsia-500 text-white shadow-lg shadow-violet-300/40" : "bg-white border border-slate-200 hover:border-slate-300 hover:shadow-md"}`}>
+      <div className="flex items-center gap-2.5">
+        <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm overflow-hidden shrink-0 ${active ? "bg-white/20 text-white" : "bg-slate-100 text-slate-700"}`}>
           {icon ? <img src={icon} alt={artist.name} className="w-full h-full object-cover" /> : initial}
         </div>
         <div>
-          <div className={`text-sm font-semibold ${active ? "text-white" : "text-slate-900"}`}>{artist.name}</div>
+          <div className={`text-sm font-semibold leading-tight ${active ? "text-white" : "text-slate-900"}`}>{artist.name}</div>
+          <div className="flex items-center gap-1.5 mt-0.5">
+            <span className={`text-xs font-semibold tabular-nums ${active ? "text-white" : "text-slate-700"}`}>{fmt(artist.totals.value)}</span>
+            <span className={`text-[10px] font-semibold ${active ? "text-violet-100" : artist.totals.delta >= 0 ? "text-emerald-600" : "text-rose-500"}`}>{artist.totals.delta >= 0 ? "+" : ""}{fmt(artist.totals.delta)}</span>
+          </div>
         </div>
-      </div>
-      <div className="flex items-center gap-2 mt-2 pl-12">
-        <span className={`text-xs font-semibold tabular-nums ${active ? "text-white" : "text-slate-700"}`}>{fmt(artist.totals.value)}</span>
-        <span className={`text-[10px] font-semibold ${active ? "text-violet-100" : artist.totals.delta >= 0 ? "text-emerald-600" : "text-rose-500"}`}>{artist.totals.delta >= 0 ? "+" : ""}{fmt(artist.totals.delta)}</span>
       </div>
     </button>
   );
