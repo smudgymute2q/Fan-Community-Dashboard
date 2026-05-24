@@ -478,7 +478,6 @@ export default function FanDashboard() {
   const [yearRange, setYearRange] = useState("all");
   const [pagesPlatform, setPagesPlatform] = useState("Discord");
   const rosterRef = React.useRef<HTMLDivElement>(null);
-  const rosterRef2 = React.useRef<HTMLDivElement>(null);
   const [pagesDropdownOpen, setPagesDropdownOpen] = useState(false);
 
   // ---- Sheets data loading ----
@@ -684,26 +683,23 @@ export default function FanDashboard() {
 
         {/* Roster */}
         <section className="mb-6">
-          <div className="flex items-baseline gap-3 mb-3">
-            <h2 className="text-xs uppercase tracking-[0.15em] text-slate-500 font-bold">Roster</h2>
-            <span className="text-xs text-slate-400 font-medium">{artists.length} artists tracked</span>
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-baseline gap-3">
+              <h2 className="text-xs uppercase tracking-[0.15em] text-slate-500 font-bold">Roster</h2>
+              <span className="text-xs text-slate-400 font-medium">{artists.length} artists tracked</span>
+            </div>
           </div>
-          {[artists.slice(0, Math.ceil(artists.length / 2)), artists.slice(Math.ceil(artists.length / 2))].map((row, rowIdx) => {
-            const ref = rowIdx === 0 ? rosterRef : rosterRef2;
-            return (
-              <div key={rowIdx} className="flex items-center gap-2 mb-2">
-                <button onClick={() => ref.current?.scrollTo({ left: 0, behavior: "smooth" })} className="shrink-0 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition">
-                  <ChevronDown size={13} className="rotate-90 text-slate-500" />
-                </button>
-                <div ref={ref} className="flex gap-3 overflow-x-auto pb-1 scroll-smooth flex-1 justify-center" style={{ scrollbarWidth: "none" }}>
-                  {row.map((a) => <ArtistPill key={a.slug} artist={a} active={a.slug === selectedSlug} onClick={() => setSelectedSlug(a.slug)} />)}
-                </div>
-                <button onClick={() => ref.current?.scrollTo({ left: ref.current.scrollWidth, behavior: "smooth" })} className="shrink-0 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition">
-                  <ChevronDown size={13} className="-rotate-90 text-slate-500" />
-                </button>
-              </div>
-            );
-          })}
+          <div className="flex items-center gap-2">
+            <button onClick={() => rosterRef.current?.scrollTo({ left: 0, behavior: "smooth" })} className="shrink-0 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition">
+              <ChevronDown size={13} className="rotate-90 text-slate-500" />
+            </button>
+            <div ref={rosterRef} className="flex gap-3 overflow-x-auto pb-1 scroll-smooth flex-1" style={{ scrollbarWidth: "none" }}>
+              {artists.map((a) => <ArtistPill key={a.slug} artist={a} active={a.slug === selectedSlug} onClick={() => setSelectedSlug(a.slug)} />)}
+            </div>
+            <button onClick={() => rosterRef.current?.scrollTo({ left: rosterRef.current.scrollWidth, behavior: "smooth" })} className="shrink-0 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition">
+              <ChevronDown size={13} className="-rotate-90 text-slate-500" />
+            </button>
+          </div>
         </section>
 
         {/* Main */}
