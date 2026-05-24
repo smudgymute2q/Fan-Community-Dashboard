@@ -455,6 +455,7 @@ export default function FanDashboard() {
   const [feedFilter, setFeedFilter] = useState("All");
   const [yearRange, setYearRange] = useState("all");
   const [pagesPlatform, setPagesPlatform] = useState("Discord");
+  const [pagesDropdownOpen, setPagesDropdownOpen] = useState(false);
 
   // ---- Sheets data loading ----
   const [sheetsData, setSheetsData] = useState<Record<string, any>>({});
@@ -825,11 +826,9 @@ export default function FanDashboard() {
 
           <aside className="col-span-12 lg:col-span-4 space-y-5">
             {(() => {
-              const availablePlatforms = [...new Set(artist.pages.map((p) => p.platform).filter(Boolean))];
-              // Ensure Discord comes first, then alphabetical
-              availablePlatforms.sort((a, b) =>
-                a === "Discord" ? -1 : b === "Discord" ? 1 : a.localeCompare(b)
-              );
+              const PLAT_ORDER_PAGES = ["Discord", "Reddit", "Instagram", "Instagram Channels", "X", "X Communities", "TikTok"];
+              const availablePlatformsSet = new Set(artist.pages.map((p) => p.platform).filter(Boolean));
+              const availablePlatforms = PLAT_ORDER_PAGES.filter((p) => availablePlatformsSet.has(p));
               // Always use a platform that actually exists in the list
               const effectivePlatform = availablePlatforms.includes(pagesPlatform)
                 ? pagesPlatform
@@ -847,16 +846,32 @@ export default function FanDashboard() {
                       <div className="text-sm font-semibold text-slate-900 mt-0.5">Admin-run pages</div>
                     </div>
                     <div className="relative">
-                      <select
-                        value={effectivePlatform}
-                        onChange={(e) => setPagesPlatform(e.target.value)}
-                        className="appearance-none text-[10px] font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 pl-2.5 pr-6 py-1.5 rounded-full cursor-pointer outline-none border-none"
+                      {pagesDropdownOpen && (
+                        <div className="fixed inset-0 z-10" onClick={() => setPagesDropdownOpen(false)} />
+                      )}
+                      <button
+                        onClick={() => setPagesDropdownOpen((o) => !o)}
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-slate-200 text-[10px] font-semibold text-slate-700 bg-white hover:border-slate-300 transition"
                       >
-                        {availablePlatforms.map((plat) => (
-                          <option key={plat} value={plat}>{plat}</option>
-                        ))}
-                      </select>
-                      <ChevronDown size={10} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500" />
+                        <span className="w-1.5 h-1.5 rounded-full" style={{ background: PLATFORMS[effectivePlatform]?.color ?? "#94a3b8" }} />
+                        {effectivePlatform}
+                        <ChevronDown size={10} className="text-slate-400" />
+                      </button>
+                      {pagesDropdownOpen && (
+                        <div className="absolute right-0 top-full mt-1.5 z-20 bg-white border border-slate-200 rounded-2xl shadow-lg py-1.5 min-w-[160px]">
+                          {availablePlatforms.map((plat) => (
+                            <button
+                              key={plat}
+                              onClick={() => { setPagesPlatform(plat); setPagesDropdownOpen(false); }}
+                              className={`w-full flex items-center gap-2 px-3 py-1.5 text-[11px] font-semibold transition hover:bg-slate-50 ${plat === effectivePlatform ? "text-slate-900" : "text-slate-500"}`}
+                            >
+                              <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: PLATFORMS[plat]?.color ?? "#94a3b8" }} />
+                              {plat}
+                              {plat === effectivePlatform && <span className="ml-auto text-violet-500">✓</span>}
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className="p-2 max-h-[520px] overflow-y-auto">
