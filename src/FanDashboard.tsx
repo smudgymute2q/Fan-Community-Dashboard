@@ -190,7 +190,7 @@ function KpiTile({ platform, value, delta, isTotal }) {
           <Sparkles size={14} className="text-white/60" />
         </div>
       )}
-      <div className={`text-[10px] font-bold uppercase tracking-widest mb-2 ${isTotal ? "text-white/60" : "text-[#999]"}`}>{isTotal ? "Total Reach" : platform}</div>
+      <div className={`font-label text-[10px] font-bold uppercase tracking-widest mb-2 ${isTotal ? "text-white/60" : "text-[#999]"}`}>{isTotal ? "Total Reach" : platform}</div>
       <div className={`font-bold tabular-nums leading-none ${isTotal ? "text-3xl text-white" : "text-2xl text-black"}`}>{fmtFull(value)}</div>
       <div className="mt-2"><DeltaPill value={delta} small /></div>
     </div>
@@ -264,7 +264,7 @@ function FeedCard({ post }) {
               <div className="text-[10px] text-[#999] truncate">@{post.author.replace(/^u\//, "").replace(/^@/, "")} · {post.time}</div>
             </div>
           </div>
-          <span className={`text-[9px] font-bold px-2 py-0.5 ${sent.bg} ${sent.text} shrink-0 uppercase tracking-widest`}>{sent.label}</span>
+          <span className={`font-label text-[9px] font-bold px-2 py-0.5 ${sent.bg} ${sent.text} shrink-0 uppercase tracking-widest`}>{sent.label}</span>
         </div>
         {post.title && <div className="text-[13px] text-black font-semibold leading-snug mb-1">{post.title}</div>}
         <div className="text-xs text-[#555] leading-relaxed line-clamp-3">{post.body}</div>
@@ -360,11 +360,12 @@ export default function FanDashboard() {
     <div className="min-h-screen w-full text-black" style={{ background: "#fff", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
       <style>{`
         .font-display { font-family: 'Nudge', 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: bold; text-transform: uppercase; letter-spacing: -0.01em; }
+        .font-label { font-family: 'Space Mono', monospace; }
         .marquee-fade { mask-image: linear-gradient(90deg, transparent 0, black 3%, black 97%, transparent 100%); }
-        .recharts-cartesian-axis-tick text { fill: #999; font-size: 10px; font-weight: 500; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+        .recharts-cartesian-axis-tick text { fill: #999; font-size: 10px; font-weight: 500; font-family: 'Space Mono', monospace; }
         .recharts-cartesian-grid line { stroke: #e8e8e8; }
         .recharts-polar-grid-angle line { stroke: #e8e8e8; }
-        .recharts-polar-angle-axis-tick text { fill: #555; font-size: 10px; font-weight: 600; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+        .recharts-polar-angle-axis-tick text { fill: #555; font-size: 10px; font-weight: 700; font-family: 'Space Mono', monospace; }
       `}</style>
 
       <div className="max-w-[1400px] mx-auto px-6 py-6">
@@ -381,7 +382,7 @@ export default function FanDashboard() {
               </div>
               <div className="leading-none">
                 <div className="font-display text-xl text-black">FANINTEL PRO</div>
-                <div className="text-[10px] uppercase tracking-[0.2em] text-[#999] mt-1">Community Intelligence</div>
+                <div className="font-label text-[10px] uppercase tracking-[0.2em] text-[#999] mt-1">Community Intelligence</div>
               </div>
             </div>
             <div className="h-6 w-px bg-[#e0e0e0]" />
@@ -400,7 +401,7 @@ export default function FanDashboard() {
         <section className="mb-6">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-baseline gap-3">
-              <h2 className="text-[10px] uppercase tracking-[0.2em] text-[#999] font-bold">Roster</h2>
+              <h2 className="font-label text-[10px] uppercase tracking-[0.2em] text-[#999] font-bold">Roster</h2>
               <span className="text-[10px] text-[#bbb]">{ARTISTS.length} artists tracked</span>
             </div>
           </div>
@@ -438,7 +439,7 @@ export default function FanDashboard() {
               <div className="flex flex-col gap-4 mb-5">
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                   <div>
-                    <div className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-bold">Fan Network Growth</div>
+                    <div className="font-label text-[10px] uppercase tracking-[0.15em] text-[#999] font-bold">Fan Network Growth</div>
                     <div className="font-display text-xl text-black mt-0.5">Followers across platforms</div>
                     <div className="text-xs text-[#999] mt-1">
                       {history.length > 0 ? `${monthLabel(history[0].date)} — ${monthLabel(history[history.length - 1].date)}` : "No data in range"}
@@ -456,7 +457,7 @@ export default function FanDashboard() {
                       <button
                         key={opt.key}
                         onClick={() => setYearRange(opt.key)}
-                        className={`text-[11px] font-semibold px-3 py-1.5 transition uppercase tracking-wider ${
+                        className={`font-label text-[11px] font-semibold px-3 py-1.5 transition uppercase tracking-wider ${
                           yearRange === opt.key ? "bg-black text-white" : "text-[#666] hover:text-black"
                         }`}
                       >
@@ -467,7 +468,7 @@ export default function FanDashboard() {
                 </div>
 
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[10px] uppercase tracking-wider text-[#bbb] font-bold">Year:</span>
+                  <span className="font-label text-[10px] uppercase tracking-wider text-[#bbb] font-bold">Year:</span>
                   {["2022", "2023", "2024", "2025", "2026"].map((yr) => (
                     <button
                       key={yr}
@@ -508,7 +509,7 @@ export default function FanDashboard() {
                     { label: "Best month", value: rangeStats.bestMonth ? monthLabel(rangeStats.bestMonth) : "—", sub: rangeStats.bestGain > 0 ? `+${fmt(rangeStats.bestGain)}` : "" },
                   ].map((s) => (
                     <div key={s.label} className="bg-white p-4">
-                      <div className="text-[10px] font-bold uppercase tracking-widest text-[#999] mb-1">{s.label}</div>
+                      <div className="font-label text-[10px] font-bold uppercase tracking-widest text-[#999] mb-1">{s.label}</div>
                       <div className={`text-base font-bold tabular-nums ${s.color || "text-black"}`}>{s.value} {s.sub && <span className="text-[11px] font-semibold text-[#999]">{s.sub}</span>}</div>
                     </div>
                   ))}
@@ -535,7 +536,7 @@ export default function FanDashboard() {
             {/* Current reach */}
             <div className="bg-white border border-[#e0e0e0] p-6">
               <div className="mb-5">
-                <div className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-bold">Current Reach</div>
+                <div className="font-label text-[10px] uppercase tracking-[0.15em] text-[#999] font-bold">Current Reach</div>
                 <div className="font-display text-xl text-black mt-0.5">Per-platform follower counts</div>
                 <div className="text-xs text-[#999] mt-1">Change vs 28 days ago</div>
               </div>
@@ -550,7 +551,7 @@ export default function FanDashboard() {
             <div className="bg-white border border-[#e0e0e0] overflow-hidden">
               <div className="px-5 py-4 border-b border-[#e0e0e0] flex items-center justify-between">
                 <div>
-                  <div className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-bold">Fan Page Tracker</div>
+                  <div className="font-label text-[10px] uppercase tracking-[0.15em] text-[#999] font-bold">Fan Page Tracker</div>
                   <div className="font-display text-lg text-black mt-0.5">Admin-run pages</div>
                 </div>
                 <button className="text-[10px] font-semibold text-[#555] border border-[#e0e0e0] hover:border-black px-2.5 py-1.5 flex items-center gap-1 transition">Discord <ChevronDown size={10} /></button>
@@ -579,7 +580,7 @@ export default function FanDashboard() {
 
             <div className="bg-white border border-[#e0e0e0] overflow-hidden">
               <div className="px-5 py-4 border-b border-[#e0e0e0]">
-                <div className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-bold">Fastest Movers · 28d</div>
+                <div className="font-label text-[10px] uppercase tracking-[0.15em] text-[#999] font-bold">Fastest Movers · 28d</div>
                 <div className="font-display text-lg text-black mt-0.5">Biggest swings</div>
               </div>
               <div>
@@ -622,7 +623,7 @@ export default function FanDashboard() {
                 const cfg = f !== "All" ? PLATFORMS[f] : null;
                 const count = f === "All" ? posts.length : posts.filter((p) => p.platform === f).length;
                 return (
-                  <button key={f} onClick={() => setFeedFilter(f)} className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold transition border uppercase tracking-wider ${active ? "bg-black text-white border-black" : "bg-white border-[#e0e0e0] text-[#555] hover:border-black"}`}>
+                  <button key={f} onClick={() => setFeedFilter(f)} className={`flex items-center gap-1.5 px-3 py-1.5 font-label text-xs font-semibold transition border uppercase tracking-wider ${active ? "bg-black text-white border-black" : "bg-white border-[#e0e0e0] text-[#555] hover:border-black"}`}>
                     {cfg && <span className="w-1.5 h-1.5 rounded-full" style={{ background: cfg.color }} />}
                     {f}
                     <span className={`text-[10px] px-1.5 py-0.5 ${active ? "bg-white/20" : "bg-[#f0f0f0] text-[#666]"}`}>{count}</span>
@@ -668,7 +669,7 @@ export default function FanDashboard() {
             <div className="col-span-12 md:col-span-4 bg-white border border-[#e0e0e0] p-5">
               <div className="flex items-center gap-2 mb-1">
                 <PieIcon size={12} className="text-[#999]" />
-                <div className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-bold">Platform Share</div>
+                <div className="font-label text-[10px] uppercase tracking-[0.15em] text-[#999] font-bold">Platform Share</div>
               </div>
               <div className="font-display text-lg text-black mb-3">Distribution of total reach</div>
               <div className="relative h-[200px]">
@@ -702,7 +703,7 @@ export default function FanDashboard() {
             <div className="col-span-12 md:col-span-4 bg-white border border-[#e0e0e0] p-5">
               <div className="flex items-center gap-2 mb-1">
                 <Activity size={12} className="text-[#999]" />
-                <div className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-bold">Platform Presence</div>
+                <div className="font-label text-[10px] uppercase tracking-[0.15em] text-[#999] font-bold">Platform Presence</div>
               </div>
               <div className="font-display text-lg text-black mb-3">Normalized vs roster top</div>
               <div className="h-[240px]">
@@ -720,7 +721,7 @@ export default function FanDashboard() {
             <div className="col-span-12 md:col-span-4 bg-white border border-[#e0e0e0] p-5">
               <div className="flex items-center gap-2 mb-1">
                 <Zap size={12} className="text-[#999]" />
-                <div className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-bold">Growth Velocity</div>
+                <div className="font-label text-[10px] uppercase tracking-[0.15em] text-[#999] font-bold">Growth Velocity</div>
               </div>
               <div className="font-display text-lg text-black mb-3">Net added · trailing 12mo</div>
               <div className="h-[240px]">
@@ -747,7 +748,7 @@ export default function FanDashboard() {
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-2">
                   <BarChart3 size={12} className="text-[#999]" />
-                  <div className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-bold">Roster Comparison</div>
+                  <div className="font-label text-[10px] uppercase tracking-[0.15em] text-[#999] font-bold">Roster Comparison</div>
                 </div>
                 <span className="text-[10px] text-[#bbb]">stacked by platform</span>
               </div>
@@ -779,7 +780,7 @@ export default function FanDashboard() {
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-2">
                   <Activity size={12} className="text-[#999]" />
-                  <div className="text-[10px] uppercase tracking-[0.15em] text-[#999] font-bold">Cumulative Reach</div>
+                  <div className="font-label text-[10px] uppercase tracking-[0.15em] text-[#999] font-bold">Cumulative Reach</div>
                 </div>
                 <span className="text-[10px] text-[#bbb]">stacked area · all platforms</span>
               </div>
