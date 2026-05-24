@@ -298,7 +298,7 @@ function FeedCard({ post }) {
 }
 
 export default function FanDashboard() {
-  const [selectedSlug, setSelectedSlug] = useState("playboi-carti");
+  const [selectedSlug, setSelectedSlug] = useState("opium-00");
   const [hiddenPlats, setHiddenPlats] = useState(new Set());
   const [feedFilter, setFeedFilter] = useState("All");
   const [yearRange, setYearRange] = useState("all"); // "all" | "2026" | "2025" | "2024" | "2023" | "2022" | "ytd" | "12m" | "6m" | "3m"
