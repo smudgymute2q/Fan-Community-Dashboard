@@ -454,6 +454,7 @@ export default function FanDashboard() {
   const [hiddenPlats, setHiddenPlats] = useState(new Set());
   const [feedFilter, setFeedFilter] = useState("All");
   const [yearRange, setYearRange] = useState("all");
+  const [pagesPlatform, setPagesPlatform] = useState("Discord");
 
   // ---- Sheets data loading ----
   const [sheetsData, setSheetsData] = useState<Record<string, any>>({});
@@ -530,7 +531,12 @@ export default function FanDashboard() {
     [sheetsData]
   );
 
-  React.useEffect(() => { setFeedFilter("All"); }, [selectedSlug]);
+  React.useEffect(() => {
+    setFeedFilter("All");
+    // Default to Discord; fall back to first available platform if artist has none
+    const plats = [...new Set(artist.pages.map((p) => p.platform))];
+    setPagesPlatform(plats.includes("Discord") ? "Discord" : plats[0] || "Discord");
+  }, [selectedSlug]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const artist = artists.find((a) => a.slug === selectedSlug)!;
 
@@ -819,39 +825,62 @@ export default function FanDashboard() {
           </section>
 
           <aside className="col-span-12 lg:col-span-4 space-y-5">
-            <div className="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden">
-              <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
-                <div>
-                  <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Fan Page Tracker</div>
-                  <div className="text-sm font-semibold text-slate-900 mt-0.5">Admin-run pages</div>
+            {(() => {
+              const availablePlatforms = [...new Set(artist.pages.map((p) => p.platform))];
+              // Ensure Discord comes first, then alphabetical
+              availablePlatforms.sort((a, b) =>
+                a === "Discord" ? -1 : b === "Discord" ? 1 : a.localeCompare(b)
+              );
+              const filteredPages = artist.pages
+                .filter((p) => p.platform === pagesPlatform)
+                .sort((a, b) => b.followers - a.followers);
+              return (
+                <div className="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden">
+                  <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+                    <div>
+                      <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Fan Page Tracker</div>
+                      <div className="text-sm font-semibold text-slate-900 mt-0.5">Admin-run pages</div>
+                    </div>
+                    <div className="relative">
+                      <select
+                        value={pagesPlatform}
+                        onChange={(e) => setPagesPlatform(e.target.value)}
+                        className="appearance-none text-[10px] font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 pl-2.5 pr-6 py-1.5 rounded-full cursor-pointer outline-none border-none"
+                      >
+                        {availablePlatforms.map((plat) => (
+                          <option key={plat} value={plat}>{plat}</option>
+                        ))}
+                      </select>
+                      <ChevronDown size={10} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500" />
+                    </div>
+                  </div>
+                  <div className="p-2">
+                    {filteredPages.length === 0 ? (
+                      <div className="px-3 py-6 text-center text-xs text-slate-400">No {pagesPlatform} pages tracked yet</div>
+                    ) : (
+                      filteredPages.map((p, i) => {
+                        const platCfg = PLATFORMS[p.platform] || { soft: "#f1f5f9", color: "#64748b" };
+                        return (
+                          <div key={p.name} className="p-3 flex items-center gap-3 hover:bg-slate-50 transition cursor-pointer group rounded-xl">
+                            <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: platCfg.soft }}>
+                              <span className="text-sm font-bold" style={{ color: platCfg.color }}>{String(i + 1).padStart(2, "0")}</span>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="text-sm font-semibold text-slate-900 group-hover:text-violet-600 transition truncate">{p.name}</div>
+                              <div className="text-[10px] text-slate-500 mt-0.5">{p.latest ? `Updated ${p.latest}` : p.platform}</div>
+                            </div>
+                            <div className="text-right">
+                              <div className="text-sm font-bold tabular-nums text-slate-900">{fmtFull(p.followers)}</div>
+                              <div className="text-[10px] text-slate-500">followers</div>
+                            </div>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
                 </div>
-                <button className="text-[10px] font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 px-2.5 py-1.5 rounded-full flex items-center gap-1">All <ChevronDown size={10} /></button>
-              </div>
-              <div className="p-2">
-                {artist.pages.length === 0 ? (
-                  <div className="px-3 py-6 text-center text-xs text-slate-400">No pages tracked yet</div>
-                ) : (
-                  artist.pages.map((p, i) => {
-                    const platCfg = PLATFORMS[p.platform] || { soft: "#f1f5f9", color: "#64748b" };
-                    return (
-                      <div key={p.name} className="p-3 flex items-center gap-3 hover:bg-slate-50 transition cursor-pointer group rounded-xl">
-                        <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: platCfg.soft }}>
-                          <span className="text-sm font-bold" style={{ color: platCfg.color }}>{String(i + 1).padStart(2, "0")}</span>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="text-sm font-semibold text-slate-900 group-hover:text-violet-600 transition truncate">{p.name}</div>
-                          <div className="text-[10px] text-slate-500 mt-0.5">{p.platform}{p.latest ? ` · ${p.latest}` : ""}</div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-sm font-bold tabular-nums text-slate-900">{fmtFull(p.followers)}</div>
-                          <div className="text-[10px] text-slate-500">followers</div>
-                        </div>
-                      </div>
-                    );
-                  })
-                )}
-              </div>
-            </div>
+              );
+            })()}
 
             <div className="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden">
               <div className="px-5 py-4 border-b border-slate-100">
