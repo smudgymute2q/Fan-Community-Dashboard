@@ -64,13 +64,13 @@ const SHEET_TABS: Record<string, { network: string; pages: string }> = {
   "playboi-carti":  { network: "Playboi Carti (Fan Network)",  pages: "Playboi Carti (Fan Pages)" },
   "ken-carson":     { network: "Ken Carson (Fan Network)",      pages: "Ken Carson (Fan Pages)" },
   "destroy-lonely": { network: "Destroy Lonely (Fan Network)",  pages: "Destroy Lonely (Fan Pages)" },
-  "homixide-gang":  { network: "HXG (Fan Network)",             pages: "HXG (Fan Pages)" },
+  "hxg":  { network: "HXG (Fan Network)",             pages: "HXG (Fan Pages)" },
   "pierre-bourne":  { network: "Pi'erre Bourne (Fan Network)",  pages: "Pi'erre Bourne (Fan Pages)" },
   "rema":           { network: "Rema (Fan Network)",            pages: "Rema (Fan Pages)" },
   "2hollis":        { network: "2hollis (Fan Network)",          pages: "2hollis (Fan Pages)" },
   "untiljapan":     { network: "untiljapan (Fan Network)",      pages: "untiljapan (Fan Pages)" },
   "apollo":         { network: "ApolloRed1 (Fan Network)",      pages: "ApolloRed1 (Fan Pages)" },
-  "pfe-project":    { network: "Jim Legxacy (Fan Network)",     pages: "Jim Legxacy (Fan Pages)" },
+  "jim-legxacy":    { network: "Jim Legxacy (Fan Network)",     pages: "Jim Legxacy (Fan Pages)" },
   "destin-laurel":  { network: "Destin Laurel (Fan Network)",  pages: "Destin Laurel (Fan Pages)" },
 };
 
@@ -215,12 +215,12 @@ const STATIC_ARTISTS = [
   { slug: "playboi-carti", name: "Playboi Carti", tagline: "Opium · Rage principal", totals: { value: 1495905, delta: 4537 }, platforms: { Discord: { value: 182148, delta: 338 }, Reddit: { value: 1029516, delta: 8064 }, Instagram: { value: 253236, delta: -3425 }, "Instagram Channels": { value: 23900, delta: -400 }, X: { value: 6995, delta: -38 }, "X Communities": { value: 110, delta: -2 } }, pages: [{ name: "/playboicarti", followers: 182148, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/pbc00", followers: 13193, latest: "Apr 1, 2026", platform: "Discord" }] },
   { slug: "ken-carson", name: "Ken Carson", tagline: "Opium · Project X", totals: { value: 536568, delta: 11932 }, platforms: { Discord: { value: 76270, delta: 236 }, Reddit: { value: 75448, delta: 904 }, Instagram: { value: 212157, delta: 8336 }, "Instagram Channels": { value: 22500, delta: 1000 }, X: { value: 45700, delta: 300 }, "X Communities": { value: 79146, delta: 9 }, TikTok: { value: 24300, delta: 100 } }, pages: [{ name: "/kencarson", followers: 76270, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/BuZYYKZQ", followers: 153, latest: "Apr 1, 2026", platform: "Discord" }] },
   { slug: "destroy-lonely", name: "Destroy Lonely", tagline: "Opium · The NS collective", totals: { value: 213034, delta: 59171 }, platforms: { Discord: { value: 36318, delta: 98 }, Reddit: { value: 55756, delta: 499 }, Instagram: { value: 65854, delta: 7484 }, "Instagram Channels": { value: 1600, delta: -2400 }, X: { value: 28706, delta: 28690 }, "X Communities": { value: 9200, delta: 0 }, TikTok: { value: 15600, delta: 0 } }, pages: [{ name: "/destroylonely", followers: 36318, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/bh3", followers: 1867, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "homixide-gang", name: "HXG", tagline: "Opium · HXG duo", totals: { value: 37566, delta: -231 }, platforms: { Discord: { value: 10277, delta: -51 }, Reddit: { value: 8943, delta: 35 }, Instagram: { value: 18346, delta: -215 } }, pages: [{ name: "/hxg", followers: 10277, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "hxg", name: "HXG", tagline: "Opium · HXG duo", totals: { value: 37566, delta: -231 }, platforms: { Discord: { value: 10277, delta: -51 }, Reddit: { value: 8943, delta: 35 }, Instagram: { value: 18346, delta: -215 } }, pages: [{ name: "/hxg", followers: 10277, latest: "Apr 1, 2026", platform: "Discord" }] },
   { slug: "pierre-bourne", name: "Pi'erre Bourne", tagline: "Producer · SossHouse", totals: { value: 37147, delta: 171 }, platforms: { Discord: { value: 4955, delta: 53 }, Reddit: { value: 22381, delta: 104 }, Instagram: { value: 9424, delta: -14 }, "Instagram Channels": { value: 387, delta: 28 } }, pages: [{ name: "/pierrebourne", followers: 4955, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/yopierre", followers: 372, latest: "Apr 1, 2026", platform: "Discord" }] },
   { slug: "rema", name: "Rema", tagline: "Afrobeats · Mavin", totals: { value: 2123652, delta: 4239 }, platforms: { Discord: { value: 2541, delta: 23 }, Reddit: { value: 308, delta: 4 }, Instagram: { value: 698524, delta: 3991 }, X: { value: 22179, delta: -79 }, TikTok: { value: 1400100, delta: 300 } }, pages: [{ name: "/heisrema", followers: 2541, latest: "Apr 1, 2026", platform: "Discord" }] },
   { slug: "2hollis", name: "2hollis", tagline: "Emerging", totals: { value: 0, delta: 0 }, platforms: {}, pages: [] },
   { slug: "untiljapan", name: "untiljapan", tagline: "Emerging · Underground", totals: { value: 6802, delta: 136 }, platforms: { Discord: { value: 2039, delta: 44 }, Reddit: { value: 1416, delta: -7 }, Instagram: { value: 1713, delta: 22 }, X: { value: 1079, delta: 60 }, "X Communities": { value: 555, delta: 17 }, TikTok: { value: 9, delta: 0 } }, pages: [{ name: "/untiljapan", followers: 2039, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "pfe-project", name: "Jim Legxacy", tagline: "Emerging · Discord-native", totals: { value: 10144, delta: 2202 }, platforms: { Discord: { value: 6089, delta: 1410 }, Reddit: { value: 359, delta: 39 }, Instagram: { value: 322, delta: 131 }, X: { value: 2362, delta: 235 }, "X Communities": { value: 261, delta: 23 }, TikTok: { value: 751, delta: 364 } }, pages: [{ name: "/PfeRaWF4bG", followers: 6089, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "jim-legxacy", name: "Jim Legxacy", tagline: "Emerging · Discord-native", totals: { value: 10144, delta: 2202 }, platforms: { Discord: { value: 6089, delta: 1410 }, Reddit: { value: 359, delta: 39 }, Instagram: { value: 322, delta: 131 }, X: { value: 2362, delta: 235 }, "X Communities": { value: 261, delta: 23 }, TikTok: { value: 751, delta: 364 } }, pages: [{ name: "/PfeRaWF4bG", followers: 6089, latest: "Apr 1, 2026", platform: "Discord" }] },
   { slug: "apollo", name: "ApolloRed1", tagline: "Emerging · SoundCloud era", totals: { value: 1659, delta: 80 }, platforms: { Discord: { value: 283, delta: 44 }, Reddit: { value: 56, delta: 8 }, Instagram: { value: 1320, delta: 28 } }, pages: [{ name: "/apollohub", followers: 564, latest: "Apr 9, 2026", platform: "Discord" }, { name: "/apollored1", followers: 283, latest: "Apr 1, 2026", platform: "Discord" }] },
   { slug: "destin-laurel", name: "Destin Laurel", tagline: "Emerging", totals: { value: 0, delta: 0 }, platforms: {}, pages: [] },
 ];
@@ -252,7 +252,7 @@ const MOCK_FEED = {
     { platform: "Instagram", page: "@heisrema", author: "heisrema", time: "2h ago", title: null, body: "Mavin x AfroRave — new era", engagement: { likes: 284721, comments: 8472 }, media: "image", sentiment: "hype" },
     { platform: "X", page: "@heisrema", author: "heisrema", time: "5h ago", title: null, body: "one of the best years of my life. thank you.", engagement: { likes: 47281, reposts: 3847, replies: 1482 }, sentiment: "positive" },
   ],
-  "homixide-gang": [
+  "hxg": [
     { platform: "Reddit", page: "/r/homixidegang", author: "u/hxg_forever", time: "2h ago", title: "Snot x Beno collab album rumors", body: "Someone in the Carti Discord dropped a snippet with both of them on a track.", engagement: { upvotes: 847, comments: 184 }, sentiment: "hype" },
     { platform: "Discord", page: "/hxg", author: "hxg_mod", time: "4h ago", title: "#snot-vs-beno", body: "Keep the discourse in this channel. No individual stan wars in #general.", engagement: { reactions: 124, replies: 48 }, sentiment: "neutral" },
     { platform: "Instagram", page: "@homixide_gang", author: "homixide_gang", time: "6h ago", title: null, body: "WE UP NEXT", engagement: { likes: 28471, comments: 1847 }, media: "image", sentiment: "hype" },
@@ -274,7 +274,7 @@ const MOCK_FEED = {
     { platform: "Instagram", page: "@apollo", author: "apollo", time: "3h ago", title: null, body: "BACK FROM HIATUS. new music soon.", engagement: { likes: 8471, comments: 847 }, media: "image", sentiment: "hype" },
     { platform: "Discord", page: "/apollohub", author: "apollo_staff", time: "6h ago", title: "#general", body: "Welcome to the new members. Pinned message has the FAQ and release schedule.", engagement: { reactions: 84, replies: 24 }, sentiment: "neutral" },
   ],
-  "pfe-project": [
+  "jim-legxacy": [
     { platform: "TikTok", page: "@pfeproject", author: "pfeproject", time: "22m ago", title: null, body: "unreleased snippet → full track on friday", engagement: { likes: 18472, comments: 847, shares: 2847 }, media: "video", sentiment: "hype" },
     { platform: "Discord", page: "/PfeRaWF4bG", author: "pfe_mod", time: "2h ago", title: "#snippets", body: "New one tomorrow at 8pm EST. First listen will be live in the voice channel.", engagement: { reactions: 847, replies: 184 }, sentiment: "hype" },
     { platform: "X", page: "@pfeproject", author: "pfeproject", time: "4h ago", title: null, body: "the wait is almost over", engagement: { likes: 1284, reposts: 247, replies: 84 }, sentiment: "hype" },
@@ -362,12 +362,12 @@ const ARTIST_ICONS: Record<string, string> = {
   "opium-00":       "/Fan-Community-Dashboard/icons/opium.png",
   "ken-carson":     "/Fan-Community-Dashboard/icons/ken-carson.png",
   "destroy-lonely": "/Fan-Community-Dashboard/icons/destroy-lonely.png",
-  "homixide-gang":  "/Fan-Community-Dashboard/icons/hxg.png",
+  "hxg":  "/Fan-Community-Dashboard/icons/hxg.png",
   "pierre-bourne":  "/Fan-Community-Dashboard/icons/pierre-bourne.png",
   "rema":           "/Fan-Community-Dashboard/icons/rema.png",
   "untiljapan":     "/Fan-Community-Dashboard/icons/untiljapan.png",
   "apollo":         "/Fan-Community-Dashboard/icons/apollored1.png",
-  "pfe-project":    "/Fan-Community-Dashboard/icons/jim-legxacy.png",
+  "jim-legxacy":    "/Fan-Community-Dashboard/icons/jim-legxacy.png",
   "destin-laurel":  "/Fan-Community-Dashboard/icons/destin-laurel.png",
 };
 
