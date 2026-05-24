@@ -885,10 +885,10 @@ export default function FanDashboard() {
                       <div className="px-3 py-6 text-center text-xs text-slate-400">No {effectivePlatform} pages tracked yet</div>
                     ) : (
                       filteredPages.map((p, i) => {
-                        const platCfg = PLATFORMS[p.platform] || { soft: "#f1f5f9", color: "#64748b" };
+                        const platCfg = PLATFORMS[effectivePlatform] || { soft: "#f1f5f9", color: "#64748b" };
                         const Tag = p.link ? "a" : "div";
                         return (
-                          <Tag key={p.name} {...(p.link ? { href: p.link, target: "_blank", rel: "noopener noreferrer" } : {})} className="p-3 flex items-center gap-3 hover:bg-slate-50 transition cursor-pointer group rounded-xl no-underline">
+                          <Tag key={`${p.platform}-${p.name}`} {...(p.link ? { href: p.link, target: "_blank", rel: "noopener noreferrer" } : {})} className="p-3 flex items-center gap-3 hover:bg-slate-50 transition cursor-pointer group rounded-xl no-underline">
                             <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: platCfg.soft }}>
                               <span className="text-sm font-bold" style={{ color: platCfg.color }}>{String(i + 1).padStart(2, "0")}</span>
                             </div>
