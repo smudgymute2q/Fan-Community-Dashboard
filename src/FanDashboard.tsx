@@ -358,12 +358,28 @@ function KpiTile({ platform, value, delta, isTotal }) {
   );
 }
 
+const ARTIST_ICONS: Record<string, string> = {
+  "opium-00":       "/Fan-Community-Dashboard/icons/opium-00.png",
+  "ken-carson":     "/Fan-Community-Dashboard/icons/ken-carson.png",
+  "destroy-lonely": "/Fan-Community-Dashboard/icons/destroy-lonely.png",
+  "homixide-gang":  "/Fan-Community-Dashboard/icons/homixide-gang.png",
+  "pierre-bourne":  "/Fan-Community-Dashboard/icons/pierre-bourne.png",
+  "rema":           "/Fan-Community-Dashboard/icons/rema.png",
+  "untiljapan":     "/Fan-Community-Dashboard/icons/untiljapan.png",
+  "apollo":         "/Fan-Community-Dashboard/icons/apollo.png",
+  "pfe-project":    "/Fan-Community-Dashboard/icons/pfe-project.png",
+  "destin-laurel":  "/Fan-Community-Dashboard/icons/destin-laurel.png",
+};
+
 function ArtistPill({ artist, active, onClick }) {
   const initial = artist.name.charAt(0);
+  const icon = ARTIST_ICONS[artist.slug];
   return (
     <button onClick={onClick} className={`group relative shrink-0 text-left px-4 py-3 rounded-2xl transition-all ${active ? "bg-gradient-to-br from-violet-500 to-fuchsia-500 text-white shadow-lg shadow-violet-300/40" : "bg-white border border-slate-200 hover:border-slate-300 hover:shadow-md"}`}>
       <div className="flex items-center gap-3">
-        <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm ${active ? "bg-white/20 text-white" : "bg-slate-100 text-slate-700"}`}>{initial}</div>
+        <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm overflow-hidden ${active ? "bg-white/20 text-white" : "bg-slate-100 text-slate-700"}`}>
+          {icon ? <img src={icon} alt={artist.name} className="w-full h-full object-cover" /> : initial}
+        </div>
         <div>
           <div className={`text-sm font-semibold ${active ? "text-white" : "text-slate-900"}`}>{artist.name}</div>
         </div>
