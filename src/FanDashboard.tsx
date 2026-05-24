@@ -826,13 +826,19 @@ export default function FanDashboard() {
 
           <aside className="col-span-12 lg:col-span-4 space-y-5">
             {(() => {
-              const availablePlatforms = [...new Set(artist.pages.map((p) => p.platform))];
+              const availablePlatforms = [...new Set(artist.pages.map((p) => p.platform).filter(Boolean))];
               // Ensure Discord comes first, then alphabetical
               availablePlatforms.sort((a, b) =>
                 a === "Discord" ? -1 : b === "Discord" ? 1 : a.localeCompare(b)
               );
+              // Always use a platform that actually exists in the list
+              const effectivePlatform = availablePlatforms.includes(pagesPlatform)
+                ? pagesPlatform
+                : availablePlatforms.includes("Discord")
+                ? "Discord"
+                : availablePlatforms[0] || "Discord";
               const filteredPages = artist.pages
-                .filter((p) => p.platform === pagesPlatform)
+                .filter((p) => p.platform === effectivePlatform)
                 .sort((a, b) => b.followers - a.followers);
               return (
                 <div className="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden">
@@ -843,7 +849,7 @@ export default function FanDashboard() {
                     </div>
                     <div className="relative">
                       <select
-                        value={pagesPlatform}
+                        value={effectivePlatform}
                         onChange={(e) => setPagesPlatform(e.target.value)}
                         className="appearance-none text-[10px] font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 pl-2.5 pr-6 py-1.5 rounded-full cursor-pointer outline-none border-none"
                       >
@@ -856,7 +862,7 @@ export default function FanDashboard() {
                   </div>
                   <div className="p-2">
                     {filteredPages.length === 0 ? (
-                      <div className="px-3 py-6 text-center text-xs text-slate-400">No {pagesPlatform} pages tracked yet</div>
+                      <div className="px-3 py-6 text-center text-xs text-slate-400">No {effectivePlatform} pages tracked yet</div>
                     ) : (
                       filteredPages.map((p, i) => {
                         const platCfg = PLATFORMS[p.platform] || { soft: "#f1f5f9", color: "#64748b" };
