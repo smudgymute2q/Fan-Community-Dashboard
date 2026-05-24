@@ -477,6 +477,7 @@ export default function FanDashboard() {
   const [feedFilter, setFeedFilter] = useState("All");
   const [yearRange, setYearRange] = useState("all");
   const [pagesPlatform, setPagesPlatform] = useState("Discord");
+  const rosterRef = React.useRef<HTMLDivElement>(null);
   const [pagesDropdownOpen, setPagesDropdownOpen] = useState(false);
 
   // ---- Sheets data loading ----
@@ -688,8 +689,16 @@ export default function FanDashboard() {
               <span className="text-xs text-slate-400 font-medium">{artists.length} artists tracked</span>
             </div>
           </div>
-          <div className="flex gap-3 overflow-x-auto marquee-fade pb-2 -mx-2 px-2">
-            {artists.map((a) => <ArtistPill key={a.slug} artist={a} active={a.slug === selectedSlug} onClick={() => setSelectedSlug(a.slug)} />)}
+          <div className="relative">
+            <button onClick={() => rosterRef.current?.scrollBy({ left: -320, behavior: "smooth" })} className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition -translate-x-1">
+              <ChevronDown size={13} className="rotate-90 text-slate-500" />
+            </button>
+            <div ref={rosterRef} className="flex gap-3 overflow-x-auto marquee-fade pb-2 -mx-2 px-2 scroll-smooth" style={{ scrollbarWidth: "none" }}>
+              {artists.map((a) => <ArtistPill key={a.slug} artist={a} active={a.slug === selectedSlug} onClick={() => setSelectedSlug(a.slug)} />)}
+            </div>
+            <button onClick={() => rosterRef.current?.scrollBy({ left: 320, behavior: "smooth" })} className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition translate-x-1">
+              <ChevronDown size={13} className="-rotate-90 text-slate-500" />
+            </button>
           </div>
         </section>
 
