@@ -44,13 +44,13 @@ import {
 
 // ---- Platform tokens ----
 const PLATFORMS = {
-  Discord: { color: "#5865F2", soft: "#E8EAFD" },
+  Discord: { color: "#4285F4", soft: "#E8F0FE" },
   Reddit: { color: "#FF4500", soft: "#FFECE3" },
-  Instagram: { color: "#E1306C", soft: "#FCE4EE" },
-  "Instagram Channels": { color: "#8B5CF6", soft: "#F1EBFE" },
-  X: { color: "#1F2937", soft: "#E5E7EB" },
-  "X Communities": { color: "#6B7280", soft: "#F3F4F6" },
-  TikTok: { color: "#06B6D4", soft: "#E0F7FB" },
+  Instagram: { color: "#FF0069", soft: "#FFE0EE" },
+  "Instagram Channels": { color: "#7638FA", soft: "#EDE6FE" },
+  X: { color: "#000000", soft: "#E5E7EB" },
+  "X Communities": { color: "#808080", soft: "#F3F4F6" },
+  TikTok: { color: "#00F2EA", soft: "#E0FDFB" },
 };
 
 // ---- Google Sheets config ----
