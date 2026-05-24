@@ -819,7 +819,6 @@ export default function FanDashboard() {
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {orderedPlats.map((p) => <KpiTile key={p} platform={p} value={artist.platforms[p].value} delta={artist.platforms[p].delta} />)}
-                <KpiTile isTotal platform="Total" value={artist.totals.value} delta={artist.totals.delta} />
               </div>
             </div>
           </section>
