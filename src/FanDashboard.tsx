@@ -99,16 +99,34 @@ function parseCSVText(text: string): string[][] {
 }
 
 // Fetch the published HTML index page and extract tab name → GID mapping.
-// Published sheets embed JS like: items.push({name:'Sheet Name', pageUrl:'...&gid=123456'})
 async function fetchGidMap(pubId: string): Promise<Record<string, string>> {
   const url = `https://docs.google.com/spreadsheets/d/e/${pubId}/pubhtml`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`pubhtml HTTP ${res.status}`);
   const html = await res.text();
   const gids: Record<string, string> = {};
-  const re = /name:\s*'([^']+)',\s*pageUrl:\s*'[^']*[?&]gid=(\d+)/g;
-  let m;
-  while ((m = re.exec(html)) !== null) gids[m[1]] = m[2];
+
+  // Pattern 1: navigation anchor tags — href="...?gid=N&...">Sheet Name</a>
+  const anchorRe = /href="[^"]*[?&]gid=(\d+)[^"]*"[^>]*>\s*([^<]+?)\s*<\/a>/gi;
+  let m: RegExpExecArray | null;
+  while ((m = anchorRe.exec(html)) !== null) {
+    const name = m[2].trim();
+    if (name) gids[name] = m[1];
+  }
+  if (Object.keys(gids).length > 0) return gids;
+
+  // Pattern 2: JavaScript items.push({name:'...', pageUrl:'...gid=N...'})
+  const jsRe = /name:\s*["']([^"']+)["'][^}]*gid=(\d+)/g;
+  while ((m = jsRe.exec(html)) !== null) gids[m[1].trim()] = m[2];
+  if (Object.keys(gids).length > 0) return gids;
+
+  // Pattern 3: JSON "name":"..." "gid":N
+  const jsonRe = /"name":\s*"([^"]+)"[^}]*"gid":\s*(\d+)/g;
+  while ((m = jsonRe.exec(html)) !== null) gids[m[1].trim()] = m[2];
+  if (Object.keys(gids).length > 0) return gids;
+
+  // All patterns failed — log a sample so the format can be debugged
+  console.warn("[sheets] GID extraction failed. HTML sample:", html.substring(0, 2000));
   return gids;
 }
 
