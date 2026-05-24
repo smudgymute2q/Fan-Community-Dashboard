@@ -427,7 +427,6 @@ export default function FanDashboard() {
                 <div>
                   <div className="text-[10px] uppercase tracking-[0.2em] text-white/70 font-bold mb-2">Now viewing</div>
                   <h3 className="font-display text-5xl font-bold tracking-tight leading-none">{artist.name}</h3>
-                  <div className="mt-3 text-sm text-white/80">{artist.tagline}</div>
                 </div>
                 <div className="text-right">
                   <div className="text-[10px] uppercase tracking-[0.2em] text-white/70 font-bold mb-2">Cumulative reach</div>
