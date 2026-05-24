@@ -98,8 +98,22 @@ function parseCSVText(text: string): string[][] {
   return rows;
 }
 
-async function fetchSheetCSV(sheetId: string, tab: string): Promise<string[][]> {
-  const url = `https://docs.google.com/spreadsheets/d/e/${sheetId}/pub?tqx=out:csv&sheet=${encodeURIComponent(tab)}`;
+// Fetch the published HTML index page and extract tab name → GID mapping.
+// Published sheets embed JS like: items.push({name:'Sheet Name', pageUrl:'...&gid=123456'})
+async function fetchGidMap(pubId: string): Promise<Record<string, string>> {
+  const url = `https://docs.google.com/spreadsheets/d/e/${pubId}/pubhtml`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`pubhtml HTTP ${res.status}`);
+  const html = await res.text();
+  const gids: Record<string, string> = {};
+  const re = /name:\s*'([^']+)',\s*pageUrl:\s*'[^']*[?&]gid=(\d+)/g;
+  let m;
+  while ((m = re.exec(html)) !== null) gids[m[1]] = m[2];
+  return gids;
+}
+
+async function fetchSheetByGid(pubId: string, gid: string): Promise<string[][]> {
+  const url = `https://docs.google.com/spreadsheets/d/e/${pubId}/pub?output=csv&gid=${gid}&single=true`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return parseCSVText(await res.text());
@@ -426,36 +440,64 @@ export default function FanDashboard() {
 
   useEffect(() => {
     let cancelled = false;
-    let pending = STATIC_ARTISTS.length;
 
-    const onDone = () => {
-      pending--;
-      if (pending === 0 && !cancelled) {
+    async function loadAll() {
+      // Phase 1: fetch published HTML page to extract tab name → GID map
+      let gidMap: Record<string, string> = {};
+      try {
+        gidMap = await fetchGidMap(SHEET_ID);
+      } catch (err) {
+        console.error("[sheets] Could not read GID map:", err);
         setSheetsLoading(false);
-        setSyncedAt(new Date());
+        return;
       }
-    };
+      if (cancelled) return;
 
-    for (const a of STATIC_ARTISTS) {
-      const tabs = SHEET_TABS[a.slug];
-      if (!tabs) { onDone(); continue; }
+      // Phase 2: fetch each artist's two tabs in parallel using their GIDs
+      let pending = STATIC_ARTISTS.length;
+      const onDone = () => {
+        pending--;
+        if (pending === 0 && !cancelled) {
+          setSheetsLoading(false);
+          setSyncedAt(new Date());
+        }
+      };
 
-      Promise.all([
-        fetchSheetCSV(SHEET_ID, tabs.network),
-        fetchSheetCSV(SHEET_ID, tabs.pages),
-      ])
-        .then(([networkRows, pagesRows]) => {
-          if (cancelled) return;
-          const { history, platforms, totals } = parseNetworkTab(networkRows);
-          const pages = parsePagesTab(pagesRows);
-          setSheetsData((prev) => ({
-            ...prev,
-            [a.slug]: { history, platforms, totals, pages },
-          }));
-        })
-        .catch((err) => console.warn(`[sheets] ${a.name}:`, err))
-        .finally(onDone);
+      for (const a of STATIC_ARTISTS) {
+        const tabs = SHEET_TABS[a.slug];
+        if (!tabs) { onDone(); continue; }
+
+        const networkGid = gidMap[tabs.network];
+        const pagesGid = gidMap[tabs.pages];
+
+        if (!networkGid || !pagesGid) {
+          console.warn(`[sheets] ${a.name}: tab not found in GID map. Keys: ${Object.keys(gidMap).join(", ")}`);
+          onDone();
+          continue;
+        }
+
+        Promise.all([
+          fetchSheetByGid(SHEET_ID, networkGid),
+          fetchSheetByGid(SHEET_ID, pagesGid),
+        ])
+          .then(([networkRows, pagesRows]) => {
+            if (cancelled) return;
+            const { history, platforms, totals } = parseNetworkTab(networkRows);
+            const pages = parsePagesTab(pagesRows);
+            setSheetsData((prev) => ({
+              ...prev,
+              [a.slug]: { history, platforms, totals, pages },
+            }));
+          })
+          .catch((err) => console.warn(`[sheets] ${a.name}:`, err))
+          .finally(onDone);
+      }
     }
+
+    loadAll().catch((err) => {
+      console.error("[sheets] loadAll failed:", err);
+      setSheetsLoading(false);
+    });
 
     return () => { cancelled = true; };
   }, []);
