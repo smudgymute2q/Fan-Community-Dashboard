@@ -60,7 +60,7 @@ const SHEET_ID = "2PACX-1vRX8lP3Nb-LWMmUoTtHDHihOX-SkhFMUXoQJIuinbUhctXSjgJ1CCI9
 
 // Tab names: "{ArtistName} (Fan Network)" / "{ArtistName} (Fan Pages)"
 const SHEET_TABS: Record<string, { network: string; pages: string }> = {
-  "opium-00":       { network: "Opium (Fan Network)",          pages: "Opium (Fan Pages)" },
+  "opium":       { network: "Opium (Fan Network)",          pages: "Opium (Fan Pages)" },
   "playboi-carti":  { network: "Playboi Carti (Fan Network)",  pages: "Playboi Carti (Fan Pages)" },
   "ken-carson":     { network: "Ken Carson (Fan Network)",      pages: "Ken Carson (Fan Pages)" },
   "destroy-lonely": { network: "Destroy Lonely (Fan Network)",  pages: "Destroy Lonely (Fan Pages)" },
@@ -69,8 +69,8 @@ const SHEET_TABS: Record<string, { network: string; pages: string }> = {
   "rema":           { network: "Rema (Fan Network)",            pages: "Rema (Fan Pages)" },
   "2hollis":        { network: "2hollis (Fan Network)",          pages: "2hollis (Fan Pages)" },
   "untiljapan":     { network: "untiljapan (Fan Network)",      pages: "untiljapan (Fan Pages)" },
-  "apollo":         { network: "ApolloRed1 (Fan Network)",      pages: "ApolloRed1 (Fan Pages)" },
   "jim-legxacy":    { network: "Jim Legxacy (Fan Network)",     pages: "Jim Legxacy (Fan Pages)" },
+  "apollored1":     { network: "ApolloRed1 (Fan Network)",      pages: "ApolloRed1 (Fan Pages)" },
   "destin-laurel":  { network: "Destin Laurel (Fan Network)",  pages: "Destin Laurel (Fan Pages)" },
 };
 
@@ -211,7 +211,7 @@ function parsePagesTab(rows: string[][]) {
 
 // ---- Static fallback artist data (used while sheets are loading or on fetch error) ----
 const STATIC_ARTISTS = [
-  { slug: "opium-00", name: "Opium", tagline: "Label · Core fanbase", totals: { value: 168074, delta: 808 }, platforms: { Discord: { value: 8809, delta: 1 }, Reddit: { value: 19795, delta: 425 }, Instagram: { value: 95339, delta: 415 }, "Instagram Channels": { value: 9400, delta: -200 }, X: { value: 1775, delta: 154 }, TikTok: { value: 32956, delta: 13 } }, pages: [{ name: "/opium00", followers: 8809, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "opium", name: "Opium", tagline: "Label · Core fanbase", totals: { value: 168074, delta: 808 }, platforms: { Discord: { value: 8809, delta: 1 }, Reddit: { value: 19795, delta: 425 }, Instagram: { value: 95339, delta: 415 }, "Instagram Channels": { value: 9400, delta: -200 }, X: { value: 1775, delta: 154 }, TikTok: { value: 32956, delta: 13 } }, pages: [{ name: "/opium00", followers: 8809, latest: "Apr 1, 2026", platform: "Discord" }] },
   { slug: "playboi-carti", name: "Playboi Carti", tagline: "Opium · Rage principal", totals: { value: 1495905, delta: 4537 }, platforms: { Discord: { value: 182148, delta: 338 }, Reddit: { value: 1029516, delta: 8064 }, Instagram: { value: 253236, delta: -3425 }, "Instagram Channels": { value: 23900, delta: -400 }, X: { value: 6995, delta: -38 }, "X Communities": { value: 110, delta: -2 } }, pages: [{ name: "/playboicarti", followers: 182148, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/pbc00", followers: 13193, latest: "Apr 1, 2026", platform: "Discord" }] },
   { slug: "ken-carson", name: "Ken Carson", tagline: "Opium · Project X", totals: { value: 536568, delta: 11932 }, platforms: { Discord: { value: 76270, delta: 236 }, Reddit: { value: 75448, delta: 904 }, Instagram: { value: 212157, delta: 8336 }, "Instagram Channels": { value: 22500, delta: 1000 }, X: { value: 45700, delta: 300 }, "X Communities": { value: 79146, delta: 9 }, TikTok: { value: 24300, delta: 100 } }, pages: [{ name: "/kencarson", followers: 76270, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/BuZYYKZQ", followers: 153, latest: "Apr 1, 2026", platform: "Discord" }] },
   { slug: "destroy-lonely", name: "Destroy Lonely", tagline: "Opium · The NS collective", totals: { value: 213034, delta: 59171 }, platforms: { Discord: { value: 36318, delta: 98 }, Reddit: { value: 55756, delta: 499 }, Instagram: { value: 65854, delta: 7484 }, "Instagram Channels": { value: 1600, delta: -2400 }, X: { value: 28706, delta: 28690 }, "X Communities": { value: 9200, delta: 0 }, TikTok: { value: 15600, delta: 0 } }, pages: [{ name: "/destroylonely", followers: 36318, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/bh3", followers: 1867, latest: "Apr 1, 2026", platform: "Discord" }] },
@@ -221,7 +221,7 @@ const STATIC_ARTISTS = [
   { slug: "2hollis", name: "2hollis", tagline: "Emerging", totals: { value: 0, delta: 0 }, platforms: {}, pages: [] },
   { slug: "untiljapan", name: "untiljapan", tagline: "Emerging · Underground", totals: { value: 6802, delta: 136 }, platforms: { Discord: { value: 2039, delta: 44 }, Reddit: { value: 1416, delta: -7 }, Instagram: { value: 1713, delta: 22 }, X: { value: 1079, delta: 60 }, "X Communities": { value: 555, delta: 17 }, TikTok: { value: 9, delta: 0 } }, pages: [{ name: "/untiljapan", followers: 2039, latest: "Apr 1, 2026", platform: "Discord" }] },
   { slug: "jim-legxacy", name: "Jim Legxacy", tagline: "Emerging · Discord-native", totals: { value: 10144, delta: 2202 }, platforms: { Discord: { value: 6089, delta: 1410 }, Reddit: { value: 359, delta: 39 }, Instagram: { value: 322, delta: 131 }, X: { value: 2362, delta: 235 }, "X Communities": { value: 261, delta: 23 }, TikTok: { value: 751, delta: 364 } }, pages: [{ name: "/PfeRaWF4bG", followers: 6089, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "apollo", name: "ApolloRed1", tagline: "Emerging · SoundCloud era", totals: { value: 1659, delta: 80 }, platforms: { Discord: { value: 283, delta: 44 }, Reddit: { value: 56, delta: 8 }, Instagram: { value: 1320, delta: 28 } }, pages: [{ name: "/apollohub", followers: 564, latest: "Apr 9, 2026", platform: "Discord" }, { name: "/apollored1", followers: 283, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "apollored1", name: "ApolloRed1", tagline: "Emerging · SoundCloud era", totals: { value: 1659, delta: 80 }, platforms: { Discord: { value: 283, delta: 44 }, Reddit: { value: 56, delta: 8 }, Instagram: { value: 1320, delta: 28 } }, pages: [{ name: "/apollohub", followers: 564, latest: "Apr 9, 2026", platform: "Discord" }, { name: "/apollored1", followers: 283, latest: "Apr 1, 2026", platform: "Discord" }] },
   { slug: "destin-laurel", name: "Destin Laurel", tagline: "Emerging", totals: { value: 0, delta: 0 }, platforms: {}, pages: [] },
 ];
 
@@ -261,7 +261,7 @@ const MOCK_FEED = {
     { platform: "X", page: "@pierrebourne", author: "pierrebourne", time: "1h ago", title: null, body: "SossHouse Vol 3 mastering wrapped. release window q3.", engagement: { likes: 8473, reposts: 1247, replies: 384 }, sentiment: "hype" },
     { platform: "Reddit", page: "/r/pierrebourne", author: "u/yo_pierre_up", time: "3h ago", title: "Production breakdown: how Pierre builds his signature bell melodies", body: "Did a deep-dive breakdown in FL. Reverse-engineered the chord progressions.", engagement: { upvotes: 1284, comments: 247 }, sentiment: "positive" },
   ],
-  "opium-00": [
+  "opium": [
     { platform: "Instagram", page: "@opium", author: "opium", time: "45m ago", title: null, body: "OPIUM TOUR 2026. full lineup next week.", engagement: { likes: 184273, comments: 8472 }, media: "image", sentiment: "hype" },
     { platform: "Reddit", page: "/r/opium", author: "u/label_watcher", time: "2h ago", title: "Who's joining Carti, Ken, and Destroy on the 2026 tour?", body: "The teaser shows 5 silhouettes not 3. Leaning toward Homixide + one new signee.", engagement: { upvotes: 2847, comments: 482 }, sentiment: "hype" },
     { platform: "Discord", page: "/opium00", author: "opium_verified", time: "4h ago", title: "#tour-2026", body: "Channel opened for tour discussion. All presale info will be posted here.", engagement: { reactions: 847, replies: 128 }, sentiment: "neutral" },
@@ -270,8 +270,8 @@ const MOCK_FEED = {
     { platform: "Discord", page: "/untiljapan", author: "untiljapan_mod", time: "1h ago", title: "#new-release", body: "EP drops Friday. 6 tracks, all produced with 808 Mafia. Thanks for sticking with us at 2K members.", engagement: { reactions: 247, replies: 84 }, sentiment: "positive" },
     { platform: "Reddit", page: "/r/untiljapan", author: "u/underground_digger", time: "5h ago", title: "This artist is about to pop — called it 6 months ago", body: "Been saying it since the Spotify algorithm started pushing them.", engagement: { upvotes: 482, comments: 89 }, sentiment: "hype" },
   ],
-  "apollo": [
-    { platform: "Instagram", page: "@apollo", author: "apollo", time: "3h ago", title: null, body: "BACK FROM HIATUS. new music soon.", engagement: { likes: 8471, comments: 847 }, media: "image", sentiment: "hype" },
+  "apollored1": [
+    { platform: "Instagram", page: "@apollo", author: "apollored1", time: "3h ago", title: null, body: "BACK FROM HIATUS. new music soon.", engagement: { likes: 8471, comments: 847 }, media: "image", sentiment: "hype" },
     { platform: "Discord", page: "/apollohub", author: "apollo_staff", time: "6h ago", title: "#general", body: "Welcome to the new members. Pinned message has the FAQ and release schedule.", engagement: { reactions: 84, replies: 24 }, sentiment: "neutral" },
   ],
   "jim-legxacy": [
@@ -359,14 +359,14 @@ function KpiTile({ platform, value, delta, isTotal }) {
 }
 
 const ARTIST_ICONS: Record<string, string> = {
-  "opium-00":       "/Fan-Community-Dashboard/icons/opium.png",
+  "opium":       "/Fan-Community-Dashboard/icons/opium.png",
   "ken-carson":     "/Fan-Community-Dashboard/icons/ken-carson.png",
   "destroy-lonely": "/Fan-Community-Dashboard/icons/destroy-lonely.png",
   "hxg":  "/Fan-Community-Dashboard/icons/hxg.png",
   "pierre-bourne":  "/Fan-Community-Dashboard/icons/pierre-bourne.png",
   "rema":           "/Fan-Community-Dashboard/icons/rema.png",
   "untiljapan":     "/Fan-Community-Dashboard/icons/untiljapan.png",
-  "apollo":         "/Fan-Community-Dashboard/icons/apollored1.png",
+  "apollored1":         "/Fan-Community-Dashboard/icons/apollored1.png",
   "jim-legxacy":    "/Fan-Community-Dashboard/icons/jim-legxacy.png",
   "destin-laurel":  "/Fan-Community-Dashboard/icons/destin-laurel.png",
 };
@@ -472,7 +472,7 @@ function FeedCard({ post }) {
 }
 
 export default function FanDashboard() {
-  const [selectedSlug, setSelectedSlug] = useState("opium-00");
+  const [selectedSlug, setSelectedSlug] = useState("opium");
   const [hiddenPlats, setHiddenPlats] = useState(new Set());
   const [feedFilter, setFeedFilter] = useState("All");
   const [yearRange, setYearRange] = useState("all");
