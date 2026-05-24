@@ -198,7 +198,7 @@ function parsePagesTab(rows: string[][]) {
     .map((row) => ({
       platform: row[0].trim(),
       name: row[1].trim(),
-      // row[2] = Link
+      link: row[2]?.trim() || "",
       followers: parseInt(row[3]?.replace(/[^\d]/g, "") || "0", 10),
       latest: row[4]?.trim() || "",
     }))
@@ -860,8 +860,9 @@ export default function FanDashboard() {
                     ) : (
                       filteredPages.map((p, i) => {
                         const platCfg = PLATFORMS[p.platform] || { soft: "#f1f5f9", color: "#64748b" };
+                        const Tag = p.link ? "a" : "div";
                         return (
-                          <div key={p.name} className="p-3 flex items-center gap-3 hover:bg-slate-50 transition cursor-pointer group rounded-xl">
+                          <Tag key={p.name} {...(p.link ? { href: p.link, target: "_blank", rel: "noopener noreferrer" } : {})} className="p-3 flex items-center gap-3 hover:bg-slate-50 transition cursor-pointer group rounded-xl no-underline">
                             <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: platCfg.soft }}>
                               <span className="text-sm font-bold" style={{ color: platCfg.color }}>{String(i + 1).padStart(2, "0")}</span>
                             </div>
@@ -873,7 +874,7 @@ export default function FanDashboard() {
                               <div className="text-sm font-bold tabular-nums text-slate-900">{fmtFull(p.followers)}</div>
                               <div className="text-[10px] text-slate-500">followers</div>
                             </div>
-                          </div>
+                          </Tag>
                         );
                       })
                     )}
