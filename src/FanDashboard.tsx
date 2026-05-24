@@ -375,7 +375,7 @@ function ArtistPill({ artist, active, onClick }) {
   const initial = artist.name.charAt(0);
   const icon = ARTIST_ICONS[artist.slug];
   return (
-    <button onClick={onClick} className={`group relative shrink-0 text-left px-3.5 py-2.5 rounded-2xl transition-all ${active ? "bg-gradient-to-br from-violet-500 to-fuchsia-500 text-white shadow-lg shadow-violet-300/40" : "bg-white border border-slate-200 hover:border-slate-300 hover:shadow-md"}`}>
+    <button onClick={onClick} className={`group relative shrink-0 text-left px-3.5 py-2.5 rounded-2xl transition-all ${active ? "bg-gradient-to-br from-[#000dff] to-blue-500 text-white shadow-lg shadow-blue-300/40" : "bg-white border border-slate-200 hover:border-slate-300 hover:shadow-md"}`}>
       <div className="flex items-center gap-2.5">
         <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm overflow-hidden shrink-0 ${active ? "bg-white/20 text-white" : "bg-slate-100 text-slate-700"}`}>
           {icon ? <img src={icon} alt={artist.name} className="w-full h-full object-cover" /> : initial}
@@ -384,7 +384,7 @@ function ArtistPill({ artist, active, onClick }) {
           <div className={`text-sm font-semibold leading-tight ${active ? "text-white" : "text-slate-900"}`}>{artist.name}</div>
           <div className="flex items-center gap-1.5 mt-0.5">
             <span className={`text-xs font-semibold tabular-nums ${active ? "text-white" : "text-slate-700"}`}>{fmt(artist.totals.value)}</span>
-            <span className={`text-[10px] font-semibold ${active ? "text-violet-100" : artist.totals.delta >= 0 ? "text-emerald-600" : "text-rose-500"}`}>{artist.totals.delta >= 0 ? "+" : ""}{fmt(artist.totals.delta)}</span>
+            <span className={`text-[10px] font-semibold ${active ? "text-blue-100" : artist.totals.delta >= 0 ? "text-emerald-600" : "text-rose-500"}`}>{artist.totals.delta >= 0 ? "+" : ""}{fmt(artist.totals.delta)}</span>
           </div>
         </div>
       </div>
@@ -644,7 +644,7 @@ export default function FanDashboard() {
       {sheetsLoading && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/60 backdrop-blur-sm pointer-events-none">
           <div className="flex flex-col items-center gap-3">
-            <div className="w-8 h-8 rounded-full border-2 border-violet-500 border-t-transparent animate-spin" />
+            <div className="w-8 h-8 rounded-full border-2 border-[#000dff] border-t-transparent animate-spin" />
             <span className="text-xs font-semibold text-slate-600">Loading your Google Sheets data…</span>
           </div>
         </div>
@@ -655,7 +655,7 @@ export default function FanDashboard() {
         <header className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-5">
             <div className="flex items-center gap-3">
-              <div className="relative w-11 h-11 rounded-2xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-violet-300/50">
+              <div className="relative w-11 h-11 rounded-2xl bg-gradient-to-br from-[#000dff] to-blue-500 flex items-center justify-center shadow-lg shadow-blue-300/50">
                 <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none">
                   <path d="M4 20 L4 4 L12 4 L12 11 L20 11 L20 20 Z" stroke="white" strokeWidth="1.8" strokeLinejoin="round" />
                   <circle cx="12" cy="11" r="1.5" fill="white" />
@@ -664,7 +664,7 @@ export default function FanDashboard() {
               </div>
               <div className="leading-none">
                 <div className="font-display text-xl font-bold text-slate-900 tracking-tight">
-                  FANINTEL <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-500">PRO</span>
+                  FANINTEL <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#000dff] to-blue-500">PRO</span>
                 </div>
                 <div className="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-semibold mt-1">Community Intelligence</div>
               </div>
@@ -706,7 +706,7 @@ export default function FanDashboard() {
         <div className="grid grid-cols-12 gap-5">
           <section className="col-span-12 lg:col-span-8 space-y-5">
             {/* Hero */}
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-violet-500 via-fuchsia-500 to-pink-500 p-6 text-white shadow-xl shadow-violet-300/40">
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#000dff] to-blue-600 p-6 text-white shadow-xl shadow-blue-300/40">
               <div className="absolute top-0 right-0 w-72 h-72 opacity-20 -mr-20 -mt-20"><div className="w-full h-full rounded-full bg-white blur-3xl" /></div>
               <div className="absolute bottom-0 left-1/2 w-64 h-64 opacity-10 -mb-32"><div className="w-full h-full rounded-full bg-yellow-200 blur-3xl" /></div>
               <div className="relative flex items-center justify-between gap-6">
@@ -768,7 +768,7 @@ export default function FanDashboard() {
                       onClick={() => setYearRange(yr)}
                       className={`text-xs font-semibold px-2.5 py-1 rounded-full transition ${
                         yearRange === yr
-                          ? "bg-violet-600 text-white"
+                          ? "bg-[#000dff] text-white"
                           : "bg-white border border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-900"
                       }`}
                     >
@@ -799,7 +799,7 @@ export default function FanDashboard() {
               </div>
 
               {rangeStats && (
-                <div className="grid grid-cols-4 gap-3 mb-4 p-4 bg-gradient-to-r from-violet-50 via-fuchsia-50 to-pink-50 rounded-2xl border border-violet-100">
+                <div className="grid grid-cols-4 gap-3 mb-4 p-4 bg-gradient-to-r from-blue-50 to-blue-100 rounded-2xl border border-blue-100">
                   <div>
                     <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Range start</div>
                     <div className="text-base font-bold tabular-nums text-slate-900">{fmt(rangeStats.startTotal)}</div>
@@ -898,7 +898,7 @@ export default function FanDashboard() {
                             >
                               <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: PLATFORMS[plat]?.color ?? "#94a3b8" }} />
                               {plat}
-                              {plat === effectivePlatform && <span className="ml-auto text-violet-500">✓</span>}
+                              {plat === effectivePlatform && <span className="ml-auto text-[#000dff]">✓</span>}
                             </button>
                           ))}
                         </div>
@@ -919,7 +919,7 @@ export default function FanDashboard() {
                             </div>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-1">
-                                <div className="text-sm font-semibold text-slate-900 group-hover:text-violet-600 transition truncate">{p.name}</div>
+                                <div className="text-sm font-semibold text-slate-900 group-hover:text-[#000dff] transition truncate">{p.name}</div>
                                 {p.managed && <Star size={11} className="shrink-0 text-amber-400 fill-amber-400" />}
                               </div>
                               <div className="text-[10px] text-slate-500 mt-0.5">{p.latest ? `Updated ${p.latest}` : p.platform}</div>
@@ -962,7 +962,7 @@ export default function FanDashboard() {
         <section className="mt-8">
           <div className="flex items-baseline justify-between mb-4">
             <div className="flex items-baseline gap-3">
-              <h2 className="font-display text-3xl font-bold text-slate-900 tracking-tight">Live <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-500">Feed</span></h2>
+              <h2 className="font-display text-3xl font-bold text-slate-900 tracking-tight">Live <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-[#000dff] to-blue-500">Feed</span></h2>
               <span className="text-xs text-slate-500 font-medium">{artist.name} · recent posts</span>
             </div>
             <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-full">
@@ -1019,7 +1019,7 @@ export default function FanDashboard() {
         <section className="mt-10">
           <div className="flex items-baseline justify-between mb-4">
             <div className="flex items-baseline gap-3">
-              <h2 className="font-display text-3xl font-bold text-slate-900 tracking-tight">Deep <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-500">Analytics</span></h2>
+              <h2 className="font-display text-3xl font-bold text-slate-900 tracking-tight">Deep <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-[#000dff] to-blue-500">Analytics</span></h2>
               <span className="text-xs text-slate-500 font-medium">{artist.name} · cross-cuts</span>
             </div>
           </div>
@@ -1027,7 +1027,7 @@ export default function FanDashboard() {
           <div className="grid grid-cols-12 gap-4">
             <div className="col-span-12 md:col-span-4 bg-white border border-slate-200 rounded-3xl p-5 shadow-sm">
               <div className="flex items-center gap-2 mb-1">
-                <div className="w-6 h-6 rounded-lg bg-fuchsia-100 flex items-center justify-center"><PieIcon size={12} className="text-fuchsia-600" /></div>
+                <div className="w-6 h-6 rounded-lg bg-blue-100 flex items-center justify-center"><PieIcon size={12} className="text-blue-600" /></div>
                 <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Platform Share</div>
               </div>
               <div className="text-sm font-semibold text-slate-900 mb-3">Distribution of total reach</div>
@@ -1061,7 +1061,7 @@ export default function FanDashboard() {
 
             <div className="col-span-12 md:col-span-4 bg-white border border-slate-200 rounded-3xl p-5 shadow-sm">
               <div className="flex items-center gap-2 mb-1">
-                <div className="w-6 h-6 rounded-lg bg-violet-100 flex items-center justify-center"><Activity size={12} className="text-violet-600" /></div>
+                <div className="w-6 h-6 rounded-lg bg-blue-100 flex items-center justify-center"><Activity size={12} className="text-[#000dff]" /></div>
                 <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Platform Presence</div>
               </div>
               <div className="text-sm font-semibold text-slate-900 mb-3">Normalized vs roster top</div>
@@ -1146,7 +1146,7 @@ export default function FanDashboard() {
               <div className="text-sm font-semibold text-slate-900 mb-3">
                 How the total fanbase was built over time
                 {yearRange !== "all" && (
-                  <span className="ml-2 text-xs font-medium text-violet-600">
+                  <span className="ml-2 text-xs font-medium text-[#000dff]">
                     · filtered: {yearRange === "ytd" ? "YTD" : yearRange === "12m" ? "last 12 months" : yearRange === "6m" ? "last 6 months" : yearRange === "3m" ? "last 3 months" : yearRange}
                   </span>
                 )}
@@ -1176,7 +1176,7 @@ export default function FanDashboard() {
 
         <footer className="mt-10 pt-6 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
           <div className="flex items-center gap-3">
-            <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-500 tracking-wider">FANINTEL PRO</span>
+            <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#000dff] to-blue-500 tracking-wider">FANINTEL PRO</span>
             <span className="text-slate-300">·</span>
             <span>Data synced from Google Sheets</span>
           </div>
