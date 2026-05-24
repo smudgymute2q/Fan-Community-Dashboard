@@ -693,7 +693,7 @@ export default function FanDashboard() {
             <button onClick={() => rosterRef.current?.scrollTo({ left: 0, behavior: "smooth" })} className="shrink-0 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition">
               <ChevronDown size={13} className="rotate-90 text-slate-500" />
             </button>
-            <div ref={rosterRef} className="flex gap-3 overflow-x-auto marquee-fade pb-1 scroll-smooth flex-1" style={{ scrollbarWidth: "none" }}>
+            <div ref={rosterRef} className="flex gap-3 overflow-x-auto pb-1 scroll-smooth flex-1" style={{ scrollbarWidth: "none" }}>
               {artists.map((a) => <ArtistPill key={a.slug} artist={a} active={a.slug === selectedSlug} onClick={() => setSelectedSlug(a.slug)} />)}
             </div>
             <button onClick={() => rosterRef.current?.scrollTo({ left: rosterRef.current.scrollWidth, behavior: "smooth" })} className="shrink-0 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition">
