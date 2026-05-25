@@ -423,7 +423,7 @@ function ChartTooltip({ active, payload, label }) {
         {payload.slice().sort((a, b) => b.value - a.value).map((p) => (
           <div key={p.dataKey || p.name} className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full shrink-0" style={{ background: p.color || p.fill }} />
-            <span className="text-slate-600 flex-1">{p.dataKey || p.name}</span>
+            <span className="text-slate-600 flex-1">{p.name}</span>
             <span className="font-semibold tabular-nums text-slate-900 ml-3">{fmtFull(p.value)}</span>
           </div>
         ))}
