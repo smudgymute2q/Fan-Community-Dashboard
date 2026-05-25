@@ -710,11 +710,12 @@ export default function FanDashboard() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            {!rosterAtStart && (
-              <button onClick={() => rosterRef.current?.scrollTo({ left: 0, behavior: "smooth" })} className="shrink-0 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition">
-                <ChevronDown size={13} className="rotate-90 text-slate-500" />
-              </button>
-            )}
+            <button
+              onClick={() => rosterRef.current?.scrollTo({ left: 0, behavior: "smooth" })}
+              className={`shrink-0 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition ${rosterAtStart ? "opacity-0 pointer-events-none" : "opacity-100"}`}
+            >
+              <ChevronDown size={13} className="rotate-90 text-slate-500" />
+            </button>
             <div
               ref={rosterRef}
               className="flex gap-3 overflow-x-auto pb-1 scroll-smooth flex-1"
@@ -727,11 +728,12 @@ export default function FanDashboard() {
             >
               {artists.map((a) => <ArtistPill key={a.slug} artist={a} active={a.slug === selectedSlug} onClick={() => setSelectedSlug(a.slug)} />)}
             </div>
-            {!rosterAtEnd && (
-              <button onClick={() => { const el = rosterRef.current; if (el) el.scrollTo({ left: el.scrollWidth - el.clientWidth, behavior: "smooth" }); }} className="shrink-0 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition">
-                <ChevronDown size={13} className="-rotate-90 text-slate-500" />
-              </button>
-            )}
+            <button
+              onClick={() => { const el = rosterRef.current; if (el) el.scrollTo({ left: el.scrollWidth - el.clientWidth, behavior: "smooth" }); }}
+              className={`shrink-0 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition ${rosterAtEnd ? "opacity-0 pointer-events-none" : "opacity-100"}`}
+            >
+              <ChevronDown size={13} className="-rotate-90 text-slate-500" />
+            </button>
           </div>
         </section>
 
