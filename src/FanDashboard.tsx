@@ -920,7 +920,7 @@ export default function FanDashboard() {
                       )}
                     </div>
                   </div>
-                  <div className="p-2 max-h-[520px] overflow-y-auto">
+                  <div className="p-2 max-h-[660px] overflow-y-auto">
                     {filteredPages.length === 0 ? (
                       <div className="px-3 py-6 text-center text-xs text-slate-400">No {effectivePlatform} pages tracked yet</div>
                     ) : (
