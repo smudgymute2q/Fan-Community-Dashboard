@@ -391,7 +391,7 @@ function ArtistPill({ artist, active, onClick }) {
   const initial = artist.name.charAt(0);
   const icon = ARTIST_ICONS[artist.slug];
   return (
-    <button onClick={onClick} style={{ filter: active ? "drop-shadow(0 8px 20px rgba(147,197,253,0.5))" : undefined }} className={`group relative shrink-0 text-left px-3.5 py-2.5 rounded-2xl border transition-all ${active ? "bg-gradient-to-br from-[#000dff] to-blue-500 text-white border-transparent" : "bg-white border-slate-200 hover:bg-slate-50 hover:border-slate-300"}`}>
+    <button onClick={onClick} style={{ filter: active ? "drop-shadow(0 8px 20px rgba(147,197,253,0.5))" : undefined }} className={`group relative shrink-0 text-left px-3.5 py-2.5 rounded-2xl border transition-all ${active ? "bg-gradient-to-br from-[#000dff] to-blue-500 text-white border-transparent" : "bg-white border-slate-200 hover:border-slate-300 hover:shadow-md hover:-translate-y-0.5"}`}>
       <div className="flex items-center gap-2.5">
         <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm overflow-hidden shrink-0 ${active ? "bg-white/20 text-white" : "bg-slate-100 text-slate-700"}`}>
           {icon ? <img src={icon} alt={artist.name} className="w-full h-full object-cover" /> : initial}
