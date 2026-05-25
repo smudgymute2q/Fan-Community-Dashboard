@@ -426,6 +426,18 @@ function ChartTooltip({ active, payload, label }) {
   );
 }
 
+function PieTooltip({ active, payload }) {
+  if (!active || !payload || !payload.length) return null;
+  const p = payload[0];
+  return (
+    <div className="bg-white border border-slate-200 rounded-lg shadow-lg px-3 py-2 text-xs flex items-center gap-2">
+      <span className="w-2 h-2 rounded-full shrink-0" style={{ background: p.fill }} />
+      <span className="text-slate-600 font-medium">{p.name}</span>
+      <span className="font-bold tabular-nums text-slate-900">{fmtFull(p.value)}</span>
+    </div>
+  );
+}
+
 function engagementSummary(post) {
   const e = post.engagement;
   if (post.platform === "Reddit") return [{ icon: ArrowUpRight, label: fmt(e.upvotes) }, { icon: MessageSquare, label: fmt(e.comments) }];
@@ -1107,7 +1119,7 @@ export default function FanDashboard() {
                     <Pie data={platformShareData(artist)} innerRadius={55} outerRadius={85} dataKey="value" stroke="white" strokeWidth={2}>
                       {platformShareData(artist).map((d, i) => <Cell key={i} fill={d.fill} />)}
                     </Pie>
-                    <Tooltip content={<ChartTooltip />} />
+                    <Tooltip content={<PieTooltip />} />
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
