@@ -557,14 +557,12 @@ export default function FanDashboard() {
     [sheetsData]
   );
 
+  const artist = artists.find((a) => a.slug === selectedSlug)!;
+
   React.useEffect(() => {
     setFeedFilter("All");
-    // Default to Discord; fall back to first available platform if artist has none
-    const plats = [...new Set(artist.pages.map((p) => p.platform))];
-    setPagesPlatform(plats.includes("Discord") ? "Discord" : plats[0] || "Discord");
-  }, [selectedSlug]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const artist = artists.find((a) => a.slug === selectedSlug)!;
+    setPagesPlatform("Discord");
+  }, [selectedSlug]);
 
   // Use sheets history if loaded, otherwise fall back to generated curve
   const fullHistory = useMemo(
