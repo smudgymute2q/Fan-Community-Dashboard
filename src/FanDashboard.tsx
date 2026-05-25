@@ -503,6 +503,7 @@ export default function FanDashboard() {
   const [darkMode, setDarkMode] = useState(false);
   const [selectedSlug, setSelectedSlug] = useState("opium");
   const [pieHover, setPieHover] = useState<{ name: string; value: number; fill: string } | null>(null);
+  const [piePos, setPiePos] = useState<{ x: number; y: number } | null>(null);
   const [hiddenPlats, setHiddenPlats] = useState(new Set());
   const [feedFilter, setFeedFilter] = useState("All");
   const [yearRange, setYearRange] = useState("all");
@@ -918,8 +919,8 @@ export default function FanDashboard() {
                       <CartesianGrid strokeDasharray="3 4" vertical={false} />
                       <XAxis dataKey="date" tickFormatter={monthLabel} interval={Math.max(0, Math.floor(history.length / 8))} axisLine={{ stroke: "#e2e8f0" }} tickLine={false} />
                       <YAxis tickFormatter={fmt} axisLine={false} tickLine={false} width={48} />
-                      <Tooltip content={<ChartTooltip />} cursor={{ stroke: "#cbd5e1", strokeDasharray: "3 3" }} />
-                      {orderedPlats.map((p) => hiddenPlats.has(p) ? null : <Line key={p} type="monotone" dataKey={p} stroke={PLATFORMS[p].color} strokeWidth={2.5} dot={false} activeDot={{ r: 4, strokeWidth: 2, stroke: "white" }} />)}
+                      <Tooltip content={<ChartTooltip />} cursor={{ stroke: "#cbd5e1", strokeDasharray: "3 3" }} wrapperStyle={{ transition: "none" }} />
+                      {orderedPlats.map((p) => hiddenPlats.has(p) ? null : <Line key={p} type="monotone" dataKey={p} stroke={PLATFORMS[p].color} strokeWidth={2.5} dot={false} activeDot={{ r: 4, strokeWidth: 2, stroke: "white" }} isAnimationActive={false} />)}
                     </LineChart>
                   </ResponsiveContainer>
                 )}
@@ -1115,7 +1116,14 @@ export default function FanDashboard() {
                 <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Platform Share</div>
               </div>
               <div className="text-sm font-semibold text-slate-900 mb-3">Distribution of total reach</div>
-              <div className="relative h-[200px]">
+              <div
+                className="relative h-[200px]"
+                onMouseMove={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  setPiePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+                }}
+                onMouseLeave={() => { setPieHover(null); setPiePos(null); }}
+              >
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
@@ -1123,7 +1131,6 @@ export default function FanDashboard() {
                       innerRadius={55} outerRadius={85}
                       dataKey="value" stroke="white" strokeWidth={2}
                       onMouseEnter={(d) => setPieHover({ name: d.name, value: d.value, fill: d.payload?.fill || d.fill })}
-                      onMouseLeave={() => setPieHover(null)}
                     >
                       {platformShareData(artist).map((d, i) => <Cell key={i} fill={d.fill} />)}
                     </Pie>
@@ -1133,10 +1140,11 @@ export default function FanDashboard() {
                   <div className="text-[9px] font-bold uppercase tracking-widest text-slate-500">Total</div>
                   <div className="font-bold text-lg text-slate-900 tabular-nums">{fmt(artist.totals.value)}</div>
                 </div>
-              </div>
-              <div className="h-8 flex items-center justify-center mt-1">
-                {pieHover && (
-                  <div className="flex items-center gap-2 text-xs bg-white border border-slate-200 rounded-lg px-3 py-1.5 shadow-sm">
+                {pieHover && piePos && (
+                  <div
+                    className="absolute pointer-events-none z-10 flex items-center gap-2 text-xs bg-white border border-slate-200 rounded-lg px-3 py-1.5 shadow-lg"
+                    style={{ left: piePos.x + 14, top: piePos.y - 16, transform: "translateY(-50%)" }}
+                  >
                     <span className="w-2 h-2 rounded-full shrink-0" style={{ background: pieHover.fill }} />
                     <span className="text-slate-600 font-medium">{pieHover.name}</span>
                     <span className="font-bold tabular-nums text-slate-900">{fmtFull(pieHover.value)}</span>
@@ -1192,8 +1200,8 @@ export default function FanDashboard() {
                         <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">{monthLabel(label)}</div>
                         <div className="font-bold tabular-nums text-slate-900 text-sm mt-1">{payload[0].value >= 0 ? "+" : ""}{fmtFull(payload[0].value)}</div>
                       </div>
-                    ) : null} cursor={{ fill: darkMode ? "#1e293b" : "#f1f5f9" }} />
-                    <Bar dataKey="net" radius={[6, 6, 0, 0]}>
+                    ) : null} cursor={{ fill: darkMode ? "#1e293b" : "#f1f5f9" }} wrapperStyle={{ transition: "none" }} />
+                    <Bar dataKey="net" radius={[6, 6, 0, 0]} isAnimationActive={false}>
                       {monthlyVelocity(history, orderedPlats).map((d, i) => <Cell key={i} fill={d.net >= 0 ? "#10b981" : "#f43f5e"} />)}
                     </Bar>
                   </BarChart>
@@ -1216,9 +1224,9 @@ export default function FanDashboard() {
                     <CartesianGrid strokeDasharray="3 4" horizontal={false} />
                     <XAxis type="number" tickFormatter={fmt} axisLine={false} tickLine={false} />
                     <YAxis type="category" dataKey="name" width={140} axisLine={false} tickLine={false} tick={{ fill: "#475569", fontSize: 12, fontWeight: 500 }} />
-                    <Tooltip content={<ChartTooltip />} cursor={{ fill: darkMode ? "#1e293b" : "#f1f5f9" }} />
+                    <Tooltip content={<ChartTooltip />} cursor={{ fill: darkMode ? "#1e293b" : "#f1f5f9" }} wrapperStyle={{ transition: "none" }} />
                     {Object.keys(PLATFORMS).map((p, i, arr) => (
-                      <Bar key={p} dataKey={p} stackId="a" fill={PLATFORMS[p].color} radius={i === arr.length - 1 ? [0, 8, 8, 0] : i === 0 ? [8, 0, 0, 8] : [0, 0, 0, 0]} />
+                      <Bar key={p} dataKey={p} stackId="a" fill={PLATFORMS[p].color} radius={i === arr.length - 1 ? [0, 8, 8, 0] : i === 0 ? [8, 0, 0, 8] : [0, 0, 0, 0]} isAnimationActive={false} />
                     ))}
                   </BarChart>
                 </ResponsiveContainer>
@@ -1263,8 +1271,8 @@ export default function FanDashboard() {
                     <CartesianGrid strokeDasharray="3 4" vertical={false} />
                     <XAxis dataKey="date" tickFormatter={monthLabel} interval={Math.floor(history.length / 8)} axisLine={{ stroke: "#e2e8f0" }} tickLine={false} />
                     <YAxis tickFormatter={fmt} axisLine={false} tickLine={false} width={48} />
-                    <Tooltip content={<ChartTooltip />} cursor={{ stroke: "#cbd5e1", strokeDasharray: "3 3" }} />
-                    {orderedPlats.map((p) => <Area key={p} type="monotone" dataKey={p} stackId="1" stroke={PLATFORMS[p].color} strokeWidth={1.5} fill={`url(#grad-${p.replace(/\s/g, "")})`} />)}
+                    <Tooltip content={<ChartTooltip />} cursor={{ stroke: "#cbd5e1", strokeDasharray: "3 3" }} wrapperStyle={{ transition: "none" }} />
+                    {orderedPlats.map((p) => <Area key={p} type="monotone" dataKey={p} stackId="1" stroke={PLATFORMS[p].color} strokeWidth={1.5} fill={`url(#grad-${p.replace(/\s/g, "")})`} isAnimationActive={false} />)}
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
