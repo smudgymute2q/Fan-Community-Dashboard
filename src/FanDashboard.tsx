@@ -1119,7 +1119,7 @@ export default function FanDashboard() {
                     <Pie data={platformShareData(artist)} innerRadius={55} outerRadius={85} dataKey="value" stroke="white" strokeWidth={2}>
                       {platformShareData(artist).map((d, i) => <Cell key={i} fill={d.fill} />)}
                     </Pie>
-                    <Tooltip content={<PieTooltip />} />
+                    <Tooltip content={<PieTooltip />} position={{ y: -48 }} allowEscapeViewBox={{ x: false, y: true }} />
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
