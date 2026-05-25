@@ -502,6 +502,8 @@ export default function FanDashboard() {
   const rosterRef = React.useRef<HTMLDivElement>(null);
   const [rosterAtStart, setRosterAtStart] = useState(true);
   const [rosterAtEnd, setRosterAtEnd] = useState(false);
+  const isScrollingToEnd = React.useRef(false);
+  const isScrollingToStart = React.useRef(false);
   const [pagesDropdownOpen, setPagesDropdownOpen] = useState(false);
 
   // ---- Sheets data loading ----
@@ -712,29 +714,39 @@ export default function FanDashboard() {
             </div>
           </div>
           <div className="relative">
-            <div className={`absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-[#fef7ff] to-transparent pointer-events-none z-[5] transition-opacity duration-[25ms] ${rosterAtStart ? "opacity-0" : "opacity-100"}`} />
+            <div className={`absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-[#fef7ff] to-transparent pointer-events-none z-[5] transition-opacity duration-150 ${rosterAtStart ? "opacity-0" : "opacity-100"}`} />
             <button
-              onClick={() => rosterRef.current?.scrollTo({ left: 0, behavior: "smooth" })}
-              className={`absolute left-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition-opacity duration-[25ms] ${rosterAtStart ? "opacity-0 pointer-events-none" : "opacity-100"}`}
+              onClick={() => { setRosterAtStart(true); isScrollingToStart.current = true; rosterRef.current?.scrollTo({ left: 0, behavior: "smooth" }); }}
+              className={`absolute left-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition-opacity duration-150 ${rosterAtStart ? "opacity-0 pointer-events-none" : "opacity-100"}`}
             >
               <ChevronDown size={13} className="rotate-90 text-slate-500" />
             </button>
             <div
               ref={rosterRef}
-              className="flex gap-3 overflow-x-auto pb-1 scroll-smooth"
+              className="flex gap-3 overflow-x-auto scroll-smooth"
               style={{ scrollbarWidth: "none" }}
               onScroll={(e) => {
                 const el = e.currentTarget;
-                setRosterAtStart(el.scrollLeft <= 0);
-                setRosterAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 1);
+                const atStart = el.scrollLeft <= 0;
+                const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 1;
+                if (isScrollingToEnd.current) {
+                  if (atEnd) isScrollingToEnd.current = false;
+                  setRosterAtStart(atStart);
+                } else if (isScrollingToStart.current) {
+                  if (atStart) isScrollingToStart.current = false;
+                  setRosterAtEnd(atEnd);
+                } else {
+                  setRosterAtStart(atStart);
+                  setRosterAtEnd(atEnd);
+                }
               }}
             >
               {artists.map((a) => <ArtistPill key={a.slug} artist={a} active={a.slug === selectedSlug} onClick={() => setSelectedSlug(a.slug)} />)}
             </div>
-            <div className={`absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-[#fef7ff] to-transparent pointer-events-none z-[5] transition-opacity duration-[25ms] ${rosterAtEnd ? "opacity-0" : "opacity-100"}`} />
+            <div className={`absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-[#fef7ff] to-transparent pointer-events-none z-[5] transition-opacity duration-150 ${rosterAtEnd ? "opacity-0" : "opacity-100"}`} />
             <button
-              onClick={() => { const el = rosterRef.current; if (el) el.scrollTo({ left: el.scrollWidth - el.clientWidth, behavior: "smooth" }); }}
-              className={`absolute right-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition-opacity duration-[25ms] ${rosterAtEnd ? "opacity-0 pointer-events-none" : "opacity-100"}`}
+              onClick={() => { const el = rosterRef.current; if (el) { setRosterAtEnd(true); isScrollingToEnd.current = true; el.scrollTo({ left: el.scrollWidth - el.clientWidth, behavior: "smooth" }); } }}
+              className={`absolute right-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition-opacity duration-150 ${rosterAtEnd ? "opacity-0 pointer-events-none" : "opacity-100"}`}
             >
               <ChevronDown size={13} className="-rotate-90 text-slate-500" />
             </button>
