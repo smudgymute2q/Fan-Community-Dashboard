@@ -111,6 +111,15 @@ function decodeHtmlEntities(str: string): string {
     .replace(/&apos;/g, "'");
 }
 
+function decodeJsString(str: string): string {
+  return str
+    .replace(/\\x([0-9A-Fa-f]{2})/g, (_, h) => String.fromCharCode(parseInt(h, 16)))
+    .replace(/\\u([0-9A-Fa-f]{4})/g, (_, h) => String.fromCharCode(parseInt(h, 16)))
+    .replace(/\\'/g, "'")
+    .replace(/\\"/g, '"')
+    .replace(/\\\\/g, "\\");
+}
+
 // Fetch the published HTML index page and extract tab name → GID mapping.
 async function fetchGidMap(pubId: string): Promise<Record<string, string>> {
   const url = `https://docs.google.com/spreadsheets/d/e/${pubId}/pubhtml`;
@@ -129,13 +138,14 @@ async function fetchGidMap(pubId: string): Promise<Record<string, string>> {
   if (Object.keys(gids).length > 0) return gids;
 
   // Pattern 2: JavaScript items.push({name:'...', pageUrl:'...gid=N...'})
+  // Names are JS string literals — decode \x27 etc. before storing
   const jsRe = /name:\s*["']([^"']+)["'][^}]*gid=(\d+)/g;
-  while ((m = jsRe.exec(html)) !== null) gids[decodeHtmlEntities(m[1].trim())] = m[2];
+  while ((m = jsRe.exec(html)) !== null) gids[decodeJsString(m[1].trim())] = m[2];
   if (Object.keys(gids).length > 0) return gids;
 
   // Pattern 3: JSON "name":"..." "gid":N
   const jsonRe = /"name":\s*"([^"]+)"[^}]*"gid":\s*(\d+)/g;
-  while ((m = jsonRe.exec(html)) !== null) gids[decodeHtmlEntities(m[1].trim())] = m[2];
+  while ((m = jsonRe.exec(html)) !== null) gids[decodeJsString(decodeHtmlEntities(m[1].trim()))] = m[2];
   if (Object.keys(gids).length > 0) return gids;
 
   // All patterns failed — log a sample so the format can be debugged
