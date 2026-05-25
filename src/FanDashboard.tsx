@@ -478,6 +478,8 @@ export default function FanDashboard() {
   const [yearRange, setYearRange] = useState("all");
   const [pagesPlatform, setPagesPlatform] = useState("Discord");
   const rosterRef = React.useRef<HTMLDivElement>(null);
+  const [rosterAtStart, setRosterAtStart] = useState(true);
+  const [rosterAtEnd, setRosterAtEnd] = useState(false);
   const [pagesDropdownOpen, setPagesDropdownOpen] = useState(false);
 
   // ---- Sheets data loading ----
@@ -690,15 +692,28 @@ export default function FanDashboard() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <button onClick={() => rosterRef.current?.scrollTo({ left: 0, behavior: "smooth" })} className="shrink-0 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition">
-              <ChevronDown size={13} className="rotate-90 text-slate-500" />
-            </button>
-            <div ref={rosterRef} className="flex gap-3 overflow-x-auto pb-1 scroll-smooth flex-1" style={{ scrollbarWidth: "none" }}>
+            {!rosterAtStart && (
+              <button onClick={() => rosterRef.current?.scrollTo({ left: 0, behavior: "smooth" })} className="shrink-0 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition">
+                <ChevronDown size={13} className="rotate-90 text-slate-500" />
+              </button>
+            )}
+            <div
+              ref={rosterRef}
+              className="flex gap-3 overflow-x-auto pb-1 scroll-smooth flex-1"
+              style={{ scrollbarWidth: "none" }}
+              onScroll={(e) => {
+                const el = e.currentTarget;
+                setRosterAtStart(el.scrollLeft <= 0);
+                setRosterAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 1);
+              }}
+            >
               {artists.map((a) => <ArtistPill key={a.slug} artist={a} active={a.slug === selectedSlug} onClick={() => setSelectedSlug(a.slug)} />)}
             </div>
-            <button onClick={() => rosterRef.current?.scrollTo({ left: rosterRef.current.scrollWidth, behavior: "smooth" })} className="shrink-0 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition">
-              <ChevronDown size={13} className="-rotate-90 text-slate-500" />
-            </button>
+            {!rosterAtEnd && (
+              <button onClick={() => rosterRef.current?.scrollTo({ left: rosterRef.current.scrollWidth, behavior: "smooth" })} className="shrink-0 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition">
+                <ChevronDown size={13} className="-rotate-90 text-slate-500" />
+              </button>
+            )}
           </div>
         </section>
 
