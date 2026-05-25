@@ -101,6 +101,16 @@ function parseCSVText(text: string): string[][] {
   return rows;
 }
 
+function decodeHtmlEntities(str: string): string {
+  return str
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&apos;/g, "'");
+}
+
 // Fetch the published HTML index page and extract tab name → GID mapping.
 async function fetchGidMap(pubId: string): Promise<Record<string, string>> {
   const url = `https://docs.google.com/spreadsheets/d/e/${pubId}/pubhtml`;
@@ -113,19 +123,19 @@ async function fetchGidMap(pubId: string): Promise<Record<string, string>> {
   const anchorRe = /href="[^"]*[?&]gid=(\d+)[^"]*"[^>]*>\s*([^<]+?)\s*<\/a>/gi;
   let m: RegExpExecArray | null;
   while ((m = anchorRe.exec(html)) !== null) {
-    const name = m[2].trim();
+    const name = decodeHtmlEntities(m[2].trim());
     if (name) gids[name] = m[1];
   }
   if (Object.keys(gids).length > 0) return gids;
 
   // Pattern 2: JavaScript items.push({name:'...', pageUrl:'...gid=N...'})
   const jsRe = /name:\s*["']([^"']+)["'][^}]*gid=(\d+)/g;
-  while ((m = jsRe.exec(html)) !== null) gids[m[1].trim()] = m[2];
+  while ((m = jsRe.exec(html)) !== null) gids[decodeHtmlEntities(m[1].trim())] = m[2];
   if (Object.keys(gids).length > 0) return gids;
 
   // Pattern 3: JSON "name":"..." "gid":N
   const jsonRe = /"name":\s*"([^"]+)"[^}]*"gid":\s*(\d+)/g;
-  while ((m = jsonRe.exec(html)) !== null) gids[m[1].trim()] = m[2];
+  while ((m = jsonRe.exec(html)) !== null) gids[decodeHtmlEntities(m[1].trim())] = m[2];
   if (Object.keys(gids).length > 0) return gids;
 
   // All patterns failed — log a sample so the format can be debugged
