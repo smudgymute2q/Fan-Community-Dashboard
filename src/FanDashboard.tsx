@@ -348,7 +348,7 @@ function platformRadar(artist, allArtists) {
   const allPlats = ["Discord", "Reddit", "Instagram", "Instagram Channels", "X", "X Communities", "TikTok"];
   const maxes = {};
   allPlats.forEach((p) => { maxes[p] = Math.max(...allArtists.map((a) => a.platforms[p]?.value || 0), 1); });
-  return allPlats.map((p) => ({ platform: p.replace("Instagram Channels", "IG Ch.").replace("X Communities", "X Comm."), value: Math.round(((artist.platforms[p]?.value || 0) / maxes[p]) * 100) }));
+  return allPlats.map((p) => ({ platform: p, value: Math.round(((artist.platforms[p]?.value || 0) / maxes[p]) * 100) }));
 }
 
 function DeltaPill({ value, small = false }) {
