@@ -361,17 +361,11 @@ function KpiTile({ platform, value, delta, isTotal }) {
   const cfg = PLATFORMS[platform];
   return (
     <div className={`relative rounded-2xl p-4 transition hover:-translate-y-0.5 hover:shadow-lg ${isTotal ? "bg-gradient-to-br from-amber-100 to-orange-100 border border-amber-200" : "bg-white border border-slate-200 hover:border-slate-300"}`}>
-      {!isTotal && (
-        <div className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center" style={{ background: cfg.soft }}>
-          <span className="w-3 h-3 rounded-full" style={{ background: cfg.color }} />
-        </div>
-      )}
-      {isTotal && (
-        <div className="absolute top-4 right-4 w-8 h-8 rounded-xl bg-amber-200/60 flex items-center justify-center">
-          <Sparkles size={14} className="text-amber-700" />
-        </div>
-      )}
-      <div className={`text-[11px] font-semibold uppercase tracking-wider mb-2 ${isTotal ? "text-amber-800" : "text-slate-500"}`}>{isTotal ? "Total Reach" : platform}</div>
+      <div className={`flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider mb-2 ${isTotal ? "text-amber-800" : "text-slate-500"}`}>
+        {!isTotal && <span className="w-2 h-2 rounded-full shrink-0" style={{ background: cfg.color }} />}
+        {isTotal && <Sparkles size={11} className="text-amber-600" />}
+        {isTotal ? "Total Reach" : platform}
+      </div>
       <div className={`font-bold tabular-nums leading-none ${isTotal ? "text-3xl text-amber-900" : "text-2xl text-slate-900"}`}>{fmtFull(value)}</div>
       <div className="mt-2"><DeltaPill value={delta} small /></div>
     </div>
