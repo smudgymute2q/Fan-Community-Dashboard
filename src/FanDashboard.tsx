@@ -1131,6 +1131,7 @@ export default function FanDashboard() {
                       innerRadius={55} outerRadius={85}
                       dataKey="value" stroke="white" strokeWidth={2}
                       onMouseEnter={(d) => setPieHover({ name: d.name, value: d.value, fill: d.payload?.fill || d.fill })}
+                      onMouseLeave={() => setPieHover(null)}
                     >
                       {platformShareData(artist).map((d, i) => <Cell key={i} fill={d.fill} />)}
                     </Pie>
