@@ -757,7 +757,7 @@ export default function FanDashboard() {
             </button>
             <div
               ref={rosterRef}
-              className="flex gap-3 overflow-x-auto scroll-smooth"
+              className="flex gap-3 overflow-x-auto scroll-smooth py-2 -my-2 px-1 -mx-1"
               style={{ scrollbarWidth: "none" }}
               onScroll={(e) => {
                 const el = e.currentTarget;
