@@ -362,8 +362,8 @@ function KpiTile({ platform, value, delta, isTotal }) {
   return (
     <div className={`relative rounded-2xl p-4 transition hover:-translate-y-0.5 hover:shadow-lg ${isTotal ? "bg-gradient-to-br from-amber-100 to-orange-100 border border-amber-200" : "bg-white border border-slate-200 hover:border-slate-300"}`}>
       {!isTotal && (
-        <div className="absolute top-4 right-4 w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: cfg.soft }}>
-          <span className="w-2 h-2 rounded-full" style={{ background: cfg.color }} />
+        <div className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center" style={{ background: cfg.soft }}>
+          <span className="w-3 h-3 rounded-full" style={{ background: cfg.color }} />
         </div>
       )}
       {isTotal && (
