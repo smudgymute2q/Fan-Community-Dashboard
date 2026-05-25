@@ -25,8 +25,8 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   Minus,
-  Search,
-  Settings2,
+  Moon,
+  Sun,
   Activity,
   BarChart3,
   PieChart as PieIcon,
@@ -494,6 +494,7 @@ function FeedCard({ post }) {
 }
 
 export default function FanDashboard() {
+  const [darkMode, setDarkMode] = useState(false);
   const [selectedSlug, setSelectedSlug] = useState("opium");
   const [hiddenPlats, setHiddenPlats] = useState(new Set());
   const [feedFilter, setFeedFilter] = useState("All");
@@ -653,7 +654,7 @@ export default function FanDashboard() {
     : "live";
 
   return (
-    <div className="min-h-screen w-full text-slate-800" style={{ background: "linear-gradient(180deg, #fef7ff 0%, #f0f9ff 50%, #fdf4ff 100%)", fontFamily: "'Plus Jakarta Sans', 'Inter', system-ui, sans-serif" }}>
+    <div className={`min-h-screen w-full text-slate-800 ${darkMode ? "dark" : ""}`} style={{ background: darkMode ? "linear-gradient(180deg, #0d0a18 0%, #090d1a 50%, #0d0a14 100%)" : "linear-gradient(180deg, #fef7ff 0%, #f0f9ff 50%, #fdf4ff 100%)", fontFamily: "'Plus Jakarta Sans', 'Inter', system-ui, sans-serif" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&display=swap');
         .font-display { font-family: 'Fraunces', Georgia, serif; font-optical-sizing: auto; }
@@ -662,11 +663,28 @@ export default function FanDashboard() {
         .recharts-cartesian-grid line { stroke: #e2e8f0; }
         .recharts-polar-grid-angle line { stroke: #e2e8f0; }
         .recharts-polar-angle-axis-tick text { fill: #64748b; font-size: 10px; font-weight: 600; }
+        .dark .recharts-cartesian-axis-tick text { fill: #475569; }
+        .dark .recharts-cartesian-grid line { stroke: #1e293b; }
+        .dark .recharts-polar-grid-angle line { stroke: #1e293b; }
+        .dark .recharts-polar-angle-axis-tick text { fill: #475569; }
+        .dark .bg-white { background-color: #1e293b !important; }
+        .dark .bg-slate-50 { background-color: #0f172a !important; }
+        .dark .bg-slate-100 { background-color: #293548 !important; }
+        .dark .bg-slate-200 { background-color: #334155 !important; }
+        .dark .border-slate-100 { border-color: #1e293b !important; }
+        .dark .border-slate-200 { border-color: #2d3f55 !important; }
+        .dark .border-slate-300 { border-color: #475569 !important; }
+        .dark .text-slate-900 { color: #f1f5f9 !important; }
+        .dark .text-slate-800 { color: #e2e8f0 !important; }
+        .dark .text-slate-700 { color: #cbd5e1 !important; }
+        .dark .text-slate-600 { color: #94a3b8 !important; }
+        .dark .text-slate-500 { color: #8898aa !important; }
+        .dark .shadow-sm { box-shadow: 0 1px 3px 0 rgba(0,0,0,0.4) !important; }
       `}</style>
 
       {/* Loading overlay — fades away once all sheets are fetched */}
       {sheetsLoading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/60 backdrop-blur-sm pointer-events-none">
+        <div className={`fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm pointer-events-none ${darkMode ? "bg-slate-900/60" : "bg-white/60"}`}>
           <div className="flex flex-col items-center gap-3">
             <div className="w-8 h-8 rounded-full border-2 border-[#000dff] border-t-transparent animate-spin" />
             <span className="text-xs font-semibold text-slate-600">Loading data…</span>
@@ -699,10 +717,9 @@ export default function FanDashboard() {
               <span className="text-[11px] font-semibold text-emerald-700">Live · {syncLabel}</span>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <button className="text-xs text-slate-700 bg-white border border-slate-200 hover:border-slate-300 hover:shadow-sm w-9 h-9 rounded-xl flex items-center justify-center transition"><Search size={14} /></button>
-            <button className="text-xs text-slate-700 bg-white border border-slate-200 hover:border-slate-300 hover:shadow-sm w-9 h-9 rounded-xl flex items-center justify-center transition"><Settings2 size={14} /></button>
-          </div>
+          <button onClick={() => setDarkMode((d) => !d)} className="text-slate-700 bg-white border border-slate-200 hover:border-slate-300 hover:shadow-sm w-9 h-9 rounded-xl flex items-center justify-center transition">
+            {darkMode ? <Sun size={14} /> : <Moon size={14} />}
+          </button>
         </header>
 
         {/* Roster */}
@@ -714,7 +731,7 @@ export default function FanDashboard() {
             </div>
           </div>
           <div className="relative">
-            <div className={`absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-[#fef7ff] to-transparent pointer-events-none z-[5] transition-opacity duration-150 ${rosterAtStart ? "opacity-0" : "opacity-100"}`} />
+            <div className={`absolute left-0 top-0 bottom-0 w-20 pointer-events-none z-[5] transition-opacity duration-150 ${rosterAtStart ? "opacity-0" : "opacity-100"}`} style={{ background: `linear-gradient(to right, ${darkMode ? "#0d0a18" : "#fef7ff"}, transparent)` }} />
             <button
               onClick={() => { setRosterAtStart(true); isScrollingToStart.current = true; rosterRef.current?.scrollTo({ left: 0, behavior: "smooth" }); }}
               className={`absolute left-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition-opacity duration-150 ${rosterAtStart ? "opacity-0 pointer-events-none" : "opacity-100"}`}
@@ -743,7 +760,7 @@ export default function FanDashboard() {
             >
               {artists.map((a) => <ArtistPill key={a.slug} artist={a} active={a.slug === selectedSlug} onClick={() => setSelectedSlug(a.slug)} />)}
             </div>
-            <div className={`absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-[#fef7ff] to-transparent pointer-events-none z-[5] transition-opacity duration-150 ${rosterAtEnd ? "opacity-0" : "opacity-100"}`} />
+            <div className={`absolute right-0 top-0 bottom-0 w-20 pointer-events-none z-[5] transition-opacity duration-150 ${rosterAtEnd ? "opacity-0" : "opacity-100"}`} style={{ background: `linear-gradient(to left, ${darkMode ? "#0d0a18" : "#fef7ff"}, transparent)` }} />
             <button
               onClick={() => { const el = rosterRef.current; if (el) { setRosterAtEnd(true); isScrollingToEnd.current = true; el.scrollTo({ left: el.scrollWidth - el.clientWidth, behavior: "smooth" }); } }}
               className={`absolute right-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition-opacity duration-150 ${rosterAtEnd ? "opacity-0 pointer-events-none" : "opacity-100"}`}
@@ -850,7 +867,7 @@ export default function FanDashboard() {
               </div>
 
               {rangeStats && (
-                <div className="grid grid-cols-4 gap-3 mb-4 p-4 bg-gradient-to-r from-blue-50 to-blue-100 rounded-2xl border border-blue-100">
+                <div className="grid grid-cols-4 gap-3 mb-4 p-4 bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/10 rounded-2xl border border-blue-100 dark:border-blue-900/30">
                   <div>
                     <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Range start</div>
                     <div className="text-base font-bold tabular-nums text-slate-900">{fmt(rangeStats.startTotal)}</div>
@@ -1033,7 +1050,7 @@ export default function FanDashboard() {
                 const cfg = f !== "All" ? PLATFORMS[f] : null;
                 const count = f === "All" ? posts.length : posts.filter((p) => p.platform === f).length;
                 return (
-                  <button key={f} onClick={() => setFeedFilter(f)} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition ${active ? "bg-slate-900 text-white" : "bg-white border border-slate-200 text-slate-700 hover:border-slate-300"}`}>
+                  <button key={f} onClick={() => setFeedFilter(f)} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition ${active ? "bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900" : "bg-white border border-slate-200 text-slate-700 hover:border-slate-300"}`}>
                     {cfg && <span className="w-1.5 h-1.5 rounded-full" style={{ background: cfg.color }} />}
                     {f}
                     <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${active ? "bg-white/20" : "bg-slate-100"}`}>{count}</span>
@@ -1145,7 +1162,7 @@ export default function FanDashboard() {
                         <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">{monthLabel(label)}</div>
                         <div className="font-bold tabular-nums text-slate-900 text-sm mt-1">{payload[0].value >= 0 ? "+" : ""}{fmtFull(payload[0].value)}</div>
                       </div>
-                    ) : null} cursor={{ fill: "#f1f5f9" }} />
+                    ) : null} cursor={{ fill: darkMode ? "#1e293b" : "#f1f5f9" }} />
                     <Bar dataKey="net" radius={[6, 6, 0, 0]}>
                       {monthlyVelocity(history, orderedPlats).map((d, i) => <Cell key={i} fill={d.net >= 0 ? "#10b981" : "#f43f5e"} />)}
                     </Bar>
@@ -1169,7 +1186,7 @@ export default function FanDashboard() {
                     <CartesianGrid strokeDasharray="3 4" horizontal={false} />
                     <XAxis type="number" tickFormatter={fmt} axisLine={false} tickLine={false} />
                     <YAxis type="category" dataKey="name" width={140} axisLine={false} tickLine={false} tick={{ fill: "#475569", fontSize: 12, fontWeight: 500 }} />
-                    <Tooltip content={<ChartTooltip />} cursor={{ fill: "#f1f5f9" }} />
+                    <Tooltip content={<ChartTooltip />} cursor={{ fill: darkMode ? "#1e293b" : "#f1f5f9" }} />
                     {Object.keys(PLATFORMS).map((p, i, arr) => (
                       <Bar key={p} dataKey={p} stackId="a" fill={PLATFORMS[p].color} radius={i === arr.length - 1 ? [0, 8, 8, 0] : i === 0 ? [8, 0, 0, 8] : [0, 0, 0, 0]} />
                     ))}
