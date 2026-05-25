@@ -1110,7 +1110,7 @@ export default function FanDashboard() {
               <div className="relative h-[200px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
-                    <Pie data={platformShareData(artist)} innerRadius={55} outerRadius={85} paddingAngle={3} dataKey="value" stroke="white" strokeWidth={3}>
+                    <Pie data={platformShareData(artist)} innerRadius={55} outerRadius={85} dataKey="value" stroke="white" strokeWidth={2}>
                       {platformShareData(artist).map((d, i) => <Cell key={i} fill={d.fill} />)}
                     </Pie>
                     <Tooltip content={<ChartTooltip />} />
