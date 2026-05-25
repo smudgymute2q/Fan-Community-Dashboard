@@ -654,7 +654,7 @@ export default function FanDashboard() {
     : "live";
 
   return (
-    <div className={`min-h-screen w-full text-slate-800 ${darkMode ? "dark" : ""}`} style={{ background: darkMode ? "linear-gradient(180deg, #0d0a18 0%, #090d1a 50%, #0d0a14 100%)" : "linear-gradient(180deg, #fef7ff 0%, #f0f9ff 50%, #fdf4ff 100%)", fontFamily: "'Plus Jakarta Sans', 'Inter', system-ui, sans-serif" }}>
+    <div className={`min-h-screen w-full text-slate-800 ${darkMode ? "dark" : ""}`} style={{ background: darkMode ? "linear-gradient(135deg, #0a0c18 0%, #090b16 60%, #0c0a18 100%)" : "linear-gradient(180deg, #fef7ff 0%, #f0f9ff 50%, #fdf4ff 100%)", fontFamily: "'Plus Jakarta Sans', 'Inter', system-ui, sans-serif" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&display=swap');
         .font-display { font-family: 'Fraunces', Georgia, serif; font-optical-sizing: auto; }
@@ -663,23 +663,31 @@ export default function FanDashboard() {
         .recharts-cartesian-grid line { stroke: #e2e8f0; }
         .recharts-polar-grid-angle line { stroke: #e2e8f0; }
         .recharts-polar-angle-axis-tick text { fill: #64748b; font-size: 10px; font-weight: 600; }
-        .dark .recharts-cartesian-axis-tick text { fill: #475569; }
-        .dark .recharts-cartesian-grid line { stroke: #1e293b; }
-        .dark .recharts-polar-grid-angle line { stroke: #1e293b; }
-        .dark .recharts-polar-angle-axis-tick text { fill: #475569; }
-        .dark .bg-white { background-color: #1e293b !important; }
-        .dark .bg-slate-50 { background-color: #0f172a !important; }
-        .dark .bg-slate-100 { background-color: #293548 !important; }
-        .dark .bg-slate-200 { background-color: #334155 !important; }
-        .dark .border-slate-100 { border-color: #1e293b !important; }
-        .dark .border-slate-200 { border-color: #2d3f55 !important; }
-        .dark .border-slate-300 { border-color: #475569 !important; }
-        .dark .text-slate-900 { color: #f1f5f9 !important; }
-        .dark .text-slate-800 { color: #e2e8f0 !important; }
-        .dark .text-slate-700 { color: #cbd5e1 !important; }
-        .dark .text-slate-600 { color: #94a3b8 !important; }
-        .dark .text-slate-500 { color: #8898aa !important; }
-        .dark .shadow-sm { box-shadow: 0 1px 3px 0 rgba(0,0,0,0.4) !important; }
+        /* Dark mode — 3-level hierarchy:
+           page (#0a0c18) → card (#101422) → element (#1b2035) */
+        .dark .rounded-3xl.bg-white { background: #101422 !important; }
+        .dark .bg-white { background: #1b2035 !important; }
+        .dark .bg-slate-50 { background: #0d1020 !important; }
+        .dark .bg-slate-100 { background: #0c0f1e !important; }
+        .dark .bg-slate-200 { background: #232840 !important; }
+        .dark .bg-emerald-50 { background: rgba(16,185,129,0.08) !important; }
+        .dark .border-slate-100 { border-color: rgba(255,255,255,0.04) !important; }
+        .dark .border-slate-200 { border-color: rgba(255,255,255,0.07) !important; }
+        .dark .border-slate-300 { border-color: rgba(255,255,255,0.12) !important; }
+        .dark .border-emerald-200 { border-color: rgba(52,211,153,0.2) !important; }
+        .dark .border-amber-200 { border-color: rgba(251,191,36,0.15) !important; }
+        .dark .text-slate-900 { color: #eef1fc !important; }
+        .dark .text-slate-800 { color: #c8ceec !important; }
+        .dark .text-slate-700 { color: #8b94ba !important; }
+        .dark .text-slate-600 { color: #636d96 !important; }
+        .dark .text-slate-500 { color: #636d96 !important; }
+        .dark .text-emerald-700 { color: #34d399 !important; }
+        .dark .recharts-cartesian-axis-tick text { fill: #3d4566; }
+        .dark .recharts-cartesian-grid line { stroke: #1b2035; }
+        .dark .recharts-polar-grid-angle line { stroke: #1b2035; }
+        .dark .recharts-polar-angle-axis-tick text { fill: #3d4566; }
+        .dark .shadow-sm { box-shadow: 0 1px 4px rgba(0,0,0,0.6) !important; }
+        .dark .shadow-lg { box-shadow: 0 8px 24px rgba(0,0,0,0.5) !important; }
       `}</style>
 
       {/* Loading overlay — fades away once all sheets are fetched */}
@@ -731,7 +739,7 @@ export default function FanDashboard() {
             </div>
           </div>
           <div className="relative">
-            <div className={`absolute left-0 top-0 bottom-0 w-20 pointer-events-none z-[5] transition-opacity duration-150 ${rosterAtStart ? "opacity-0" : "opacity-100"}`} style={{ background: `linear-gradient(to right, ${darkMode ? "#0d0a18" : "#fef7ff"}, transparent)` }} />
+            <div className={`absolute left-0 top-0 bottom-0 w-20 pointer-events-none z-[5] transition-opacity duration-150 ${rosterAtStart ? "opacity-0" : "opacity-100"}`} style={{ background: `linear-gradient(to right, ${darkMode ? "#0a0c18" : "#fef7ff"}, transparent)` }} />
             <button
               onClick={() => { setRosterAtStart(true); isScrollingToStart.current = true; rosterRef.current?.scrollTo({ left: 0, behavior: "smooth" }); }}
               className={`absolute left-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition-opacity duration-150 ${rosterAtStart ? "opacity-0 pointer-events-none" : "opacity-100"}`}
@@ -760,7 +768,7 @@ export default function FanDashboard() {
             >
               {artists.map((a) => <ArtistPill key={a.slug} artist={a} active={a.slug === selectedSlug} onClick={() => setSelectedSlug(a.slug)} />)}
             </div>
-            <div className={`absolute right-0 top-0 bottom-0 w-20 pointer-events-none z-[5] transition-opacity duration-150 ${rosterAtEnd ? "opacity-0" : "opacity-100"}`} style={{ background: `linear-gradient(to left, ${darkMode ? "#0d0a18" : "#fef7ff"}, transparent)` }} />
+            <div className={`absolute right-0 top-0 bottom-0 w-20 pointer-events-none z-[5] transition-opacity duration-150 ${rosterAtEnd ? "opacity-0" : "opacity-100"}`} style={{ background: `linear-gradient(to left, ${darkMode ? "#0a0c18" : "#fef7ff"}, transparent)` }} />
             <button
               onClick={() => { const el = rosterRef.current; if (el) { setRosterAtEnd(true); isScrollingToEnd.current = true; el.scrollTo({ left: el.scrollWidth - el.clientWidth, behavior: "smooth" }); } }}
               className={`absolute right-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition-opacity duration-150 ${rosterAtEnd ? "opacity-0 pointer-events-none" : "opacity-100"}`}
@@ -1050,7 +1058,7 @@ export default function FanDashboard() {
                 const cfg = f !== "All" ? PLATFORMS[f] : null;
                 const count = f === "All" ? posts.length : posts.filter((p) => p.platform === f).length;
                 return (
-                  <button key={f} onClick={() => setFeedFilter(f)} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition ${active ? "bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900" : "bg-white border border-slate-200 text-slate-700 hover:border-slate-300"}`}>
+                  <button key={f} onClick={() => setFeedFilter(f)} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition ${active ? "bg-slate-900 dark:bg-[#000dff] text-white" : "bg-white border border-slate-200 text-slate-700 hover:border-slate-300"}`}>
                     {cfg && <span className="w-1.5 h-1.5 rounded-full" style={{ background: cfg.color }} />}
                     {f}
                     <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${active ? "bg-white/20" : "bg-slate-100"}`}>{count}</span>
