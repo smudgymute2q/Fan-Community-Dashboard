@@ -360,7 +360,7 @@ function DeltaPill({ value, small = false }) {
 function KpiTile({ platform, value, delta, isTotal }) {
   const cfg = PLATFORMS[platform];
   return (
-    <div className={`relative rounded-2xl p-4 transition hover:-translate-y-0.5 hover:shadow-lg ${isTotal ? "bg-gradient-to-br from-amber-100 to-orange-100 border border-amber-200" : "bg-white border border-slate-200 hover:border-slate-300"}`}>
+    <div className={`relative rounded-2xl p-4 ${isTotal ? "bg-gradient-to-br from-amber-100 to-orange-100 border border-amber-200" : "bg-white border border-slate-200"}`}>
       <div className={`flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider mb-2 ${isTotal ? "text-amber-800" : "text-slate-500"}`}>
         {!isTotal && <span className="w-2 h-2 rounded-full shrink-0" style={{ background: cfg.color }} />}
         {isTotal && <Sparkles size={11} className="text-amber-600" />}
