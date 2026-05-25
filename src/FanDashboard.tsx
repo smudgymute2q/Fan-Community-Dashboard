@@ -711,18 +711,18 @@ export default function FanDashboard() {
               <span className="text-xs text-slate-400 font-medium">{artists.length} artists tracked</span>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="relative">
             {!rosterAtStart && (
               <button
                 onClick={() => rosterRef.current?.scrollTo({ left: 0, behavior: "smooth" })}
-                className="shrink-0 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition"
+                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition"
               >
                 <ChevronDown size={13} className="rotate-90 text-slate-500" />
               </button>
             )}
             <div
               ref={rosterRef}
-              className="flex gap-3 overflow-x-auto pb-1 scroll-smooth flex-1"
+              className="flex gap-3 overflow-x-auto pb-1 scroll-smooth"
               style={{ scrollbarWidth: "none" }}
               onScroll={(e) => {
                 const el = e.currentTarget;
@@ -734,7 +734,7 @@ export default function FanDashboard() {
             </div>
             <button
               onClick={() => { const el = rosterRef.current; if (el) el.scrollTo({ left: el.scrollWidth - el.clientWidth, behavior: "smooth" }); }}
-              className={`shrink-0 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition ${rosterAtEnd ? "opacity-0 pointer-events-none" : "opacity-100"}`}
+              className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition ${rosterAtEnd ? "opacity-0 pointer-events-none" : "opacity-100"}`}
             >
               <ChevronDown size={13} className="-rotate-90 text-slate-500" />
             </button>
