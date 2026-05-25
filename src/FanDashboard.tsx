@@ -502,6 +502,7 @@ function FeedCard({ post }) {
 export default function FanDashboard() {
   const [darkMode, setDarkMode] = useState(false);
   const [selectedSlug, setSelectedSlug] = useState("opium");
+  const [pieHover, setPieHover] = useState<{ name: string; value: number; fill: string } | null>(null);
   const [hiddenPlats, setHiddenPlats] = useState(new Set());
   const [feedFilter, setFeedFilter] = useState("All");
   const [yearRange, setYearRange] = useState("all");
@@ -593,6 +594,7 @@ export default function FanDashboard() {
   React.useEffect(() => {
     setFeedFilter("All");
     setPagesPlatform("Discord");
+    setPieHover(null);
   }, [selectedSlug]);
 
   // Use sheets history if loaded, otherwise fall back to generated curve
@@ -1116,16 +1118,30 @@ export default function FanDashboard() {
               <div className="relative h-[200px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
-                    <Pie data={platformShareData(artist)} innerRadius={55} outerRadius={85} dataKey="value" stroke="white" strokeWidth={2}>
+                    <Pie
+                      data={platformShareData(artist)}
+                      innerRadius={55} outerRadius={85}
+                      dataKey="value" stroke="white" strokeWidth={2}
+                      onMouseEnter={(d) => setPieHover({ name: d.name, value: d.value, fill: d.payload?.fill || d.fill })}
+                      onMouseLeave={() => setPieHover(null)}
+                    >
                       {platformShareData(artist).map((d, i) => <Cell key={i} fill={d.fill} />)}
                     </Pie>
-                    <Tooltip content={<PieTooltip />} position={{ y: -48 }} allowEscapeViewBox={{ x: false, y: true }} />
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                   <div className="text-[9px] font-bold uppercase tracking-widest text-slate-500">Total</div>
                   <div className="font-bold text-lg text-slate-900 tabular-nums">{fmt(artist.totals.value)}</div>
                 </div>
+              </div>
+              <div className="h-8 flex items-center justify-center mt-1">
+                {pieHover && (
+                  <div className="flex items-center gap-2 text-xs bg-white border border-slate-200 rounded-lg px-3 py-1.5 shadow-sm">
+                    <span className="w-2 h-2 rounded-full shrink-0" style={{ background: pieHover.fill }} />
+                    <span className="text-slate-600 font-medium">{pieHover.name}</span>
+                    <span className="font-bold tabular-nums text-slate-900">{fmtFull(pieHover.value)}</span>
+                  </div>
+                )}
               </div>
               <div className="mt-4 space-y-1.5 text-xs">
                 {platformShareData(artist).sort((a, b) => b.value - a.value).slice(0, 3).map((d) => {
