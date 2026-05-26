@@ -843,32 +843,21 @@ export default function FanDashboard() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Year:</span>
+                <div className="flex items-center gap-1.5 flex-wrap">
                   {["2022", "2023", "2024", "2025", "2026"].map((yr) => (
                     <button
                       key={yr}
                       onClick={() => setYearRange(yr)}
-                      className={`text-xs font-semibold px-2.5 py-1 rounded-full transition ${
+                      className={`text-[10px] font-semibold px-2.5 py-1 rounded-full border transition ${
                         yearRange === yr
-                          ? "bg-[#000dff] text-white"
-                          : "bg-white border border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-900"
+                          ? "bg-[#000dff] text-white border-transparent"
+                          : "bg-white border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-900"
                       }`}
                     >
                       {yr}
                     </button>
                   ))}
-                  {yearRange !== "all" && (
-                    <button
-                      onClick={() => setYearRange("all")}
-                      className="text-xs font-semibold px-2.5 py-1 rounded-full text-slate-500 hover:text-slate-900 underline-offset-2 hover:underline"
-                    >
-                      Clear
-                    </button>
-                  )}
-                </div>
-
-                <div className="flex flex-wrap gap-1.5">
+                  <div className="w-px h-4 bg-slate-200 mx-1" />
                   {orderedPlats.map((p) => {
                     const off = hiddenPlats.has(p);
                     return (
