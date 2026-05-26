@@ -997,7 +997,7 @@ export default function FanDashboard() {
                             </div>
                             <div className="text-right">
                               <div className="text-sm font-bold tabular-nums text-slate-900">{fmtFull(p.followers)}</div>
-                              <div className="text-[10px] text-slate-500">followers</div>
+                              <div className="text-[10px] text-slate-500">{["Discord","Reddit","X Communities","Instagram Channels"].includes(effectivePlatform) ? "members" : "followers"}</div>
                             </div>
                           </Tag>
                         );
