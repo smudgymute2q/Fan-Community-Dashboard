@@ -724,7 +724,7 @@ export default function FanDashboard() {
               </div>
               <div className="leading-none">
                 <div className="text-xl font-bold text-slate-900 tracking-tight">
-                  FANINTEL <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#000dff] to-blue-500">PRO</span>
+                  FAN<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#000dff] to-blue-500">INTEL</span>
                 </div>
                 <div className="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-semibold mt-1">Community Intelligence</div>
               </div>
