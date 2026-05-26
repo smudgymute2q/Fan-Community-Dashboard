@@ -1122,6 +1122,7 @@ export default function FanDashboard() {
                       data={platformShareData(artist)}
                       innerRadius={55} outerRadius={85}
                       dataKey="value" stroke="white" strokeWidth={2}
+                      isAnimationActive={false}
                       onMouseEnter={(d) => setPieHover({ name: d.name, value: d.value, fill: d.payload?.fill || d.fill })}
                       onMouseLeave={() => setPieHover(null)}
                     >
@@ -1170,7 +1171,7 @@ export default function FanDashboard() {
                     <PolarGrid stroke="#e2e8f0" />
                     <PolarAngleAxis dataKey="platform" />
                     <PolarRadiusAxis angle={90} domain={[0, 100]} tick={false} axisLine={false} />
-                    <Radar dataKey="value" stroke="#a855f7" fill="#a855f7" fillOpacity={0.25} strokeWidth={2} />
+                    <Radar dataKey="value" stroke="#a855f7" fill="#a855f7" fillOpacity={0.25} strokeWidth={2} isAnimationActive={false} />
                   </RadarChart>
                 </ResponsiveContainer>
               </div>
