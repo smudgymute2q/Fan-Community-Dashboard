@@ -513,6 +513,8 @@ export default function FanDashboard() {
   const isScrollingToEnd = React.useRef(false);
   const isScrollingToStart = React.useRef(false);
   const [pagesDropdownOpen, setPagesDropdownOpen] = useState(false);
+  const pagesListRef = React.useRef<HTMLDivElement>(null);
+  const [pagesAtBottom, setPagesAtBottom] = useState(false);
 
   // ---- Sheets data loading ----
   const [sheetsData, setSheetsData] = useState<Record<string, any>>({});
@@ -955,7 +957,7 @@ export default function FanDashboard() {
                           {availablePlatforms.map((plat) => (
                             <button
                               key={plat}
-                              onClick={() => { setPagesPlatform(plat); setPagesDropdownOpen(false); }}
+                              onClick={() => { setPagesPlatform(plat); setPagesDropdownOpen(false); setPagesAtBottom(false); if (pagesListRef.current) pagesListRef.current.scrollTop = 0; }}
                               className={`w-full flex items-center gap-2 px-3 py-1.5 text-[11px] font-semibold transition hover:bg-slate-50 ${plat === effectivePlatform ? "text-slate-900" : "text-slate-500"}`}
                             >
                               <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: PLATFORMS[plat]?.color ?? "#94a3b8" }} />
@@ -967,7 +969,14 @@ export default function FanDashboard() {
                       )}
                     </div>
                   </div>
-                  <div className="p-2 max-h-[660px] overflow-y-auto">
+                  <div className="relative">
+                    <div className="absolute top-0 left-0 right-0 h-6 pointer-events-none z-10 transition-opacity duration-150 opacity-0 rounded-t-xl" style={{ background: "linear-gradient(to bottom, white, transparent)" }} />
+                    <div className={`absolute bottom-0 left-0 right-0 h-12 pointer-events-none z-10 transition-opacity duration-150 ${pagesAtBottom || filteredPages.length === 0 ? "opacity-0" : "opacity-100"} rounded-b-xl`} style={{ background: "linear-gradient(to top, white, transparent)" }} />
+                  <div
+                    ref={pagesListRef}
+                    className="p-2 max-h-[660px] overflow-y-auto"
+                    onScroll={(e) => { const el = e.currentTarget; setPagesAtBottom(el.scrollTop + el.clientHeight >= el.scrollHeight - 8); }}
+                  >
                     {filteredPages.length === 0 ? (
                       <div className="px-3 py-6 text-center text-xs text-slate-400">No {effectivePlatform} pages tracked yet</div>
                     ) : (
@@ -995,6 +1004,13 @@ export default function FanDashboard() {
                       })
                     )}
                   </div>
+                  </div>
+                  {filteredPages.length > 0 && (
+                    <div className="px-5 py-2.5 border-t border-slate-100 flex items-center justify-between">
+                      <span className="text-[10px] text-slate-400 font-medium">{filteredPages.length} pages tracked</span>
+                      {!pagesAtBottom && filteredPages.length > 5 && <span className="text-[10px] text-slate-400 font-medium flex items-center gap-1">scroll for more <ChevronDown size={10} /></span>}
+                    </div>
+                  )}
                 </div>
               );
             })()}
