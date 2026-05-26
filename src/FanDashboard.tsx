@@ -993,7 +993,7 @@ export default function FanDashboard() {
                                 <div className="text-sm font-semibold text-slate-900 group-hover:text-[#000dff] transition truncate">{p.name}</div>
                                 {p.managed && <Star size={11} className="shrink-0 text-amber-400 fill-amber-400" />}
                               </div>
-                              <div className="text-[10px] text-slate-500 mt-0.5">{p.latest ? `Updated ${p.latest}` : p.platform}</div>
+                              <div className="text-[10px] text-slate-500 mt-0.5">{p.latest ? `Last post ${p.latest}` : p.platform}</div>
                             </div>
                             <div className="text-right">
                               <div className="text-sm font-bold tabular-nums text-slate-900">{fmtFull(p.followers)}</div>
