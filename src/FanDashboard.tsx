@@ -50,7 +50,7 @@ const PLATFORMS = {
   Instagram: { color: "#FF0069", soft: "#FFE0EE" },
   "Instagram Channels": { color: "#7638FA", soft: "#EDE6FE" },
   X: { color: "#000000", soft: "#E5E7EB" },
-  "X Communities": { color: "#f59e0b", soft: "#FEF3C7" },
+  "X Communities": { color: "#808080", soft: "#F3F4F6" },
   TikTok: { color: "#00F2EA", soft: "#E0FDFB" },
 };
 
