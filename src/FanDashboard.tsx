@@ -328,7 +328,7 @@ function buildHistory(artist) {
   });
 }
 
-const fmt = (n) => { if (n === undefined || n === null) return "—"; const abs = Math.abs(n); if (abs >= 1_000_000) return (n / 1_000_000).toFixed(n % 1_000_000 === 0 ? 0 : 2) + "M"; if (abs >= 10_000) return (n / 1_000).toFixed(0) + "K"; if (abs >= 1_000) return (n / 1_000).toFixed(1) + "K"; return n.toLocaleString(); };
+const fmt = (n) => { if (n === undefined || n === null) return "—"; const abs = Math.abs(n); if (abs >= 1_000_000) return (n / 1_000_000).toFixed(n % 1_000_000 === 0 ? 0 : 2) + "M"; if (abs >= 10_000) return (n / 1_000).toFixed(0) + "K"; if (abs >= 1_000) return (n / 1_000).toFixed(1).replace(/\.0$/, "") + "K"; return n.toLocaleString(); };
 const fmtFull = (n) => (n ?? 0).toLocaleString();
 const monthLabel = (ym) => { const [y, m] = ym.split("-"); return new Date(parseInt(y), parseInt(m) - 1, 1).toLocaleString("en", { month: "short", year: "2-digit" }); };
 
@@ -888,7 +888,7 @@ export default function FanDashboard() {
                     <LineChart data={history} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
                       <CartesianGrid strokeDasharray="3 4" vertical={false} />
                       <XAxis dataKey="date" tickFormatter={monthLabel} interval={Math.max(0, Math.floor(history.length / 8))} axisLine={{ stroke: "#e2e8f0" }} tickLine={false} />
-                      <YAxis tickFormatter={fmt} axisLine={false} tickLine={false} width={48} ticks={(() => { const maxVal = Math.max(...history.flatMap(d => orderedPlats.filter(p => !hiddenPlats.has(p)).map(p => (d[p] as number) || 0))) || 1; const rawStep = maxVal / 4; const mag = Math.pow(10, Math.floor(Math.log10(rawStep))); const step = Math.ceil(rawStep / mag) * mag; return [0, step, step * 2, step * 3, step * 4]; })()} domain={[0, (dataMax: number) => { const rawStep = dataMax / 4; const mag = Math.pow(10, Math.floor(Math.log10(rawStep || 1))); return Math.ceil(rawStep / mag) * mag * 4; }]} />
+                      <YAxis tickFormatter={fmt} axisLine={false} tickLine={false} width={48} ticks={(() => { const maxVal = Math.max(...orderedPlats.filter(p => !hiddenPlats.has(p)).map(p => artist.platforms[p]?.value || 0), 1); const rawStep = maxVal / 4; const mag = Math.pow(10, Math.floor(Math.log10(rawStep))); const step = Math.ceil(rawStep / mag) * mag; return [0, step, step * 2, step * 3, step * 4]; })()} domain={[0, (() => { const maxVal = Math.max(...orderedPlats.filter(p => !hiddenPlats.has(p)).map(p => artist.platforms[p]?.value || 0), 1); const rawStep = maxVal / 4; const mag = Math.pow(10, Math.floor(Math.log10(rawStep))); const step = Math.ceil(rawStep / mag) * mag; return step * 4; })()]} />
                       <Tooltip content={<ChartTooltip />} cursor={{ stroke: "#cbd5e1", strokeDasharray: "3 3" }} wrapperStyle={{ transition: "none" }} />
                       {(() => {
                         const maxVal = Math.max(...orderedPlats.map((p) => artist.platforms[p]?.value || 0));
