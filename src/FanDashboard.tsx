@@ -50,7 +50,7 @@ const PLATFORMS = {
   Instagram: { color: "#FF0069", soft: "#FFE0EE" },
   "Instagram Channels": { color: "#7638FA", soft: "#EDE6FE" },
   X: { color: "#000000", soft: "#E5E7EB" },
-  "X Communities": { color: "#808080", soft: "#F3F4F6" },
+  "X Communities": { color: "#f59e0b", soft: "#FEF3C7" },
   TikTok: { color: "#00F2EA", soft: "#E0FDFB" },
 };
 
@@ -815,11 +815,8 @@ export default function FanDashboard() {
               <div className="flex flex-col gap-4 mb-5">
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                   <div>
-                    <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Fan Network Growth</div>
+                    <div className="text-[10px] uppercase tracking-wider text-slate-700 font-bold">Fan Network Growth</div>
                     <div className="text-base font-semibold text-slate-900 mt-0.5">Followers across platforms</div>
-                    <div className="text-xs text-slate-500">
-                      {history.length > 0 ? `${monthLabel(history[0].date)} — ${monthLabel(history[history.length - 1].date)}` : "No data in range"}
-                    </div>
                   </div>
 
                   <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
@@ -843,21 +840,6 @@ export default function FanDashboard() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-1.5">
-                  {["2022", "2023", "2024", "2025", "2026"].map((yr) => (
-                    <button
-                      key={yr}
-                      onClick={() => setYearRange(yr)}
-                      className={`text-[10px] font-semibold px-2.5 py-1 rounded-full border transition ${
-                        yearRange === yr
-                          ? "bg-[#000dff] text-white border-transparent"
-                          : "bg-white border-slate-200 text-slate-600 hover:border-slate-300 hover:text-slate-900"
-                      }`}
-                    >
-                      {yr}
-                    </button>
-                  ))}
-                </div>
                 <div className="flex items-center gap-1.5 flex-wrap">
                   {orderedPlats.map((p) => {
                     const off = hiddenPlats.has(p);
@@ -872,28 +854,28 @@ export default function FanDashboard() {
               </div>
 
               {rangeStats && (
-                <div className="grid grid-cols-4 gap-3 mb-4 p-4 bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/10 rounded-2xl border border-blue-100 dark:border-blue-900/30">
-                  <div>
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Range start</div>
-                    <div className="text-base font-bold tabular-nums text-slate-900">{fmt(rangeStats.startTotal)}</div>
-                  </div>
-                  <div>
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Range end</div>
-                    <div className="text-base font-bold tabular-nums text-slate-900">{fmt(rangeStats.endTotal)}</div>
-                  </div>
-                  <div>
+                <div className="flex mb-4 p-4 bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/10 rounded-2xl border border-blue-100 dark:border-blue-900/30 divide-x divide-blue-200 dark:divide-blue-900/40">
+                  <div className="flex-1 pr-4">
                     <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Net growth</div>
                     <div className={`text-base font-bold tabular-nums flex items-center gap-1 ${rangeStats.net >= 0 ? "text-emerald-600" : "text-rose-500"}`}>
                       {rangeStats.net >= 0 ? "+" : ""}{fmt(rangeStats.net)}
                       <span className="text-[10px] font-semibold">({rangeStats.pct >= 0 ? "+" : ""}{rangeStats.pct.toFixed(1)}%)</span>
                     </div>
                   </div>
-                  <div>
+                  <div className="flex-1 px-4">
                     <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Best month</div>
                     <div className="text-base font-bold text-slate-900">
                       {rangeStats.bestMonth ? monthLabel(rangeStats.bestMonth) : "—"}
                       {rangeStats.bestGain > 0 && <span className="text-xs text-emerald-600 ml-1.5 font-semibold">+{fmt(rangeStats.bestGain)}</span>}
                     </div>
+                  </div>
+                  <div className="flex-1 px-4">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Range start</div>
+                    <div className="text-base font-bold tabular-nums text-slate-900">{fmt(rangeStats.startTotal)}</div>
+                  </div>
+                  <div className="flex-1 pl-4">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Range end</div>
+                    <div className="text-base font-bold tabular-nums text-slate-900">{fmt(rangeStats.endTotal)}</div>
                   </div>
                 </div>
               )}
@@ -906,9 +888,16 @@ export default function FanDashboard() {
                     <LineChart data={history} margin={{ top: 8, right: 16, left: 0, bottom: 8 }}>
                       <CartesianGrid strokeDasharray="3 4" vertical={false} />
                       <XAxis dataKey="date" tickFormatter={monthLabel} interval={Math.max(0, Math.floor(history.length / 8))} axisLine={{ stroke: "#e2e8f0" }} tickLine={false} />
-                      <YAxis tickFormatter={fmt} axisLine={false} tickLine={false} width={48} />
+                      <YAxis tickFormatter={fmt} axisLine={false} tickLine={false} width={48} domain={[0, (dataMax: number) => Math.ceil(dataMax / 50000) * 50000]} />
                       <Tooltip content={<ChartTooltip />} cursor={{ stroke: "#cbd5e1", strokeDasharray: "3 3" }} wrapperStyle={{ transition: "none" }} />
-                      {orderedPlats.map((p) => hiddenPlats.has(p) ? null : <Line key={p} type="monotone" dataKey={p} stroke={PLATFORMS[p].color} strokeWidth={2.5} dot={false} activeDot={{ r: 4, strokeWidth: 2, stroke: "white" }} isAnimationActive={false} />)}
+                      {(() => {
+                        const maxVal = Math.max(...orderedPlats.map((p) => artist.platforms[p]?.value || 0));
+                        return orderedPlats.map((p) => {
+                          if (hiddenPlats.has(p)) return null;
+                          const isMinor = (artist.platforms[p]?.value || 0) < maxVal * 0.15;
+                          return <Line key={p} type="monotone" dataKey={p} stroke={PLATFORMS[p].color} strokeWidth={isMinor ? 1.5 : 2.5} strokeOpacity={isMinor ? 0.55 : 1} dot={false} activeDot={{ r: 4, strokeWidth: 2, stroke: "white" }} isAnimationActive={false} />;
+                        });
+                      })()}
                     </LineChart>
                   </ResponsiveContainer>
                 )}
