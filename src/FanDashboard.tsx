@@ -812,7 +812,7 @@ export default function FanDashboard() {
 
             {/* Growth chart */}
             <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
-              <div className="flex flex-col gap-4 mb-5">
+              <div className="flex flex-col gap-4 mb-4">
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                   <div>
                     <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Fan Network Growth</div>
