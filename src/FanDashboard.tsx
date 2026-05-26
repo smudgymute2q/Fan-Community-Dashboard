@@ -815,7 +815,7 @@ export default function FanDashboard() {
               <div className="flex flex-col gap-4 mb-5">
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                   <div>
-                    <div className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Fan Network Growth</div>
+                    <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Fan Network Growth</div>
                     <div className="text-base font-semibold text-slate-900 mt-0.5">Followers across platforms</div>
                   </div>
 
