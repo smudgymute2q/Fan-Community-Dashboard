@@ -1008,7 +1008,7 @@ export default function FanDashboard() {
                   </div>
                   {filteredPages.length > 0 && (
                     <div className="px-5 py-2.5 border-t border-slate-100 flex items-center justify-between">
-                      <span className="text-[10px] text-slate-400 font-medium">{filteredPages.length} pages tracked</span>
+                      <span className="text-[10px] text-slate-400 font-medium">{filteredPages.length} {filteredPages.length === 1 ? "page" : "pages"} tracked</span>
                       {!pagesAtBottom && filteredPages.length > 5 && <span className="text-[10px] text-slate-400 font-medium flex items-center gap-1">scroll for more <ChevronDown size={10} /></span>}
                     </div>
                   )}
