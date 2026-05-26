@@ -391,7 +391,7 @@ function ArtistPill({ artist, active, onClick }) {
   const initial = artist.name.charAt(0);
   const icon = ARTIST_ICONS[artist.slug];
   return (
-    <button onClick={onClick} style={{ filter: active ? "drop-shadow(0 8px 20px rgba(147,197,253,0.5))" : undefined }} className={`group relative shrink-0 text-left px-3.5 py-2.5 rounded-2xl border transition-all ${active ? "bg-gradient-to-br from-[#000dff] to-blue-500 text-white border-transparent" : "bg-white border-slate-200 hover:[filter:drop-shadow(0_2px_8px_rgba(0,0,0,0.08))]"}`}>
+    <button onClick={onClick} className={`group relative shrink-0 text-left px-3.5 py-2.5 rounded-2xl border transition-all ${active ? "bg-gradient-to-br from-[#000dff] to-blue-500 text-white border-transparent" : "bg-white border-slate-200"}`}>
       <div className="flex items-center gap-2.5">
         <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm overflow-hidden shrink-0 ${active ? "bg-white/20 text-white" : "bg-slate-100 text-slate-700"}`}>
           {icon ? <img src={icon} alt={artist.name} className="w-full h-full object-cover" /> : initial}
@@ -792,7 +792,7 @@ export default function FanDashboard() {
         <div className="grid grid-cols-12 gap-5">
           <section className="col-span-12 lg:col-span-8 space-y-5">
             {/* Hero */}
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#000dff] to-blue-600 p-6 text-white shadow-xl shadow-blue-300/40">
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#000dff] to-blue-600 p-6 text-white">
               <div className="absolute top-0 right-0 w-72 h-72 opacity-20 -mr-20 -mt-20"><div className="w-full h-full rounded-full bg-white blur-3xl" /></div>
               <div className="absolute bottom-0 left-1/2 w-64 h-64 opacity-10 -mb-32"><div className="w-full h-full rounded-full bg-yellow-200 blur-3xl" /></div>
               <div className="relative flex items-center justify-between gap-6">
