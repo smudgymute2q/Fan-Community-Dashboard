@@ -972,7 +972,7 @@ export default function FanDashboard() {
                   </div>
                   <div className="relative">
                     <div className="absolute top-0 left-0 right-0 h-6 pointer-events-none z-10 transition-opacity duration-150 opacity-0 rounded-t-xl" style={{ background: "linear-gradient(to bottom, white, transparent)" }} />
-                    <div className={`absolute bottom-0 left-0 right-0 h-12 pointer-events-none z-10 transition-opacity duration-150 ${pagesAtBottom || filteredPages.length <= 5 ? "opacity-0" : "opacity-100"} rounded-b-xl`} style={{ background: "linear-gradient(to top, white, transparent)" }} />
+                    <div className={`absolute bottom-0 left-0 right-0 h-12 pointer-events-none z-10 transition-opacity duration-150 ${pagesAtBottom || filteredPages.length <= 10 ? "opacity-0" : "opacity-100"} rounded-b-xl`} style={{ background: "linear-gradient(to top, white, transparent)" }} />
                   <div
                     ref={pagesListRef}
                     className="p-2 max-h-[660px] overflow-y-auto"
@@ -1009,7 +1009,7 @@ export default function FanDashboard() {
                   {filteredPages.length > 0 && (
                     <div className="px-5 py-2.5 border-t border-slate-100 flex items-center justify-between">
                       <span className="text-[10px] text-slate-400 font-medium">{filteredPages.length} {(() => { const n = filteredPages.length; if (effectivePlatform === "Discord") return n === 1 ? "server" : "servers"; if (effectivePlatform === "Reddit") return n === 1 ? "subreddit" : "subreddits"; if (effectivePlatform === "Instagram Channels") return n === 1 ? "channel" : "channels"; if (effectivePlatform === "X Communities") return n === 1 ? "community" : "communities"; return n === 1 ? "page" : "pages"; })()} tracked</span>
-                      {!pagesAtBottom && filteredPages.length > 5 && <span className="text-[10px] text-slate-400 font-medium flex items-center gap-1">scroll for more <ChevronDown size={10} /></span>}
+                      {!pagesAtBottom && filteredPages.length > 10 && <span className="text-[10px] text-slate-400 font-medium flex items-center gap-1">scroll for more <ChevronDown size={10} /></span>}
                     </div>
                   )}
                 </div>
