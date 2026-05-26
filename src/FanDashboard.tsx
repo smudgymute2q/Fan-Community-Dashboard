@@ -471,7 +471,7 @@ function FeedCard({ post }) {
           </div>
           <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full ${sent.bg} ${sent.text} shrink-0`}>{sent.label}</span>
         </div>
-        {post.title && <div className="text-[13px] text-slate-900 font-semibold leading-snug mb-1">{post.title}</div>}
+        {post.title && <div className="text-[13px] text-slate-900 font-semibold leading-snug mb-1 line-clamp-2">{post.title}</div>}
         <div className="text-xs text-slate-600 leading-relaxed line-clamp-3">{post.body}</div>
         {post.media && (
           <div className="mt-3 flex items-center gap-1.5 text-[10px] text-slate-500 bg-slate-50 px-2 py-1 rounded-lg w-fit">
@@ -1024,7 +1024,7 @@ export default function FanDashboard() {
         <section className="mt-8">
           <div className="flex items-baseline justify-between mb-4">
             <div className="flex items-baseline gap-3">
-              <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Live <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-[#000dff] to-blue-500">Feed</span></h2>
+              <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Live <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-[#000dff] to-blue-500 pr-1">Feed</span></h2>
               <span className="text-xs text-slate-500 font-medium">{artist.name} · recent posts</span>
             </div>
             <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-full">
@@ -1081,7 +1081,7 @@ export default function FanDashboard() {
         <section className="mt-10">
           <div className="flex items-baseline justify-between mb-4">
             <div className="flex items-baseline gap-3">
-              <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Deep <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-[#000dff] to-blue-500">Analytics</span></h2>
+              <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Deep <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-[#000dff] to-blue-500 pr-1">Analytics</span></h2>
               <span className="text-xs text-slate-500 font-medium">{artist.name} · cross-cuts</span>
             </div>
           </div>
