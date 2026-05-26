@@ -665,8 +665,7 @@ export default function FanDashboard() {
   return (
     <div className={`min-h-screen w-full text-slate-800 ${darkMode ? "dark" : ""}`} style={{ background: darkMode ? "linear-gradient(135deg, #0a0c18 0%, #090b16 60%, #0c0a18 100%)" : "linear-gradient(180deg, #fef7ff 0%, #f0f9ff 50%, #fdf4ff 100%)", fontFamily: "'Plus Jakarta Sans', 'Inter', system-ui, sans-serif" }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&display=swap');
-        .font-display { font-family: 'Fraunces', Georgia, serif; font-optical-sizing: auto; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
         .marquee-fade { mask-image: linear-gradient(90deg, transparent 0, black 3%, black 97%, transparent 100%); }
         .recharts-cartesian-axis-tick text { fill: #94a3b8; font-size: 10px; font-weight: 500; }
         .recharts-cartesian-grid line { stroke: #e2e8f0; }
@@ -722,7 +721,7 @@ export default function FanDashboard() {
                 <div className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full ring-2 ring-white animate-pulse" />
               </div>
               <div className="leading-none">
-                <div className="font-display text-xl font-bold text-slate-900 tracking-tight">
+                <div className="text-xl font-bold text-slate-900 tracking-tight">
                   FANINTEL <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#000dff] to-blue-500">PRO</span>
                 </div>
                 <div className="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-semibold mt-1">Community Intelligence</div>
@@ -797,7 +796,7 @@ export default function FanDashboard() {
               <div className="relative flex items-center justify-between gap-6">
                 <div>
                   <div className="text-[10px] uppercase tracking-[0.2em] text-white/70 font-bold mb-2">Now viewing</div>
-                  <h3 className="font-display text-5xl font-bold tracking-tight leading-none">{artist.name}</h3>
+                  <h3 className="text-5xl font-bold tracking-tight leading-none">{artist.name}</h3>
                 </div>
                 <div className="text-right">
                   <div className="text-[10px] uppercase tracking-[0.2em] text-white/70 font-bold mb-2">Cumulative reach</div>
@@ -1047,7 +1046,7 @@ export default function FanDashboard() {
         <section className="mt-8">
           <div className="flex items-baseline justify-between mb-4">
             <div className="flex items-baseline gap-3">
-              <h2 className="font-display text-3xl font-bold text-slate-900 tracking-tight">Live <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-[#000dff] to-blue-500">Feed</span></h2>
+              <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Live <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-[#000dff] to-blue-500">Feed</span></h2>
               <span className="text-xs text-slate-500 font-medium">{artist.name} · recent posts</span>
             </div>
             <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-full">
@@ -1104,7 +1103,7 @@ export default function FanDashboard() {
         <section className="mt-10">
           <div className="flex items-baseline justify-between mb-4">
             <div className="flex items-baseline gap-3">
-              <h2 className="font-display text-3xl font-bold text-slate-900 tracking-tight">Deep <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-[#000dff] to-blue-500">Analytics</span></h2>
+              <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Deep <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-[#000dff] to-blue-500">Analytics</span></h2>
               <span className="text-xs text-slate-500 font-medium">{artist.name} · cross-cuts</span>
             </div>
           </div>
