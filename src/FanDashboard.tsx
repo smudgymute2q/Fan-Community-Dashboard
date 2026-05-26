@@ -1250,7 +1250,7 @@ export default function FanDashboard() {
                     <XAxis dataKey="date" tickFormatter={monthLabel} interval={Math.floor(history.length / 8)} axisLine={{ stroke: "#e2e8f0" }} tickLine={false} />
                     <YAxis tickFormatter={fmt} axisLine={false} tickLine={false} width={48} />
                     <Tooltip content={<ChartTooltip />} cursor={{ stroke: "#cbd5e1", strokeDasharray: "3 3" }} wrapperStyle={{ transition: "none" }} />
-                    {[...orderedPlats].sort((a, b) => (artist.platforms[b]?.value || 0) - (artist.platforms[a]?.value || 0)).map((p) => <Area key={p} type="monotone" dataKey={p} stackId="1" stroke={PLATFORMS[p].color} strokeWidth={1.5} fill={`url(#grad-${p.replace(/\s/g, "")})`} isAnimationActive={false} />)}
+                    {[...orderedPlats].sort((a, b) => (artist.platforms[a]?.value || 0) - (artist.platforms[b]?.value || 0)).map((p) => <Area key={p} type="monotone" dataKey={p} stackId="1" stroke={PLATFORMS[p].color} strokeWidth={1.5} fill={`url(#grad-${p.replace(/\s/g, "")})`} isAnimationActive={false} />)}
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
