@@ -843,7 +843,7 @@ export default function FanDashboard() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-1.5 flex-wrap">
+                <div className="flex items-center gap-1.5">
                   {["2022", "2023", "2024", "2025", "2026"].map((yr) => (
                     <button
                       key={yr}
@@ -857,7 +857,8 @@ export default function FanDashboard() {
                       {yr}
                     </button>
                   ))}
-                  <div className="w-px h-4 bg-slate-200 mx-1" />
+                </div>
+                <div className="flex items-center gap-1.5 flex-wrap">
                   {orderedPlats.map((p) => {
                     const off = hiddenPlats.has(p);
                     return (
