@@ -1275,14 +1275,6 @@ export default function FanDashboard() {
           </div>
         </section>
 
-        <footer className="mt-10 pt-6 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
-          <div className="flex items-center gap-3">
-            <span className="font-bold tracking-wider">FAN<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#000dff] to-blue-500">INTEL</span></span>
-            <span className="text-slate-300">·</span>
-            <span>Data synced from Google Sheets</span>
-          </div>
-          <span className="font-medium">v0.4 · Community Intelligence Platform</span>
-        </footer>
       </div>
     </div>
   );
