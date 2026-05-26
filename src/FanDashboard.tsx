@@ -1254,7 +1254,7 @@ export default function FanDashboard() {
               </div>
               <div className="h-[280px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={history} margin={{ top: 8, right: 16, left: 0, bottom: 8 }}>
+                  <AreaChart data={history} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
                     <defs>
                       {orderedPlats.map((p) => (
                         <linearGradient key={p} id={`grad-${p.replace(/\s/g, "")}`} x1="0" y1="0" x2="0" y2="1">
