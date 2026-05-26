@@ -811,7 +811,7 @@ export default function FanDashboard() {
             </div>
 
             {/* Growth chart */}
-            <div className="bg-white border border-slate-200 rounded-3xl pt-6 px-6 pb-0 shadow-sm">
+            <div className="bg-white border border-slate-200 rounded-3xl pt-6 px-6 pb-4 shadow-sm">
               <div className="flex flex-col gap-4 mb-4">
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                   <div>
@@ -885,7 +885,7 @@ export default function FanDashboard() {
                   <div className="h-full flex items-center justify-center text-slate-400 text-sm">No data in the selected range</div>
                 ) : (
                   <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={history} margin={{ top: 8, right: 16, left: 0, bottom: 8 }}>
+                    <LineChart data={history} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
                       <CartesianGrid strokeDasharray="3 4" vertical={false} />
                       <XAxis dataKey="date" tickFormatter={monthLabel} interval={Math.max(0, Math.floor(history.length / 8))} axisLine={{ stroke: "#e2e8f0" }} tickLine={false} />
                       <YAxis tickFormatter={fmt} axisLine={false} tickLine={false} width={48} domain={[0, (dataMax: number) => Math.ceil(dataMax / 50000) * 50000]} />
