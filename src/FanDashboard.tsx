@@ -971,8 +971,6 @@ export default function FanDashboard() {
                     </div>
                   </div>
                   <div className="relative">
-                    <div className="absolute top-0 left-0 right-0 h-6 pointer-events-none z-10 transition-opacity duration-150 opacity-0 rounded-t-xl" style={{ background: "linear-gradient(to bottom, white, transparent)" }} />
-                    <div className={`absolute bottom-0 left-0 right-0 h-6 pointer-events-none z-10 transition-opacity duration-150 ${pagesAtBottom || filteredPages.length <= 9 ? "opacity-0" : "opacity-100"} rounded-b-xl`} style={{ background: "linear-gradient(to top, white, transparent)" }} />
                   <div
                     ref={pagesListRef}
                     className="p-2 max-h-[594px] overflow-y-auto"
