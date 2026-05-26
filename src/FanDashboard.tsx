@@ -575,12 +575,17 @@ export default function FanDashboard() {
       }
     }
 
+    // Hard timeout — if any fetch hangs indefinitely, don't block the UI forever
+    const timeout = setTimeout(() => {
+      if (!cancelled) setSheetsLoading(false);
+    }, 12000);
+
     loadAll().catch((err) => {
       console.error("[sheets] loadAll failed:", err);
       setSheetsLoading(false);
     });
 
-    return () => { cancelled = true; };
+    return () => { cancelled = true; clearTimeout(timeout); };
   }, []);
 
   // Merge static fallback with live sheets data
