@@ -888,7 +888,7 @@ export default function FanDashboard() {
                     <LineChart data={history} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
                       <CartesianGrid strokeDasharray="3 4" vertical={false} />
                       <XAxis dataKey="date" tickFormatter={monthLabel} interval={Math.max(0, Math.floor(history.length / 8))} axisLine={{ stroke: "#e2e8f0" }} tickLine={false} />
-                      <YAxis tickFormatter={fmt} axisLine={false} tickLine={false} width={48} domain={[0, (dataMax: number) => Math.ceil(dataMax / 50000) * 50000]} />
+                      <YAxis tickFormatter={fmt} axisLine={false} tickLine={false} width={48} tickCount={5} domain={[0, (dataMax: number) => Math.ceil(dataMax / 50000) * 50000]} />
                       <Tooltip content={<ChartTooltip />} cursor={{ stroke: "#cbd5e1", strokeDasharray: "3 3" }} wrapperStyle={{ transition: "none" }} />
                       {(() => {
                         const maxVal = Math.max(...orderedPlats.map((p) => artist.platforms[p]?.value || 0));
