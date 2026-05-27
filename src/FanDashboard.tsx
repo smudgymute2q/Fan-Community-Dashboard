@@ -898,7 +898,7 @@ export default function FanDashboard() {
                         return orderedPlats.map((p) => {
                           if (hiddenPlats.has(p)) return null;
                           const isMinor = (artist.platforms[p]?.value || 0) < maxVal * 0.15;
-                          return <Line key={p} type="monotone" dataKey={p} stroke={PLATFORMS[p].color} strokeWidth={isMinor ? 1.5 : 2.5} dot={false} activeDot={{ r: 4, strokeWidth: 2, stroke: "white" }} isAnimationActive={false} />;
+                          return <Line key={p} type="monotone" dataKey={p} stroke={PLATFORMS[p].color} strokeWidth={2} dot={false} activeDot={{ r: 4, strokeWidth: 2, stroke: "white" }} isAnimationActive={false} />;
                         });
                       })()}
                     </LineChart>
