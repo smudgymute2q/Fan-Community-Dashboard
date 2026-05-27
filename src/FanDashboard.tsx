@@ -1235,42 +1235,6 @@ export default function FanDashboard() {
               </div>
             </div>
 
-            <div className="col-span-12 bg-white border border-slate-200 rounded-3xl p-5 shadow-sm">
-              <div className="flex items-center justify-between mb-1">
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-lg bg-emerald-100 flex items-center justify-center"><Activity size={12} className="text-emerald-600" /></div>
-                  <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Cumulative Reach</div>
-                </div>
-                <span className="text-[10px] text-slate-400 font-medium">stacked area · all platforms</span>
-              </div>
-              <div className="text-sm font-semibold text-slate-900 mb-3">
-                How the total fanbase was built over time
-                {yearRange !== "all" && (
-                  <span className="ml-2 text-xs font-medium text-[#000dff]">
-                    · filtered: {yearRange === "ytd" ? "YTD" : yearRange === "12m" ? "last 12 months" : yearRange === "6m" ? "last 6 months" : yearRange === "3m" ? "last 3 months" : yearRange}
-                  </span>
-                )}
-              </div>
-              <div className="h-[280px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={history} margin={{ top: 8, right: 16, left: 0, bottom: 8 }}>
-                    <defs>
-                      {orderedPlats.map((p) => (
-                        <linearGradient key={p} id={`grad-${p.replace(/\s/g, "")}`} x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor={PLATFORMS[p].color} stopOpacity={0.65} />
-                          <stop offset="100%" stopColor={PLATFORMS[p].color} stopOpacity={0.1} />
-                        </linearGradient>
-                      ))}
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 4" vertical={false} />
-                    <XAxis dataKey="date" tickFormatter={monthLabel} interval={Math.floor(history.length / 8)} axisLine={{ stroke: "#e2e8f0" }} tickLine={false} />
-                    <YAxis tickFormatter={fmt} axisLine={false} tickLine={false} width={48} />
-                    <Tooltip content={<ChartTooltip />} cursor={{ stroke: "#cbd5e1", strokeDasharray: "3 3" }} wrapperStyle={{ transition: "none" }} />
-                    {[...orderedPlats].sort((a, b) => (artist.platforms[a]?.value || 0) - (artist.platforms[b]?.value || 0)).map((p) => <Area key={p} type="monotone" dataKey={p} stackId="1" stroke={PLATFORMS[p].color} strokeWidth={1.5} fill={`url(#grad-${p.replace(/\s/g, "")})`} isAnimationActive={false} />)}
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
           </div>
         </section>
 
