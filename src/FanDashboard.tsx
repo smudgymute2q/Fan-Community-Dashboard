@@ -1104,6 +1104,7 @@ export default function FanDashboard() {
                       data={platformShareData(artist)}
                       innerRadius={55} outerRadius={85}
                       dataKey="value" stroke="white" strokeWidth={2}
+                      startAngle={90} endAngle={-270}
                       isAnimationActive={false}
                       onMouseEnter={(d) => setPieHover({ name: d.name, value: d.value, fill: d.payload?.fill || d.fill })}
                       onMouseLeave={() => setPieHover(null)}
