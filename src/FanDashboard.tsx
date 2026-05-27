@@ -613,6 +613,8 @@ export default function FanDashboard() {
     "untiljapan": "untiljapan",
     "jim-legxacy": "jimlegxacy",
     "2hollis": "2hollis",
+    "apollored1": "apollored1",
+    "destin-laurel": "destinlaurel",
   };
 
   useEffect(() => {
