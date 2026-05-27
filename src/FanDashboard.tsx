@@ -492,7 +492,7 @@ function FeedCard({ post }) {
               );
             })}
           </div>
-          <button className="opacity-0 group-hover:opacity-100 transition text-[10px] text-slate-500 hover:text-slate-900 flex items-center gap-1 font-medium">open <ExternalLink size={10} /></button>
+          {post.link ? <a href={post.link} target="_blank" rel="noopener noreferrer" className="opacity-0 group-hover:opacity-100 transition text-[10px] text-slate-500 hover:text-slate-900 flex items-center gap-1 font-medium">open <ExternalLink size={10} /></a> : <span className="opacity-0 group-hover:opacity-100 transition text-[10px] text-slate-500 flex items-center gap-1 font-medium">open <ExternalLink size={10} /></span>}
         </div>
       </div>
     </div>
@@ -516,6 +516,8 @@ export default function FanDashboard() {
   const [pagesDropdownOpen, setPagesDropdownOpen] = useState(false);
   const pagesListRef = React.useRef<HTMLDivElement>(null);
   const [pagesAtBottom, setPagesAtBottom] = useState(false);
+  const [redditPosts, setRedditPosts] = useState<any[]>([]);
+  const [redditLoading, setRedditLoading] = useState(false);
 
   // ---- Sheets data loading ----
   const [sheetsData, setSheetsData] = useState<Record<string, any>>({});
@@ -598,6 +600,53 @@ export default function FanDashboard() {
     setFeedFilter("All");
     setPagesPlatform("Discord");
     setPieHover(null);
+  }, [selectedSlug]);
+
+  const ARTIST_SUBREDDITS: Record<string, string> = {
+    "opium": "opium",
+    "playboi-carti": "playboicarti",
+    "ken-carson": "kencarson",
+    "destroy-lonely": "destroylonely",
+    "hxg": "homixidegang",
+    "pierre-bourne": "pierrebourne",
+    "rema": "rema",
+    "untiljapan": "untiljapan",
+    "jim-legxacy": "jimlegxacy",
+    "2hollis": "2hollis",
+  };
+
+  useEffect(() => {
+    const subreddit = ARTIST_SUBREDDITS[selectedSlug];
+    if (!subreddit) { setRedditPosts([]); return; }
+    let cancelled = false;
+    setRedditLoading(true);
+    setRedditPosts([]);
+    fetch(`https://www.reddit.com/r/${subreddit}/hot.json?limit=6&raw_json=1`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (cancelled) return;
+        const posts = (data.data?.children || []).map((child: any) => {
+          const p = child.data;
+          const mins = Math.floor((Date.now() - p.created_utc * 1000) / 60000);
+          const time = mins < 60 ? `${mins}m ago` : mins < 1440 ? `${Math.floor(mins / 60)}h ago` : `${Math.floor(mins / 1440)}d ago`;
+          return {
+            platform: "Reddit",
+            page: `/r/${p.subreddit}`,
+            author: `u/${p.author}`,
+            time,
+            title: p.title,
+            body: p.selftext ? (p.selftext.length > 200 ? p.selftext.slice(0, 200) + "…" : p.selftext) : null,
+            engagement: { upvotes: p.score, comments: p.num_comments },
+            media: p.post_hint === "image" ? "image" : p.is_video ? "video" : undefined,
+            sentiment: p.score > 2000 ? "hype" : p.score < 0 ? "negative" : "neutral",
+            link: `https://reddit.com${p.permalink}`,
+          };
+        });
+        setRedditPosts(posts);
+      })
+      .catch(() => { if (!cancelled) setRedditPosts([]); })
+      .finally(() => { if (!cancelled) setRedditLoading(false); });
+    return () => { cancelled = true; };
   }, [selectedSlug]);
 
   // Use sheets history if loaded, otherwise fall back to generated curve
@@ -1033,7 +1082,8 @@ export default function FanDashboard() {
           <div className="flex items-center gap-2 mb-4 flex-wrap">
             <Filter size={14} className="text-slate-400" />
             {(() => {
-              const posts = MOCK_FEED[artist.slug] || [];
+              const mockNonReddit = (MOCK_FEED[artist.slug] || []).filter((p) => p.platform !== "Reddit");
+              const posts = [...redditPosts, ...mockNonReddit];
               const platsInFeed = Array.from(new Set(posts.map((p) => p.platform)));
               const filters = ["All", ...platsInFeed];
               return filters.map((f) => {
@@ -1052,8 +1102,12 @@ export default function FanDashboard() {
           </div>
 
           {(() => {
-            const posts = MOCK_FEED[artist.slug] || [];
+            const mockNonReddit = (MOCK_FEED[artist.slug] || []).filter((p) => p.platform !== "Reddit");
+            const posts = [...redditPosts, ...mockNonReddit];
             const filtered = feedFilter === "All" ? posts : posts.filter((p) => p.platform === feedFilter);
+            if (redditLoading && posts.length === 0) {
+              return <div className="flex items-center justify-center py-12 text-sm text-slate-400">Loading Reddit posts…</div>;
+            }
             if (posts.length === 0) {
               return (
                 <div className="border-2 border-dashed border-slate-200 rounded-3xl bg-white p-10 text-center">
@@ -1069,7 +1123,7 @@ export default function FanDashboard() {
           <div className="mt-4 px-4 py-3 bg-amber-50 border border-amber-200 rounded-2xl flex items-start gap-2">
             <AlertCircle size={14} className="text-amber-600 mt-0.5 shrink-0" />
             <div className="text-xs text-amber-800 leading-relaxed">
-              <span className="font-semibold">Mock data.</span> In production: Reddit via public API · Discord via bot · X via paid API · Instagram &amp; TikTok via aggregators or manual curation.
+              <span className="font-semibold">Partially live.</span> Reddit posts are fetched live · Discord, X, Instagram &amp; TikTok are mock data.
             </div>
           </div>
         </section>
