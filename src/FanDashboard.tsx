@@ -334,7 +334,7 @@ const fmtPageDate = (s: string) => { const [m, d, y] = s.split("/").map(Number);
 const monthLabel = (ym) => { const [y, m] = ym.split("-"); return new Date(parseInt(y), parseInt(m) - 1, 1).toLocaleString("en", { month: "short", year: "2-digit" }); };
 
 function platformShareData(artist) {
-  return Object.entries(artist.platforms).map(([name, v]) => ({ name, value: v.value, fill: PLATFORMS[name]?.color || "#888" }));
+  return Object.entries(artist.platforms).map(([name, v]) => ({ name, value: v.value, fill: PLATFORMS[name]?.color || "#888" })).sort((a, b) => b.value - a.value);
 }
 function monthlyVelocity(history, plats) {
   const recent = history.slice(-13);
