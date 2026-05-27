@@ -1014,24 +1014,6 @@ export default function FanDashboard() {
               );
             })()}
 
-            <div className="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden">
-              <div className="px-5 py-4 border-b border-slate-100">
-                <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Fastest Movers · 28d</div>
-                <div className="text-sm font-semibold text-slate-900 mt-0.5">Biggest swings across the roster</div>
-              </div>
-              <div className="p-2">
-                {artists.slice().sort((a, b) => Math.abs(b.totals.delta) - Math.abs(a.totals.delta)).slice(0, 5).map((a, i) => {
-                  const up = a.totals.delta >= 0;
-                  return (
-                    <div key={a.slug} className="w-full p-3 flex items-center gap-3 rounded-xl">
-                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold ${i === 0 ? "bg-amber-100 text-amber-700" : i === 1 ? "bg-slate-100 text-slate-700" : i === 2 ? "bg-orange-100 text-orange-700" : "bg-slate-50 text-slate-500"}`}>{i + 1}</div>
-                      <span className="flex-1 text-sm font-semibold text-slate-900 truncate">{a.name}</span>
-                      <span className={`text-xs font-bold tabular-nums px-2 py-0.5 rounded-full ${up ? "bg-emerald-100 text-emerald-700" : "bg-rose-100 text-rose-700"}`}>{up ? "+" : ""}{fmt(a.totals.delta)}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
           </aside>
         </div>
 
@@ -1159,25 +1141,7 @@ export default function FanDashboard() {
               </div>
             </div>
 
-            <div className="col-span-12 md:col-span-4 bg-white border border-slate-200 rounded-3xl p-5 shadow-sm">
-              <div className="flex items-center gap-2 mb-1">
-                <div className="w-6 h-6 rounded-lg bg-blue-100 flex items-center justify-center"><Activity size={12} className="text-[#000dff]" /></div>
-                <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Platform Presence</div>
-              </div>
-              <div className="text-sm font-semibold text-slate-900 mb-3">Normalized vs roster top</div>
-              <div className="h-[240px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <RadarChart data={platformRadar(artist, artists)}>
-                    <PolarGrid stroke="#e2e8f0" />
-                    <PolarAngleAxis dataKey="platform" />
-                    <PolarRadiusAxis angle={90} domain={[0, 100]} tick={false} axisLine={false} />
-                    <Radar dataKey="value" stroke="#a855f7" fill="#a855f7" fillOpacity={0.25} strokeWidth={2} isAnimationActive={false} />
-                  </RadarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-
-            <div className="col-span-12 md:col-span-4 bg-white border border-slate-200 rounded-3xl p-5 shadow-sm">
+<div className="col-span-12 md:col-span-4 bg-white border border-slate-200 rounded-3xl p-5 shadow-sm">
               <div className="flex items-center gap-2 mb-1">
                 <div className="w-6 h-6 rounded-lg bg-amber-100 flex items-center justify-center"><Zap size={12} className="text-amber-600" /></div>
                 <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Growth Velocity</div>
@@ -1203,35 +1167,22 @@ export default function FanDashboard() {
               </div>
             </div>
 
-            <div className="col-span-12 bg-white border border-slate-200 rounded-3xl p-5 shadow-sm">
-              <div className="flex items-center justify-between mb-1">
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-lg bg-cyan-100 flex items-center justify-center"><BarChart3 size={12} className="text-cyan-600" /></div>
-                  <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Roster Comparison</div>
-                </div>
-                <span className="text-[10px] text-slate-400 font-medium">stacked by platform</span>
+            <div className="col-span-12 md:col-span-4 bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden">
+              <div className="px-5 py-4 border-b border-slate-100">
+                <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Fastest Movers · 28d</div>
+                <div className="text-sm font-semibold text-slate-900 mt-0.5">Biggest swings across the roster</div>
               </div>
-              <div className="text-sm font-semibold text-slate-900 mb-3">Total reach — all tracked artists</div>
-              <div className="h-[360px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={artists.slice().sort((a, b) => b.totals.value - a.totals.value).map((a) => { const row = { name: a.name }; Object.entries(a.platforms).forEach(([p, v]) => { row[p] = v.value; }); return row; })} layout="vertical" margin={{ top: 0, right: 24, left: 0, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 4" horizontal={false} />
-                    <XAxis type="number" tickFormatter={fmt} axisLine={false} tickLine={false} />
-                    <YAxis type="category" dataKey="name" width={140} axisLine={false} tickLine={false} tick={{ fill: "#475569", fontSize: 12, fontWeight: 500 }} />
-                    <Tooltip content={<ChartTooltip />} cursor={{ fill: darkMode ? "#1e293b" : "#f1f5f9" }} wrapperStyle={{ transition: "none" }} />
-                    {Object.keys(PLATFORMS).map((p, i, arr) => (
-                      <Bar key={p} dataKey={p} stackId="a" fill={PLATFORMS[p].color} radius={i === arr.length - 1 ? [0, 8, 8, 0] : i === 0 ? [8, 0, 0, 8] : [0, 0, 0, 0]} isAnimationActive={false} />
-                    ))}
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-              <div className="mt-3 flex flex-wrap gap-3">
-                {Object.keys(PLATFORMS).map((p) => (
-                  <div key={p} className="flex items-center gap-1.5 text-[11px] font-medium text-slate-600">
-                    <span className="w-2 h-2 rounded-full" style={{ background: PLATFORMS[p].color }} />
-                    {p}
-                  </div>
-                ))}
+              <div className="p-2">
+                {artists.slice().sort((a, b) => Math.abs(b.totals.delta) - Math.abs(a.totals.delta)).slice(0, 5).map((a, i) => {
+                  const up = a.totals.delta >= 0;
+                  return (
+                    <div key={a.slug} className="w-full p-3 flex items-center gap-3 rounded-xl">
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold ${i === 0 ? "bg-amber-100 text-amber-700" : i === 1 ? "bg-slate-100 text-slate-700" : i === 2 ? "bg-orange-100 text-orange-700" : "bg-slate-50 text-slate-500"}`}>{i + 1}</div>
+                      <span className="flex-1 text-sm font-semibold text-slate-900 truncate">{a.name}</span>
+                      <span className={`text-xs font-bold tabular-nums px-2 py-0.5 rounded-full ${up ? "bg-emerald-100 text-emerald-700" : "bg-rose-100 text-rose-700"}`}>{up ? "+" : ""}{fmt(a.totals.delta)}</span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
