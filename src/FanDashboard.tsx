@@ -1168,12 +1168,13 @@ export default function FanDashboard() {
               </div>
             </div>
 
-            <div className="col-span-12 md:col-span-4 bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden">
-              <div className="px-5 py-4 border-b border-slate-100">
+            <div className="col-span-12 md:col-span-4 bg-white border border-slate-200 rounded-3xl p-5 shadow-sm">
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-6 h-6 rounded-lg bg-emerald-100 flex items-center justify-center"><ArrowUpRight size={12} className="text-emerald-600" /></div>
                 <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Fastest Movers · 28d</div>
-                <div className="text-sm font-semibold text-slate-900 mt-0.5">Biggest swings across the roster</div>
               </div>
-              <div className="p-2">
+              <div className="text-sm font-semibold text-slate-900 mb-3">Biggest swings across the roster</div>
+              <div className="-mx-2">
                 {artists.slice().sort((a, b) => Math.abs(b.totals.delta) - Math.abs(a.totals.delta)).slice(0, 5).map((a, i) => {
                   const up = a.totals.delta >= 0;
                   return (
