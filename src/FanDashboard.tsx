@@ -23,6 +23,7 @@ import {
 import {
   ChevronDown,
   ArrowUpRight,
+  ArrowUp,
   ArrowDownRight,
   Minus,
   Moon,
@@ -440,7 +441,7 @@ function PieTooltip({ active, payload }) {
 
 function engagementSummary(post) {
   const e = post.engagement;
-  if (post.platform === "Reddit") return [{ icon: ArrowUpRight, label: fmt(e.upvotes) }, { icon: MessageSquare, label: fmt(e.comments) }];
+  if (post.platform === "Reddit") return [{ icon: ArrowUp, label: fmt(e.upvotes) }, { icon: MessageSquare, label: fmt(e.comments) }];
   if (post.platform === "Discord") return [{ icon: Heart, label: fmt(e.reactions) }, { icon: MessageSquare, label: fmt(e.replies) }];
   if (post.platform === "X") return [{ icon: Heart, label: fmt(e.likes) }, { icon: Repeat2, label: fmt(e.reposts) }, { icon: MessageSquare, label: fmt(e.replies) }];
   if (post.platform === "TikTok") return [{ icon: Heart, label: fmt(e.likes) }, { icon: MessageSquare, label: fmt(e.comments) }, { icon: Repeat2, label: fmt(e.shares) }];
