@@ -627,7 +627,7 @@ export default function FanDashboard() {
       .then((r) => r.json())
       .then((data) => {
         if (cancelled) return;
-        const posts = (data.data?.children || []).map((child: any) => {
+        const posts = (data.data?.children || []).filter((child: any) => !child.data.stickied).map((child: any) => {
           const p = child.data;
           const mins = Math.floor((Date.now() - p.created_utc * 1000) / 60000);
           const time = mins < 60 ? `${mins}m ago` : mins < 1440 ? `${Math.floor(mins / 60)}h ago` : `${Math.floor(mins / 1440)}d ago`;
