@@ -19,10 +19,6 @@ import {
   ArrowUp,
   ArrowDownRight,
   Minus,
-  Moon,
-  Sun,
-  Activity,
-  BarChart3,
   PieChart as PieIcon,
   Zap,
   MessageSquare,
@@ -224,18 +220,18 @@ function parsePagesTab(rows: string[][]) {
 
 // ---- Static fallback artist data (used while sheets are loading or on fetch error) ----
 const STATIC_ARTISTS = [
-  { slug: "opium", name: "Opium", tagline: "Label · Core fanbase", totals: { value: 168074, delta: 808 }, platforms: { Discord: { value: 8809, delta: 1 }, Reddit: { value: 19795, delta: 425 }, Instagram: { value: 95339, delta: 415 }, "Instagram Channels": { value: 9400, delta: -200 }, X: { value: 1775, delta: 154 }, TikTok: { value: 32956, delta: 13 } }, pages: [{ name: "/opium00", followers: 8809, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "playboi-carti", name: "Playboi Carti", tagline: "Opium · Rage principal", totals: { value: 1495905, delta: 4537 }, platforms: { Discord: { value: 182148, delta: 338 }, Reddit: { value: 1029516, delta: 8064 }, Instagram: { value: 253236, delta: -3425 }, "Instagram Channels": { value: 23900, delta: -400 }, X: { value: 6995, delta: -38 }, "X Communities": { value: 110, delta: -2 } }, pages: [{ name: "/playboicarti", followers: 182148, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/pbc00", followers: 13193, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "ken-carson", name: "Ken Carson", tagline: "Opium · Project X", totals: { value: 536568, delta: 11932 }, platforms: { Discord: { value: 76270, delta: 236 }, Reddit: { value: 75448, delta: 904 }, Instagram: { value: 212157, delta: 8336 }, "Instagram Channels": { value: 22500, delta: 1000 }, X: { value: 45700, delta: 300 }, "X Communities": { value: 79146, delta: 9 }, TikTok: { value: 24300, delta: 100 } }, pages: [{ name: "/kencarson", followers: 76270, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/BuZYYKZQ", followers: 153, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "destroy-lonely", name: "Destroy Lonely", tagline: "Opium · The NS collective", totals: { value: 213034, delta: 59171 }, platforms: { Discord: { value: 36318, delta: 98 }, Reddit: { value: 55756, delta: 499 }, Instagram: { value: 65854, delta: 7484 }, "Instagram Channels": { value: 1600, delta: -2400 }, X: { value: 28706, delta: 28690 }, "X Communities": { value: 9200, delta: 0 }, TikTok: { value: 15600, delta: 0 } }, pages: [{ name: "/destroylonely", followers: 36318, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/bh3", followers: 1867, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "hxg", name: "HXG", tagline: "Opium · HXG duo", totals: { value: 37566, delta: -231 }, platforms: { Discord: { value: 10277, delta: -51 }, Reddit: { value: 8943, delta: 35 }, Instagram: { value: 18346, delta: -215 } }, pages: [{ name: "/hxg", followers: 10277, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "pierre-bourne", name: "Pi'erre Bourne", tagline: "Producer · SossHouse", totals: { value: 37147, delta: 171 }, platforms: { Discord: { value: 4955, delta: 53 }, Reddit: { value: 22381, delta: 104 }, Instagram: { value: 9424, delta: -14 }, "Instagram Channels": { value: 387, delta: 28 } }, pages: [{ name: "/pierrebourne", followers: 4955, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/yopierre", followers: 372, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "rema", name: "Rema", tagline: "Afrobeats · Mavin", totals: { value: 2123652, delta: 4239 }, platforms: { Discord: { value: 2541, delta: 23 }, Reddit: { value: 308, delta: 4 }, Instagram: { value: 698524, delta: 3991 }, X: { value: 22179, delta: -79 }, TikTok: { value: 1400100, delta: 300 } }, pages: [{ name: "/heisrema", followers: 2541, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "2hollis", name: "2hollis", tagline: "Emerging", totals: { value: 0, delta: 0 }, platforms: {}, pages: [] },
-  { slug: "untiljapan", name: "untiljapan", tagline: "Emerging · Underground", totals: { value: 6802, delta: 136 }, platforms: { Discord: { value: 2039, delta: 44 }, Reddit: { value: 1416, delta: -7 }, Instagram: { value: 1713, delta: 22 }, X: { value: 1079, delta: 60 }, "X Communities": { value: 555, delta: 17 }, TikTok: { value: 9, delta: 0 } }, pages: [{ name: "/untiljapan", followers: 2039, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "jim-legxacy", name: "Jim Legxacy", tagline: "Emerging · Discord-native", totals: { value: 10144, delta: 2202 }, platforms: { Discord: { value: 6089, delta: 1410 }, Reddit: { value: 359, delta: 39 }, Instagram: { value: 322, delta: 131 }, X: { value: 2362, delta: 235 }, "X Communities": { value: 261, delta: 23 }, TikTok: { value: 751, delta: 364 } }, pages: [{ name: "/PfeRaWF4bG", followers: 6089, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "apollored1", name: "ApolloRed1", tagline: "Emerging · SoundCloud era", totals: { value: 1659, delta: 80 }, platforms: { Discord: { value: 283, delta: 44 }, Reddit: { value: 56, delta: 8 }, Instagram: { value: 1320, delta: 28 } }, pages: [{ name: "/apollohub", followers: 564, latest: "Apr 9, 2026", platform: "Discord" }, { name: "/apollored1", followers: 283, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "destin-laurel", name: "Destin Laurel", tagline: "Emerging", totals: { value: 0, delta: 0 }, platforms: {}, pages: [] },
+  { slug: "opium", name: "Opium", totals: { value: 168074, delta: 808 }, platforms: { Discord: { value: 8809, delta: 1 }, Reddit: { value: 19795, delta: 425 }, Instagram: { value: 95339, delta: 415 }, "Instagram Channels": { value: 9400, delta: -200 }, X: { value: 1775, delta: 154 }, TikTok: { value: 32956, delta: 13 } }, pages: [{ name: "/opium00", followers: 8809, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "playboi-carti", name: "Playboi Carti", totals: { value: 1495905, delta: 4537 }, platforms: { Discord: { value: 182148, delta: 338 }, Reddit: { value: 1029516, delta: 8064 }, Instagram: { value: 253236, delta: -3425 }, "Instagram Channels": { value: 23900, delta: -400 }, X: { value: 6995, delta: -38 }, "X Communities": { value: 110, delta: -2 } }, pages: [{ name: "/playboicarti", followers: 182148, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/pbc00", followers: 13193, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "ken-carson", name: "Ken Carson", totals: { value: 536568, delta: 11932 }, platforms: { Discord: { value: 76270, delta: 236 }, Reddit: { value: 75448, delta: 904 }, Instagram: { value: 212157, delta: 8336 }, "Instagram Channels": { value: 22500, delta: 1000 }, X: { value: 45700, delta: 300 }, "X Communities": { value: 79146, delta: 9 }, TikTok: { value: 24300, delta: 100 } }, pages: [{ name: "/kencarson", followers: 76270, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/BuZYYKZQ", followers: 153, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "destroy-lonely", name: "Destroy Lonely", totals: { value: 213034, delta: 59171 }, platforms: { Discord: { value: 36318, delta: 98 }, Reddit: { value: 55756, delta: 499 }, Instagram: { value: 65854, delta: 7484 }, "Instagram Channels": { value: 1600, delta: -2400 }, X: { value: 28706, delta: 28690 }, "X Communities": { value: 9200, delta: 0 }, TikTok: { value: 15600, delta: 0 } }, pages: [{ name: "/destroylonely", followers: 36318, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/bh3", followers: 1867, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "hxg", name: "HXG", totals: { value: 37566, delta: -231 }, platforms: { Discord: { value: 10277, delta: -51 }, Reddit: { value: 8943, delta: 35 }, Instagram: { value: 18346, delta: -215 } }, pages: [{ name: "/hxg", followers: 10277, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "pierre-bourne", name: "Pi'erre Bourne", totals: { value: 37147, delta: 171 }, platforms: { Discord: { value: 4955, delta: 53 }, Reddit: { value: 22381, delta: 104 }, Instagram: { value: 9424, delta: -14 }, "Instagram Channels": { value: 387, delta: 28 } }, pages: [{ name: "/pierrebourne", followers: 4955, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/yopierre", followers: 372, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "rema", name: "Rema", totals: { value: 2123652, delta: 4239 }, platforms: { Discord: { value: 2541, delta: 23 }, Reddit: { value: 308, delta: 4 }, Instagram: { value: 698524, delta: 3991 }, X: { value: 22179, delta: -79 }, TikTok: { value: 1400100, delta: 300 } }, pages: [{ name: "/heisrema", followers: 2541, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "2hollis", name: "2hollis", totals: { value: 0, delta: 0 }, platforms: {}, pages: [] },
+  { slug: "untiljapan", name: "untiljapan", totals: { value: 6802, delta: 136 }, platforms: { Discord: { value: 2039, delta: 44 }, Reddit: { value: 1416, delta: -7 }, Instagram: { value: 1713, delta: 22 }, X: { value: 1079, delta: 60 }, "X Communities": { value: 555, delta: 17 }, TikTok: { value: 9, delta: 0 } }, pages: [{ name: "/untiljapan", followers: 2039, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "jim-legxacy", name: "Jim Legxacy", totals: { value: 10144, delta: 2202 }, platforms: { Discord: { value: 6089, delta: 1410 }, Reddit: { value: 359, delta: 39 }, Instagram: { value: 322, delta: 131 }, X: { value: 2362, delta: 235 }, "X Communities": { value: 261, delta: 23 }, TikTok: { value: 751, delta: 364 } }, pages: [{ name: "/PfeRaWF4bG", followers: 6089, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "apollored1", name: "ApolloRed1", totals: { value: 1659, delta: 80 }, platforms: { Discord: { value: 283, delta: 44 }, Reddit: { value: 56, delta: 8 }, Instagram: { value: 1320, delta: 28 } }, pages: [{ name: "/apollohub", followers: 564, latest: "Apr 9, 2026", platform: "Discord" }, { name: "/apollored1", followers: 283, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "destin-laurel", name: "Destin Laurel", totals: { value: 0, delta: 0 }, platforms: {}, pages: [] },
 ];
 
 const MOCK_FEED = {
@@ -487,7 +483,6 @@ function FeedCard({ post }) {
 }
 
 export default function FanDashboard() {
-  const [darkMode, setDarkMode] = useState(false);
   const [selectedSlug, setSelectedSlug] = useState("opium");
   const [pieHover, setPieHover] = useState<{ name: string; value: number; fill: string } | null>(null);
   const [piePos, setPiePos] = useState<{ x: number; y: number } | null>(null);
@@ -703,7 +698,7 @@ export default function FanDashboard() {
     : "live";
 
   return (
-    <div className={`min-h-screen w-full text-slate-800 ${darkMode ? "dark" : ""}`} style={{ background: darkMode ? "#0a0c18" : "#f1f5f9", fontFamily: "'Plus Jakarta Sans', 'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen w-full text-slate-800" style={{ background: "#f1f5f9", fontFamily: "'Plus Jakarta Sans', 'Inter', system-ui, sans-serif" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
         .marquee-fade { mask-image: linear-gradient(90deg, transparent 0, black 3%, black 97%, transparent 100%); }
@@ -711,36 +706,11 @@ export default function FanDashboard() {
         .recharts-cartesian-grid line { stroke: #e2e8f0; }
         .recharts-polar-grid-angle line { stroke: #e2e8f0; }
         .recharts-polar-angle-axis-tick text { fill: #64748b; font-size: 10px; font-weight: 600; }
-        /* Dark mode — 3-level hierarchy:
-           page (#0a0c18) → card (#101422) → element (#1b2035) */
-        .dark .rounded-3xl.bg-white { background: #101422 !important; }
-        .dark .bg-white { background: #1b2035 !important; }
-        .dark .bg-slate-50 { background: #0d1020 !important; }
-        .dark .bg-slate-100 { background: #0c0f1e !important; }
-        .dark .bg-slate-200 { background: #232840 !important; }
-        .dark .bg-emerald-50 { background: rgba(16,185,129,0.08) !important; }
-        .dark .border-slate-100 { border-color: rgba(255,255,255,0.04) !important; }
-        .dark .border-slate-200 { border-color: rgba(255,255,255,0.07) !important; }
-        .dark .border-slate-300 { border-color: rgba(255,255,255,0.12) !important; }
-        .dark .border-emerald-200 { border-color: rgba(52,211,153,0.2) !important; }
-        .dark .border-amber-200 { border-color: rgba(251,191,36,0.15) !important; }
-        .dark .text-slate-900 { color: #eef1fc !important; }
-        .dark .text-slate-800 { color: #c8ceec !important; }
-        .dark .text-slate-700 { color: #8b94ba !important; }
-        .dark .text-slate-600 { color: #636d96 !important; }
-        .dark .text-slate-500 { color: #636d96 !important; }
-        .dark .text-emerald-700 { color: #34d399 !important; }
-        .dark .recharts-cartesian-axis-tick text { fill: #3d4566; }
-        .dark .recharts-cartesian-grid line { stroke: #1b2035; }
-        .dark .recharts-polar-grid-angle line { stroke: #1b2035; }
-        .dark .recharts-polar-angle-axis-tick text { fill: #3d4566; }
-        .dark .shadow-sm { box-shadow: 0 1px 4px rgba(0,0,0,0.6) !important; }
-        .dark .shadow-lg { box-shadow: 0 8px 24px rgba(0,0,0,0.5) !important; }
       `}</style>
 
       {/* Loading overlay — fades away once all sheets are fetched */}
       {sheetsLoading && (
-        <div className={`fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm pointer-events-none ${darkMode ? "bg-slate-900/60" : "bg-white/60"}`}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm pointer-events-none bg-white/60">
           <div className="flex flex-col items-center gap-3">
             <div className="w-8 h-8 rounded-full border-2 border-[#000dff] border-t-transparent animate-spin" />
             <span className="text-xs font-semibold text-slate-600">Loading data…</span>
@@ -773,9 +743,6 @@ export default function FanDashboard() {
               <span className="text-[11px] font-semibold text-emerald-700">Live · {syncLabel}</span>
             </div>
           </div>
-          <button onClick={() => setDarkMode((d) => !d)} className="text-slate-700 bg-white border border-slate-200 hover:border-slate-300 hover:shadow-sm w-9 h-9 rounded-xl flex items-center justify-center transition">
-            {darkMode ? <Sun size={14} /> : <Moon size={14} />}
-          </button>
         </header>
 
         {/* Roster */}
@@ -787,7 +754,7 @@ export default function FanDashboard() {
             </div>
           </div>
           <div className="relative">
-            <div className={`absolute left-0 -top-2 -bottom-2 w-20 pointer-events-none z-[5] transition-opacity duration-150 ${rosterAtStart ? "opacity-0" : "opacity-100"}`} style={{ background: `linear-gradient(to right, ${darkMode ? "#0a0c18" : "#f1f5f9"}, transparent)` }} />
+            <div className={`absolute left-0 -top-2 -bottom-2 w-20 pointer-events-none z-[5] transition-opacity duration-150 ${rosterAtStart ? "opacity-0" : "opacity-100"}`} style={{ background: "linear-gradient(to right, #f1f5f9, transparent)" }} />
             <button
               onClick={() => { setRosterAtStart(true); isScrollingToStart.current = true; rosterRef.current?.scrollTo({ left: 0, behavior: "smooth" }); }}
               className={`absolute left-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition-opacity duration-150 ${rosterAtStart ? "opacity-0 pointer-events-none" : "opacity-100"}`}
@@ -816,7 +783,7 @@ export default function FanDashboard() {
             >
               {artists.map((a) => <ArtistPill key={a.slug} artist={a} active={a.slug === selectedSlug} onClick={() => setSelectedSlug(a.slug)} />)}
             </div>
-            <div className={`absolute right-0 -top-2 -bottom-2 w-20 pointer-events-none z-[5] transition-opacity duration-150 ${rosterAtEnd ? "opacity-0" : "opacity-100"}`} style={{ background: `linear-gradient(to left, ${darkMode ? "#0a0c18" : "#f1f5f9"}, transparent)` }} />
+            <div className={`absolute right-0 -top-2 -bottom-2 w-20 pointer-events-none z-[5] transition-opacity duration-150 ${rosterAtEnd ? "opacity-0" : "opacity-100"}`} style={{ background: "linear-gradient(to left, #f1f5f9, transparent)" }} />
             <button
               onClick={() => { const el = rosterRef.current; if (el) { setRosterAtEnd(true); isScrollingToEnd.current = true; el.scrollTo({ left: el.scrollWidth - el.clientWidth, behavior: "smooth" }); } }}
               className={`absolute right-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition-opacity duration-150 ${rosterAtEnd ? "opacity-0 pointer-events-none" : "opacity-100"}`}
@@ -1200,7 +1167,7 @@ export default function FanDashboard() {
                         <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">{monthLabel(label)}</div>
                         <div className="font-bold tabular-nums text-slate-900 text-sm mt-1">{payload[0].value >= 0 ? "+" : ""}{fmtFull(payload[0].value)}</div>
                       </div>
-                    ) : null} cursor={{ fill: darkMode ? "#1e293b" : "#f1f5f9" }} wrapperStyle={{ transition: "none" }} />
+                    ) : null} cursor={{ fill: "#f1f5f9" }} wrapperStyle={{ transition: "none" }} />
                     <Bar dataKey="net" radius={[6, 6, 0, 0]} isAnimationActive={false}>
                       {monthlyVelocity(history, orderedPlats).map((d, i) => <Cell key={i} fill={d.net >= 0 ? "#10b981" : "#f43f5e"} />)}
                     </Bar>
