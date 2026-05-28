@@ -350,7 +350,7 @@ function KpiTile({ platform, value, delta }) {
         {platform}
       </div>
       <div className="font-bold tabular-nums leading-none text-2xl text-slate-900">{fmtFull(value)}</div>
-      <div className="mt-2"><DeltaPill value={delta} small /></div>
+      <div className="mt-2"><DeltaPill value={delta} /></div>
     </div>
   );
 }
