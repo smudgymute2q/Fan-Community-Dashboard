@@ -12,13 +12,6 @@ import {
   Cell,
   PieChart,
   Pie,
-  RadarChart,
-  Radar,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-  AreaChart,
-  Area,
 } from "recharts";
 import {
   ChevronDown,
@@ -40,7 +33,6 @@ import {
   Image as ImageIcon,
   Play,
   AlertCircle,
-  Sparkles,
   Star,
 } from "lucide-react";
 
@@ -346,12 +338,6 @@ function monthlyVelocity(history, plats) {
     return { date: row.date, net: total - totalPrev };
   });
 }
-function platformRadar(artist, allArtists) {
-  const allPlats = ["Discord", "Reddit", "Instagram", "Instagram Channels", "X", "X Communities", "TikTok"];
-  const maxes = {};
-  allPlats.forEach((p) => { maxes[p] = Math.max(...allArtists.map((a) => a.platforms[p]?.value || 0), 1); });
-  return allPlats.map((p) => ({ platform: p, value: Math.round(((artist.platforms[p]?.value || 0) / maxes[p]) * 100) }));
-}
 
 function DeltaPill({ value, small = false }) {
   if (value === 0 || value === null || value === undefined) return <span className={`inline-flex items-center gap-0.5 text-slate-500 ${small ? "text-[10px]" : "text-xs"} font-medium`}><Minus size={small ? 10 : 12} strokeWidth={2.5} /> 0</span>;
@@ -359,15 +345,15 @@ function DeltaPill({ value, small = false }) {
   return <span className={`inline-flex items-center gap-0.5 font-semibold ${small ? "text-[10px]" : "text-xs"} ${up ? "text-emerald-600" : "text-rose-500"}`}>{up ? <ArrowUpRight size={small ? 10 : 12} strokeWidth={3} /> : <ArrowDownRight size={small ? 10 : 12} strokeWidth={3} />}{up ? "+" : ""}{fmt(value)}</span>;
 }
 
-function KpiTile({ platform, value, delta, isTotal }) {
+function KpiTile({ platform, value, delta }) {
   const cfg = PLATFORMS[platform];
   return (
-    <div className={`relative rounded-2xl p-4 ${isTotal ? "bg-gradient-to-br from-amber-100 to-orange-100 border border-amber-200" : "bg-white border border-slate-200"}`}>
-      <div className={`flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider mb-2 ${isTotal ? "text-amber-800" : "text-slate-500"}`}>
-        {isTotal && <Sparkles size={11} className="text-amber-600" />}
-        {isTotal ? "Total Reach" : platform}
+    <div className="relative rounded-2xl p-4 bg-white border border-slate-200">
+      <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider mb-2 text-slate-500">
+        {cfg && <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: cfg.color }} />}
+        {platform}
       </div>
-      <div className={`font-bold tabular-nums leading-none ${isTotal ? "text-3xl text-amber-900" : "text-2xl text-slate-900"}`}>{fmtFull(value)}</div>
+      <div className="font-bold tabular-nums leading-none text-2xl text-slate-900">{fmtFull(value)}</div>
       <div className="mt-2"><DeltaPill value={delta} small /></div>
     </div>
   );
@@ -856,8 +842,8 @@ export default function FanDashboard() {
                   <div className="text-[10px] uppercase tracking-[0.2em] text-white/70 font-bold mb-2">Cumulative reach</div>
                   <div className="font-bold text-4xl tabular-nums leading-none">{fmtFull(artist.totals.value)}</div>
                   <div className="mt-2 flex items-center justify-end gap-2">
-                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${artist.totals.delta >= 0 ? "bg-white/20 text-white" : "bg-rose-900/30 text-rose-100"}`}>
-                      {artist.totals.delta >= 0 ? "↑" : "↓"} {fmt(Math.abs(artist.totals.delta))}
+                    <span className={`inline-flex items-center gap-0.5 text-xs font-bold px-2 py-0.5 rounded-full ${artist.totals.delta >= 0 ? "bg-white/20 text-white" : "bg-rose-900/30 text-rose-100"}`}>
+                      {artist.totals.delta >= 0 ? <ArrowUpRight size={12} strokeWidth={3} /> : <ArrowDownRight size={12} strokeWidth={3} />}{fmt(Math.abs(artist.totals.delta))}
                     </span>
                     <span className="text-[10px] text-white/70 font-medium">last 28d</span>
                   </div>
@@ -946,10 +932,8 @@ export default function FanDashboard() {
                       <YAxis tickFormatter={fmt} axisLine={false} tickLine={false} width={48} ticks={(() => { const cur = Math.max(...orderedPlats.filter(p => !hiddenPlats.has(p)).map(p => artist.platforms[p]?.value || 0), 1); const hist = Math.max(...history.flatMap(d => orderedPlats.filter(p => !hiddenPlats.has(p)).map(p => (d[p] as number) || 0)), 1); const maxVal = hist <= cur * 2 ? hist : cur; const rawStep = maxVal / 4; const mag = Math.pow(10, Math.floor(Math.log10(rawStep))); const norm = rawStep / mag; const step = ([1,1.5,2,2.5,3,4,5,6,7,8,10].find(f => f >= norm) ?? 10) * mag; return [0, step, step * 2, step * 3, step * 4]; })()} domain={[0, (() => { const cur = Math.max(...orderedPlats.filter(p => !hiddenPlats.has(p)).map(p => artist.platforms[p]?.value || 0), 1); const hist = Math.max(...history.flatMap(d => orderedPlats.filter(p => !hiddenPlats.has(p)).map(p => (d[p] as number) || 0)), 1); const maxVal = hist <= cur * 2 ? hist : cur; const rawStep = maxVal / 4; const mag = Math.pow(10, Math.floor(Math.log10(rawStep))); const norm = rawStep / mag; const step = ([1,1.5,2,2.5,3,4,5,6,7,8,10].find(f => f >= norm) ?? 10) * mag; return step * 4; })()]} />
                       <Tooltip content={<ChartTooltip />} cursor={{ stroke: "#cbd5e1", strokeDasharray: "3 3" }} wrapperStyle={{ transition: "none" }} />
                       {(() => {
-                        const maxVal = Math.max(...orderedPlats.map((p) => artist.platforms[p]?.value || 0));
                         return orderedPlats.map((p) => {
                           if (hiddenPlats.has(p)) return null;
-                          const isMinor = (artist.platforms[p]?.value || 0) < maxVal * 0.15;
                           return <Line key={p} type="monotone" dataKey={p} stroke={PLATFORMS[p].color} strokeWidth={2} dot={false} activeDot={{ r: 4, strokeWidth: 2, stroke: "white" }} isAnimationActive={false} />;
                         });
                       })()}
