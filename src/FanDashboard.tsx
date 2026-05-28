@@ -763,7 +763,7 @@ export default function FanDashboard() {
             </button>
             <div
               ref={rosterRef}
-              className="flex gap-3 overflow-x-auto scroll-smooth py-2 -my-2"
+              className="flex gap-2 overflow-x-auto scroll-smooth py-2 -my-2"
               style={{ scrollbarWidth: "none" }}
               onScroll={(e) => {
                 const el = e.currentTarget;
@@ -862,7 +862,7 @@ export default function FanDashboard() {
               </div>
 
               {rangeStats && (
-                <div className="flex mb-[13.5px] p-4 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-100 dark:border-blue-900/30 divide-x divide-blue-200 dark:divide-blue-900/40">
+                <div className="flex mb-[13.5px] py-3 border-t border-b border-slate-100 divide-x divide-slate-200">
                   <div className="flex-1 pr-4">
                     <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Net growth</div>
                     <div className={`text-base font-bold tabular-nums flex items-center gap-1 ${rangeStats.net >= 0 ? "text-emerald-600" : "text-rose-500"}`}>
