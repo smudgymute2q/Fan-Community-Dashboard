@@ -529,6 +529,13 @@ export default function FanDashboard() {
   const [sheetsData, setSheetsData] = useState<Record<string, any>>({});
   const [sheetsLoading, setSheetsLoading] = useState(true);
   const [syncedAt, setSyncedAt] = useState<Date | null>(null);
+  const [, setNowTick] = useState(0);
+
+  // Tick once a minute so the "synced Xm ago" label stays current
+  useEffect(() => {
+    const id = setInterval(() => setNowTick((t) => t + 1), 60000);
+    return () => clearInterval(id);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -768,7 +775,7 @@ export default function FanDashboard() {
   const syncLabel = sheetsLoading
     ? "syncing…"
     : syncedAt
-    ? `synced ${Math.round((Date.now() - syncedAt.getTime()) / 60000) || "<1"}m ago`
+    ? `synced ${Math.floor((Date.now() - syncedAt.getTime()) / 60000) || "<1"}m ago`
     : "live";
 
   return (
