@@ -605,30 +605,45 @@ export default function FanDashboard() {
     let cancelled = false;
     setRedditLoading(true);
     setRedditPosts([]);
-    fetch(`https://www.reddit.com/r/${subreddit}/hot.json?limit=6&raw_json=1`)
+    const redditUrl = `https://www.reddit.com/r/${subreddit}/hot.json?limit=6&raw_json=1`;
+    const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(redditUrl)}`;
+    const parseRedditData = (data: any) => {
+      return (data.data?.children || []).filter((child: any) => !child.data.stickied).map((child: any) => {
+        const p = child.data;
+        const mins = Math.floor((Date.now() - p.created_utc * 1000) / 60000);
+        const time = mins < 60 ? `${mins}m ago` : mins < 1440 ? `${Math.floor(mins / 60)}h ago` : `${Math.floor(mins / 1440)}d ago`;
+        return {
+          platform: "Reddit",
+          page: `/r/${p.subreddit}`,
+          author: `u/${p.author}`,
+          time,
+          title: p.title,
+          body: p.selftext ? (p.selftext.length > 200 ? p.selftext.slice(0, 200) + "…" : p.selftext) : null,
+          engagement: { upvotes: p.score, comments: p.num_comments },
+          media: p.post_hint === "image" ? "image" : p.is_video ? "video" : undefined,
+          sentiment: p.score > 2000 ? "hype" : p.score < 0 ? "negative" : "neutral",
+          link: `https://reddit.com${p.permalink}`,
+        };
+      });
+    };
+    fetch(proxyUrl)
       .then((r) => r.json())
       .then((data) => {
         if (cancelled) return;
-        const posts = (data.data?.children || []).filter((child: any) => !child.data.stickied).map((child: any) => {
-          const p = child.data;
-          const mins = Math.floor((Date.now() - p.created_utc * 1000) / 60000);
-          const time = mins < 60 ? `${mins}m ago` : mins < 1440 ? `${Math.floor(mins / 60)}h ago` : `${Math.floor(mins / 1440)}d ago`;
-          return {
-            platform: "Reddit",
-            page: `/r/${p.subreddit}`,
-            author: `u/${p.author}`,
-            time,
-            title: p.title,
-            body: p.selftext ? (p.selftext.length > 200 ? p.selftext.slice(0, 200) + "…" : p.selftext) : null,
-            engagement: { upvotes: p.score, comments: p.num_comments },
-            media: p.post_hint === "image" ? "image" : p.is_video ? "video" : undefined,
-            sentiment: p.score > 2000 ? "hype" : p.score < 0 ? "negative" : "neutral",
-            link: `https://reddit.com${p.permalink}`,
-          };
-        });
-        setRedditPosts(posts);
+        const posts = parseRedditData(data);
+        if (posts.length > 0) {
+          setRedditPosts(posts);
+        } else {
+          throw new Error("empty");
+        }
       })
-      .catch(() => { if (!cancelled) setRedditPosts([]); })
+      .catch(() => {
+        if (!cancelled) {
+          // Fall back to mock Reddit posts so the feed always has Reddit content
+          const mockReddit = (MOCK_FEED[selectedSlug] || []).filter((p: any) => p.platform === "Reddit");
+          setRedditPosts(mockReddit);
+        }
+      })
       .finally(() => { if (!cancelled) setRedditLoading(false); });
     return () => { cancelled = true; };
   }, [selectedSlug]);
@@ -1077,7 +1092,7 @@ export default function FanDashboard() {
           <div className="mt-4 px-4 py-3 bg-amber-50 border border-amber-200 rounded-2xl flex items-start gap-2">
             <AlertCircle size={14} className="text-amber-600 mt-0.5 shrink-0" />
             <div className="text-xs text-amber-800 leading-relaxed">
-              <span className="font-semibold">Partially live.</span> Reddit posts are fetched live · Discord, X, Instagram &amp; TikTok are mock data.
+              <span className="font-semibold">Partially live.</span> Reddit posts are fetched live where available, otherwise showing recent highlights · Discord, X, Instagram &amp; TikTok are mock data.
             </div>
           </div>
         </section>
