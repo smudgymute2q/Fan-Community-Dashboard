@@ -43,6 +43,9 @@ const PLATFORMS = {
   TikTok: { color: "#00F2EA", soft: "#E0FDFB" },
 };
 
+// ---- Cloudflare Worker proxy ----
+const WORKER_URL = "https://fanintel.smudgy-mute2q.workers.dev";
+
 // ---- Google Sheets config ----
 // Published ID from File → Share → Publish to the web
 const SHEET_ID = "2PACX-1vRX8lP3Nb-LWMmUoTtHDHihOX-SkhFMUXoQJIuinbUhctXSjgJ1CCI9NvO1MQZKdgy9jtG33DgrOtre";
@@ -132,7 +135,7 @@ function decodeJsString(str: string): string {
 
 // Fetch the published HTML index page and extract tab name → GID mapping.
 async function fetchGidMap(pubId: string): Promise<Record<string, string>> {
-  const url = `https://docs.google.com/spreadsheets/d/e/${pubId}/pubhtml`;
+  const url = `${WORKER_URL}/sheets?pubId=${pubId}`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`pubhtml HTTP ${res.status}`);
   const html = await res.text();
@@ -164,7 +167,7 @@ async function fetchGidMap(pubId: string): Promise<Record<string, string>> {
 }
 
 async function fetchSheetByGid(pubId: string, gid: string): Promise<string[][]> {
-  const url = `https://docs.google.com/spreadsheets/d/e/${pubId}/pub?output=csv&gid=${gid}&single=true`;
+  const url = `${WORKER_URL}/sheets?pubId=${pubId}&gid=${gid}`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return parseCSVText(await res.text());
@@ -671,9 +674,9 @@ export default function FanDashboard() {
       }
 
       const attempts = [
+        `${WORKER_URL}/reddit?subreddit=${subreddit}`,
         redditUrl,
         `https://api.allorigins.win/raw?url=${encodeURIComponent(redditUrl)}`,
-        `https://corsproxy.io/?${encodeURIComponent(redditUrl)}`,
       ];
 
       for (const url of attempts) {
