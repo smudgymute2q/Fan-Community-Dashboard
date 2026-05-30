@@ -1050,7 +1050,7 @@ export default function FanDashboard() {
                   <div className="relative">
                   <div
                     ref={pagesListRef}
-                    className="p-2 max-h-[594px] overflow-y-auto"
+                    className="p-2 max-h-[594px] overflow-y-auto [overscroll-behavior:contain]"
                     onScroll={(e) => { const el = e.currentTarget; setPagesAtBottom(el.scrollTop + el.clientHeight >= el.scrollHeight - 8); }}
                   >
                     {filteredPages.length === 0 ? (
