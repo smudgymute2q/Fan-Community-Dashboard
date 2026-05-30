@@ -540,25 +540,43 @@ export default function FanDashboard() {
   useEffect(() => {
     let cancelled = false;
 
-    // Hydrate from cache immediately — no loading spinner on repeat visits.
-    // If the cache is still fresh, use it as-is and skip the network fetch
-    // entirely so the "synced Xm ago" label reflects real data age.
-    const cached = getCached<Record<string, any>>("fanIntel_sheets", CACHE_MS.sheets);
-    if (cached) {
-      setSheetsData(cached.data);
-      setSyncedAt(new Date(cached.ts));
-      setSheetsLoading(false);
-      return () => { cancelled = true; };
+    // Primary: shared snapshot (public/data.json) produced by the daily
+    // GitHub Action — same data and the same sync time for every visitor.
+    async function loadSnapshot(): Promise<boolean> {
+      try {
+        const res = await fetch(`${import.meta.env.BASE_URL}data.json`, { cache: "no-store" });
+        if (!res.ok) return false;
+        const json = await res.json();
+        if (!json?.artists || Object.keys(json.artists).length === 0) return false;
+        if (cancelled) return true;
+        setSheetsData(json.artists);
+        setSyncedAt(json.syncedAt ? new Date(json.syncedAt) : new Date());
+        setSheetsLoading(false);
+        return true;
+      } catch {
+        return false;
+      }
     }
 
-    async function loadAll() {
+    // Fallback (only if the snapshot is missing): localStorage cache, then a
+    // live fetch via the Worker proxy.
+    async function loadFallback() {
+      const cached = getCached<Record<string, any>>("fanIntel_sheets", CACHE_MS.sheets);
+      if (cached) {
+        if (cancelled) return;
+        setSheetsData(cached.data);
+        setSyncedAt(new Date(cached.ts));
+        setSheetsLoading(false);
+        return;
+      }
+
       // Phase 1: fetch published HTML page to extract tab name → GID map
       let gidMap: Record<string, string> = {};
       try {
         gidMap = await fetchGidMap(SHEET_ID);
       } catch (err) {
         console.error("[sheets] Could not read GID map:", err);
-        if (!cached) setSheetsLoading(false);
+        setSheetsLoading(false);
         return;
       }
       if (cancelled) return;
@@ -591,7 +609,6 @@ export default function FanDashboard() {
 
       if (cancelled) return;
 
-      // Commit all at once, cache for next visit
       if (Object.keys(results).length > 0) {
         setSheetsData(results);
         setSyncedAt(new Date());
@@ -600,9 +617,13 @@ export default function FanDashboard() {
       setSheetsLoading(false);
     }
 
-    loadAll().catch((err) => {
-      console.error("[sheets] loadAll failed:", err);
-      if (!cached) setSheetsLoading(false);
+    loadSnapshot().then((ok) => {
+      if (!ok && !cancelled) {
+        loadFallback().catch((err) => {
+          console.error("[sheets] fallback failed:", err);
+          if (!cancelled) setSheetsLoading(false);
+        });
+      }
     });
 
     return () => { cancelled = true; };
