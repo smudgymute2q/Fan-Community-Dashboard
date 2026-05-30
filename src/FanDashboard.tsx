@@ -1192,13 +1192,13 @@ export default function FanDashboard() {
               </div>
             </div>
 
-<div className="col-span-12 md:col-span-4 bg-white border border-slate-200 rounded-3xl p-5 shadow-sm">
+<div className="col-span-12 md:col-span-4 flex flex-col bg-white border border-slate-200 rounded-3xl p-5 shadow-sm">
               <div className="flex items-center gap-2 mb-1">
                 <div className="w-6 h-6 rounded-lg bg-amber-100 flex items-center justify-center"><Zap size={12} className="text-amber-600" /></div>
                 <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Growth Velocity</div>
               </div>
               <div className="text-sm font-semibold text-slate-900 mb-3">Net added · trailing 12mo</div>
-              <div className="h-[200px]">
+              <div className="flex-1 min-h-[200px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={monthlyVelocity(history, orderedPlats)} margin={{ top: 8, right: 0, left: 0, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 4" vertical={false} />
