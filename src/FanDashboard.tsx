@@ -1095,7 +1095,7 @@ export default function FanDashboard() {
         </div>
 
         {/* Deep Analytics */}
-        <section className="mt-8">
+        <section className="mt-10">
           <div className="flex items-baseline justify-between mb-4">
             <div className="flex items-baseline gap-3">
               <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Deep <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#000dff] to-blue-500 pr-1">Analytics</span></h2>
