@@ -1099,7 +1099,6 @@ export default function FanDashboard() {
           <div className="flex items-baseline justify-between mb-4">
             <div className="flex items-baseline gap-3">
               <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Live <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-[#000dff] to-blue-500 pr-1">Feed</span></h2>
-              <span className="text-xs text-slate-500 font-medium">{artist.name} · recent posts</span>
             </div>
             <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-full">
               <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -1161,7 +1160,6 @@ export default function FanDashboard() {
           <div className="flex items-baseline justify-between mb-4">
             <div className="flex items-baseline gap-3">
               <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Deep <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-[#000dff] to-blue-500 pr-1">Analytics</span></h2>
-              <span className="text-xs text-slate-500 font-medium">{artist.name} · cross-cuts</span>
             </div>
           </div>
 
