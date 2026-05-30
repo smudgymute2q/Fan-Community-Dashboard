@@ -64,7 +64,7 @@ const SHEET_TABS: Record<string, { network: string; pages: string }> = {
 };
 
 // ---- LocalStorage cache utilities ----
-const CACHE_MS = { sheets: 3_600_000, reddit: 900_000 }; // 1h / 15m
+const CACHE_MS = { sheets: 86_400_000, reddit: 900_000 }; // 24h / 15m
 
 function getCached<T>(key: string, ttl: number): { data: T; ts: number } | null {
   try {
