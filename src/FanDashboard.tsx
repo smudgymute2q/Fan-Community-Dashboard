@@ -63,6 +63,27 @@ const SHEET_TABS: Record<string, { network: string; pages: string }> = {
   "destin-laurel":  { network: "Destin Laurel (Fan Network)",  pages: "Destin Laurel (Fan Pages)" },
 };
 
+// ---- LocalStorage cache utilities ----
+const CACHE_MS = { sheets: 3_600_000, reddit: 900_000 }; // 1h / 15m
+
+function getCached<T>(key: string, ttl: number): { data: T; ts: number } | null {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (Date.now() - parsed.ts > ttl) return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function setCached(key: string, data: unknown): void {
+  try {
+    localStorage.setItem(key, JSON.stringify({ data, ts: Date.now() }));
+  } catch { /* ignore quota/disabled errors */ }
+}
+
 // ---- CSV fetch + parse utilities ----
 function parseCSVText(text: string): string[][] {
   const rows: string[][] = [];
@@ -509,6 +530,14 @@ export default function FanDashboard() {
   useEffect(() => {
     let cancelled = false;
 
+    // Hydrate from cache immediately — no loading spinner on repeat visits
+    const cached = getCached<Record<string, any>>("fanIntel_sheets", CACHE_MS.sheets);
+    if (cached) {
+      setSheetsData(cached.data);
+      setSyncedAt(new Date(cached.ts));
+      setSheetsLoading(false);
+    }
+
     async function loadAll() {
       // Phase 1: fetch published HTML page to extract tab name → GID map
       let gidMap: Record<string, string> = {};
@@ -516,55 +545,51 @@ export default function FanDashboard() {
         gidMap = await fetchGidMap(SHEET_ID);
       } catch (err) {
         console.error("[sheets] Could not read GID map:", err);
-        setSheetsLoading(false);
+        if (!cached) setSheetsLoading(false);
         return;
       }
       if (cancelled) return;
 
-      // Phase 2: fetch each artist's two tabs in parallel using their GIDs
-      let pending = STATIC_ARTISTS.length;
-      const onDone = () => {
-        pending--;
-        if (pending === 0 && !cancelled) {
-          setSheetsLoading(false);
-          setSyncedAt(new Date());
-        }
-      };
-
-      for (const a of STATIC_ARTISTS) {
-        const tabs = SHEET_TABS[a.slug];
-        if (!tabs) { onDone(); continue; }
-
-        const networkGid = gidMap[tabs.network];
-        const pagesGid = gidMap[tabs.pages];
-
-        if (!networkGid || !pagesGid) {
-          console.warn(`[sheets] ${a.name}: tab not found in GID map. Keys: ${Object.keys(gidMap).join(", ")}`);
-          onDone();
-          continue;
-        }
-
-        Promise.all([
-          fetchSheetByGid(SHEET_ID, networkGid),
-          fetchSheetByGid(SHEET_ID, pagesGid),
-        ])
-          .then(([networkRows, pagesRows]) => {
-            if (cancelled) return;
+      // Phase 2: fetch all artists in parallel, collect into one object
+      const results: Record<string, any> = {};
+      await Promise.all(
+        STATIC_ARTISTS.map(async (a) => {
+          const tabs = SHEET_TABS[a.slug];
+          if (!tabs) return;
+          const networkGid = gidMap[tabs.network];
+          const pagesGid = gidMap[tabs.pages];
+          if (!networkGid || !pagesGid) {
+            console.warn(`[sheets] ${a.name}: tab not found in GID map.`);
+            return;
+          }
+          try {
+            const [networkRows, pagesRows] = await Promise.all([
+              fetchSheetByGid(SHEET_ID, networkGid),
+              fetchSheetByGid(SHEET_ID, pagesGid),
+            ]);
             const { history, platforms, totals } = parseNetworkTab(networkRows);
             const pages = parsePagesTab(pagesRows);
-            setSheetsData((prev) => ({
-              ...prev,
-              [a.slug]: { history, platforms, totals, pages },
-            }));
-          })
-          .catch((err) => console.warn(`[sheets] ${a.name}:`, err))
-          .finally(onDone);
+            results[a.slug] = { history, platforms, totals, pages };
+          } catch (err) {
+            console.warn(`[sheets] ${a.name}:`, err);
+          }
+        })
+      );
+
+      if (cancelled) return;
+
+      // Commit all at once, cache for next visit
+      if (Object.keys(results).length > 0) {
+        setSheetsData(results);
+        setSyncedAt(new Date());
+        setCached("fanIntel_sheets", results);
       }
+      setSheetsLoading(false);
     }
 
     loadAll().catch((err) => {
       console.error("[sheets] loadAll failed:", err);
-      setSheetsLoading(false);
+      if (!cached) setSheetsLoading(false);
     });
 
     return () => { cancelled = true; };
@@ -634,6 +659,17 @@ export default function FanDashboard() {
     };
 
     async function loadReddit() {
+      // Serve from cache instantly if fresh
+      const cacheKey = `fanIntel_reddit_${selectedSlug}`;
+      const cached = getCached<any[]>(cacheKey, CACHE_MS.reddit);
+      if (cached) {
+        if (!cancelled) {
+          setRedditPosts(cached.data);
+          setRedditLoading(false);
+        }
+        return;
+      }
+
       const attempts = [
         redditUrl,
         `https://api.allorigins.win/raw?url=${encodeURIComponent(redditUrl)}`,
@@ -648,6 +684,7 @@ export default function FanDashboard() {
           if (posts.length > 0) {
             setRedditPosts(posts);
             setRedditLoading(false);
+            setCached(cacheKey, posts);
             return;
           }
         } catch {
