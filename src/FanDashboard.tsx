@@ -902,7 +902,7 @@ export default function FanDashboard() {
         <div className="grid grid-cols-12 gap-5">
           <section className="col-span-12 lg:col-span-8 space-y-5">
             {/* Hero */}
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#000dff] to-blue-600 p-6 text-white">
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#000dff] to-blue-600 px-6 py-4 text-white">
               <div className="absolute top-0 right-0 w-72 h-72 opacity-20 -mr-20 -mt-20"><div className="w-full h-full rounded-full bg-white blur-3xl" /></div>
               <div className="absolute bottom-0 left-1/2 w-64 h-64 opacity-10 -mb-32"><div className="w-full h-full rounded-full bg-yellow-200 blur-3xl" /></div>
               <div className="relative flex items-center justify-between gap-6">
