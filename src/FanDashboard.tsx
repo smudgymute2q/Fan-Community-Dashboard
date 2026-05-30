@@ -540,12 +540,15 @@ export default function FanDashboard() {
   useEffect(() => {
     let cancelled = false;
 
-    // Hydrate from cache immediately — no loading spinner on repeat visits
+    // Hydrate from cache immediately — no loading spinner on repeat visits.
+    // If the cache is still fresh, use it as-is and skip the network fetch
+    // entirely so the "synced Xm ago" label reflects real data age.
     const cached = getCached<Record<string, any>>("fanIntel_sheets", CACHE_MS.sheets);
     if (cached) {
       setSheetsData(cached.data);
       setSyncedAt(new Date(cached.ts));
       setSheetsLoading(false);
+      return () => { cancelled = true; };
     }
 
     async function loadAll() {
