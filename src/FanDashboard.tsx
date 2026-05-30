@@ -606,7 +606,7 @@ export default function FanDashboard() {
     setRedditLoading(true);
     setRedditPosts([]);
     const redditUrl = `https://www.reddit.com/r/${subreddit}/hot.json?limit=6&raw_json=1`;
-    const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(redditUrl)}`;
+
     const parseRedditData = (data: any) => {
       return (data.data?.children || []).filter((child: any) => !child.data.stickied).map((child: any) => {
         const p = child.data;
@@ -626,25 +626,44 @@ export default function FanDashboard() {
         };
       });
     };
-    fetch(proxyUrl)
-      .then((r) => r.json())
-      .then((data) => {
-        if (cancelled) return;
-        const posts = parseRedditData(data);
-        if (posts.length > 0) {
-          setRedditPosts(posts);
-        } else {
-          throw new Error("empty");
+
+    const tryFetch = async (url: string) => {
+      const r = await fetch(url);
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      return r.json();
+    };
+
+    async function loadReddit() {
+      const attempts = [
+        redditUrl,
+        `https://api.allorigins.win/raw?url=${encodeURIComponent(redditUrl)}`,
+        `https://corsproxy.io/?${encodeURIComponent(redditUrl)}`,
+      ];
+
+      for (const url of attempts) {
+        try {
+          const data = await tryFetch(url);
+          if (cancelled) return;
+          const posts = parseRedditData(data);
+          if (posts.length > 0) {
+            setRedditPosts(posts);
+            setRedditLoading(false);
+            return;
+          }
+        } catch {
+          // try next
         }
-      })
-      .catch(() => {
-        if (!cancelled) {
-          // Fall back to mock Reddit posts so the feed always has Reddit content
-          const mockReddit = (MOCK_FEED[selectedSlug] || []).filter((p: any) => p.platform === "Reddit");
-          setRedditPosts(mockReddit);
-        }
-      })
-      .finally(() => { if (!cancelled) setRedditLoading(false); });
+      }
+
+      // All attempts failed — fall back to mock Reddit posts
+      if (!cancelled) {
+        const mockReddit = (MOCK_FEED[selectedSlug] || []).filter((p: any) => p.platform === "Reddit");
+        setRedditPosts(mockReddit);
+        setRedditLoading(false);
+      }
+    }
+
+    loadReddit();
     return () => { cancelled = true; };
   }, [selectedSlug]);
 
