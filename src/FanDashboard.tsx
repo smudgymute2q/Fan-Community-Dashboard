@@ -1094,69 +1094,8 @@ export default function FanDashboard() {
           </aside>
         </div>
 
-        {/* Live Feed */}
-        <section className="mt-8">
-          <div className="flex items-baseline justify-between mb-4">
-            <div className="flex items-baseline gap-3">
-              <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Live <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#000dff] to-blue-500 pr-1">Feed</span></h2>
-            </div>
-            <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-full">
-              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-[11px] font-semibold text-emerald-700">polling · 2m</span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 mb-4 flex-wrap">
-            <Filter size={14} className="text-slate-400" />
-            {(() => {
-              const mockNonReddit = (MOCK_FEED[artist.slug] || []).filter((p) => p.platform !== "Reddit");
-              const posts = [...redditPosts, ...mockNonReddit];
-              const platsInFeed = Array.from(new Set(posts.map((p) => p.platform)));
-              const filters = ["All", ...platsInFeed];
-              return filters.map((f) => {
-                const active = feedFilter === f;
-                const cfg = f !== "All" ? PLATFORMS[f] : null;
-                const count = f === "All" ? posts.length : posts.filter((p) => p.platform === f).length;
-                return (
-                  <button key={f} onClick={() => setFeedFilter(f)} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition ${active ? "bg-slate-900 dark:bg-[#000dff] text-white" : "bg-white border border-slate-200 text-slate-700 hover:border-slate-300"}`}>
-                    {cfg && <span className="w-1.5 h-1.5 rounded-full" style={{ background: cfg.color }} />}
-                    {f}
-                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${active ? "bg-white/20" : "bg-slate-100"}`}>{count}</span>
-                  </button>
-                );
-              });
-            })()}
-          </div>
-
-          {(() => {
-            const mockNonReddit = (MOCK_FEED[artist.slug] || []).filter((p) => p.platform !== "Reddit");
-            const posts = [...redditPosts, ...mockNonReddit];
-            const filtered = feedFilter === "All" ? posts : posts.filter((p) => p.platform === feedFilter);
-            if (redditLoading && posts.length === 0) {
-              return <div className="flex items-center justify-center py-12 text-sm text-slate-400">Loading Reddit posts…</div>;
-            }
-            if (posts.length === 0) {
-              return (
-                <div className="border-2 border-dashed border-slate-200 rounded-3xl bg-white p-10 text-center">
-                  <AlertCircle size={20} className="text-slate-400 mx-auto mb-2" />
-                  <div className="text-sm text-slate-600 font-medium">No feed data for this artist yet</div>
-                  <div className="text-xs text-slate-400 mt-1">Connect a Reddit or Discord page to start tracking</div>
-                </div>
-              );
-            }
-            return <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{filtered.map((post, i) => <FeedCard key={i} post={post} />)}</div>;
-          })()}
-
-          <div className="mt-4 px-4 py-3 bg-amber-50 border border-amber-200 rounded-2xl flex items-start gap-2">
-            <AlertCircle size={14} className="text-amber-600 mt-0.5 shrink-0" />
-            <div className="text-xs text-amber-800 leading-relaxed">
-              <span className="font-semibold">Partially live.</span> Reddit posts are fetched live where available, otherwise showing recent highlights · Discord, X, Instagram &amp; TikTok are mock data.
-            </div>
-          </div>
-        </section>
-
         {/* Deep Analytics */}
-        <section className="mt-10">
+        <section className="mt-8">
           <div className="flex items-baseline justify-between mb-4">
             <div className="flex items-baseline gap-3">
               <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Deep <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#000dff] to-blue-500 pr-1">Analytics</span></h2>
@@ -1268,6 +1207,67 @@ export default function FanDashboard() {
               </div>
             </div>
 
+          </div>
+        </section>
+
+        {/* Live Feed */}
+        <section className="mt-10">
+          <div className="flex items-baseline justify-between mb-4">
+            <div className="flex items-baseline gap-3">
+              <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Live <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#000dff] to-blue-500 pr-1">Feed</span></h2>
+            </div>
+            <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-full">
+              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-[11px] font-semibold text-emerald-700">polling · 2m</span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 mb-4 flex-wrap">
+            <Filter size={14} className="text-slate-400" />
+            {(() => {
+              const mockNonReddit = (MOCK_FEED[artist.slug] || []).filter((p) => p.platform !== "Reddit");
+              const posts = [...redditPosts, ...mockNonReddit];
+              const platsInFeed = Array.from(new Set(posts.map((p) => p.platform)));
+              const filters = ["All", ...platsInFeed];
+              return filters.map((f) => {
+                const active = feedFilter === f;
+                const cfg = f !== "All" ? PLATFORMS[f] : null;
+                const count = f === "All" ? posts.length : posts.filter((p) => p.platform === f).length;
+                return (
+                  <button key={f} onClick={() => setFeedFilter(f)} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition ${active ? "bg-slate-900 dark:bg-[#000dff] text-white" : "bg-white border border-slate-200 text-slate-700 hover:border-slate-300"}`}>
+                    {cfg && <span className="w-1.5 h-1.5 rounded-full" style={{ background: cfg.color }} />}
+                    {f}
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${active ? "bg-white/20" : "bg-slate-100"}`}>{count}</span>
+                  </button>
+                );
+              });
+            })()}
+          </div>
+
+          {(() => {
+            const mockNonReddit = (MOCK_FEED[artist.slug] || []).filter((p) => p.platform !== "Reddit");
+            const posts = [...redditPosts, ...mockNonReddit];
+            const filtered = feedFilter === "All" ? posts : posts.filter((p) => p.platform === feedFilter);
+            if (redditLoading && posts.length === 0) {
+              return <div className="flex items-center justify-center py-12 text-sm text-slate-400">Loading Reddit posts…</div>;
+            }
+            if (posts.length === 0) {
+              return (
+                <div className="border-2 border-dashed border-slate-200 rounded-3xl bg-white p-10 text-center">
+                  <AlertCircle size={20} className="text-slate-400 mx-auto mb-2" />
+                  <div className="text-sm text-slate-600 font-medium">No feed data for this artist yet</div>
+                  <div className="text-xs text-slate-400 mt-1">Connect a Reddit or Discord page to start tracking</div>
+                </div>
+              );
+            }
+            return <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{filtered.map((post, i) => <FeedCard key={i} post={post} />)}</div>;
+          })()}
+
+          <div className="mt-4 px-4 py-3 bg-amber-50 border border-amber-200 rounded-2xl flex items-start gap-2">
+            <AlertCircle size={14} className="text-amber-600 mt-0.5 shrink-0" />
+            <div className="text-xs text-amber-800 leading-relaxed">
+              <span className="font-semibold">Partially live.</span> Reddit posts are fetched live where available, otherwise showing recent highlights · Discord, X, Instagram &amp; TikTok are mock data.
+            </div>
           </div>
         </section>
 
