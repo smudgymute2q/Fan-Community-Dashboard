@@ -1198,7 +1198,7 @@ export default function FanDashboard() {
                 <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Growth Velocity</div>
               </div>
               <div className="text-sm font-semibold text-slate-900 mb-3">Net added · trailing 12mo</div>
-              <div className="h-[240px]">
+              <div className="h-[200px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={monthlyVelocity(history, orderedPlats)} margin={{ top: 8, right: 0, left: 0, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 4" vertical={false} />
