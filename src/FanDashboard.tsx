@@ -360,9 +360,9 @@ function monthlyVelocity(history, plats) {
 }
 
 function DeltaPill({ value, small = false }) {
-  if (value === 0 || value === null || value === undefined) return <span className={`inline-flex items-center gap-0.5 text-slate-500 ${small ? "text-[10px]" : "text-xs"} font-medium`}><Minus size={small ? 10 : 12} strokeWidth={2.5} /> 0</span>;
+  if (value === 0 || value === null || value === undefined) return <span className={`text-slate-500 ${small ? "text-[10px]" : "text-xs"} font-medium`}>0</span>;
   const up = value > 0;
-  return <span className={`inline-flex items-center gap-0.5 font-semibold ${small ? "text-[10px]" : "text-xs"} ${up ? "text-emerald-600" : "text-rose-500"}`}>{up ? <ArrowUpRight size={small ? 10 : 12} strokeWidth={3} /> : <ArrowDownRight size={small ? 10 : 12} strokeWidth={3} />}{up ? "+" : ""}{fmt(value)}</span>;
+  return <span className={`font-semibold ${small ? "text-[10px]" : "text-xs"} ${up ? "text-emerald-600" : "text-rose-500"}`}>{up ? "+" : ""}{fmt(value)}</span>;
 }
 
 function KpiTile({ platform, value, delta }) {
@@ -908,7 +908,7 @@ export default function FanDashboard() {
                   <div className="font-bold text-4xl tabular-nums leading-none">{fmtFull(artist.totals.value)}</div>
                   <div className="mt-2 flex items-center justify-end gap-2">
                     <span className={`inline-flex items-center gap-0.5 text-xs font-bold px-2 py-0.5 rounded-full ${artist.totals.delta >= 0 ? "bg-white/20 text-white" : "bg-rose-900/30 text-rose-100"}`}>
-                      {artist.totals.delta >= 0 ? <ArrowUpRight size={12} strokeWidth={3} /> : <ArrowDownRight size={12} strokeWidth={3} />}{artist.totals.delta >= 0 ? "+" : ""}{fmt(artist.totals.delta)}
+                      {artist.totals.delta >= 0 ? "+" : ""}{fmt(artist.totals.delta)}
                     </span>
                     <span className="text-[10px] text-white/70 font-medium">last 28d</span>
                   </div>
