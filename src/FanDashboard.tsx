@@ -908,7 +908,7 @@ export default function FanDashboard() {
                   <div className="font-bold text-4xl tabular-nums leading-none">{fmtFull(artist.totals.value)}</div>
                   <div className="mt-2 flex items-center justify-end gap-2">
                     <span className={`inline-flex items-center gap-0.5 text-xs font-bold px-2 py-0.5 rounded-full ${artist.totals.delta >= 0 ? "bg-white/20 text-white" : "bg-rose-900/30 text-rose-100"}`}>
-                      {artist.totals.delta >= 0 ? <ArrowUpRight size={12} strokeWidth={3} /> : <ArrowDownRight size={12} strokeWidth={3} />}{fmt(Math.abs(artist.totals.delta))}
+                      {artist.totals.delta >= 0 ? <ArrowUpRight size={12} strokeWidth={3} /> : <ArrowDownRight size={12} strokeWidth={3} />}{artist.totals.delta >= 0 ? "+" : ""}{fmt(artist.totals.delta)}
                     </span>
                     <span className="text-[10px] text-white/70 font-medium">last 28d</span>
                   </div>
