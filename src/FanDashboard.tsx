@@ -1092,14 +1092,13 @@ export default function FanDashboard() {
                   <div className="relative flex flex-col flex-1 min-h-0">
                   <div
                     ref={pagesListRef}
-                    className="p-2 flex-1 overflow-y-auto [overscroll-behavior:contain]"
+                    className="p-2 flex-1 overflow-y-auto [overscroll-behavior:contain] flex flex-col justify-evenly"
                     onScroll={(e) => { const el = e.currentTarget; setPagesAtBottom(el.scrollTop + el.clientHeight >= el.scrollHeight - 8); }}
                   >
                     {filteredPages.length === 0 ? (
                       <div className="px-3 py-6 text-center text-xs text-slate-400">No {effectivePlatform} pages tracked yet</div>
                     ) : (
-                      <div className="flex flex-col min-h-full justify-evenly">
-                      {filteredPages.map((p, i) => {
+                      filteredPages.map((p, i) => {
                         const platCfg = PLATFORMS[effectivePlatform] || { soft: "#f1f5f9", color: "#64748b" };
                         const Tag = p.link ? "a" : "div";
                         return (
@@ -1120,8 +1119,7 @@ export default function FanDashboard() {
                             </div>
                           </Tag>
                         );
-                      })}
-                      </div>
+                      })
                     )}
                   </div>
                   </div>
