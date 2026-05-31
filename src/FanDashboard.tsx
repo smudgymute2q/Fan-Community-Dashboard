@@ -737,7 +737,7 @@ export default function FanDashboard() {
 
   const history = useMemo(() => {
     if (yearRange === "all") return fullHistory;
-    const now = new Date(2026, 2, 1);
+    const now = new Date();
     if (yearRange === "ytd") return fullHistory.filter((r) => r.date >= "2026-01");
     if (yearRange === "12m") {
       const cutoff = new Date(now); cutoff.setMonth(cutoff.getMonth() - 12);
