@@ -512,17 +512,6 @@ export default function FanDashboard() {
   const [pagesAtBottom, setPagesAtBottom] = useState(false);
   const [redditPosts, setRedditPosts] = useState<any[]>([]);
   const [redditLoading, setRedditLoading] = useState(false);
-  const leftSectionRef = React.useRef<HTMLElement>(null);
-  const [leftSectionHeight, setLeftSectionHeight] = useState<number | null>(null);
-
-  // Track left column height so the Fan Page Tracker can match it at max
-  useEffect(() => {
-    const el = leftSectionRef.current;
-    if (!el) return;
-    const ro = new ResizeObserver(([entry]) => setLeftSectionHeight(entry.contentRect.height));
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
 
   // ---- Sheets data loading ----
   const [sheetsData, setSheetsData] = useState<Record<string, any>>({});
@@ -905,8 +894,6 @@ export default function FanDashboard() {
         {/* Main */}
         <div className="grid grid-cols-12 gap-5">
           <section className="col-span-12 lg:col-span-8 space-y-5">
-            {/* Hero + Growth chart — measured to cap Fan Page Tracker height */}
-            <div ref={leftSectionRef} className="space-y-5">
             {/* Hero */}
             <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#000dff] to-blue-600 px-6 py-4 text-white">
               <div className="absolute top-0 right-0 w-72 h-72 opacity-20 -mr-20 -mt-20"><div className="w-full h-full rounded-full bg-white blur-3xl" /></div>
@@ -1021,8 +1008,6 @@ export default function FanDashboard() {
               </div>
             </div>
 
-            </div>{/* end measured wrapper */}
-
             {/* Current reach */}
             <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
               <div className="mb-5">
@@ -1051,10 +1036,7 @@ export default function FanDashboard() {
                 .filter((p) => p.platform === effectivePlatform)
                 .sort((a, b) => b.followers - a.followers);
               return (
-                <div
-                    className="bg-white border border-slate-200 rounded-3xl shadow-sm flex flex-col"
-                    style={leftSectionHeight ? { maxHeight: leftSectionHeight } : {}}
-                  >
+                <div className="bg-white border border-slate-200 rounded-3xl shadow-sm">
                   <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
                     <div>
                       <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Fan Page Tracker</div>
@@ -1089,10 +1071,10 @@ export default function FanDashboard() {
                       )}
                     </div>
                   </div>
-                  <div className="relative flex flex-col flex-1 min-h-0">
+                  <div className="relative">
                   <div
                     ref={pagesListRef}
-                    className="px-2 flex-1 overflow-y-auto [overscroll-behavior:contain] flex flex-col justify-evenly"
+                    className="max-h-[640px] overflow-y-auto [overscroll-behavior:contain]"
                     onScroll={(e) => { const el = e.currentTarget; setPagesAtBottom(el.scrollTop + el.clientHeight >= el.scrollHeight - 8); }}
                   >
                     {filteredPages.length === 0 ? (
@@ -1102,7 +1084,7 @@ export default function FanDashboard() {
                         const platCfg = PLATFORMS[effectivePlatform] || { soft: "#f1f5f9", color: "#64748b" };
                         const Tag = p.link ? "a" : "div";
                         return (
-                          <Tag key={p.link || `${p.platform}-${p.name}-${i}`} {...(p.link ? { href: p.link, target: "_blank", rel: "noopener noreferrer" } : {})} className="px-3 flex items-center gap-3 hover:bg-slate-50 transition cursor-pointer group rounded-xl no-underline">
+                          <Tag key={p.link || `${p.platform}-${p.name}-${i}`} {...(p.link ? { href: p.link, target: "_blank", rel: "noopener noreferrer" } : {})} className="p-3 flex items-center gap-3 hover:bg-slate-50 transition cursor-pointer group rounded-xl no-underline">
                             <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: platCfg.soft }}>
                               <span className="text-sm font-bold" style={{ color: platCfg.color }}>{String(i + 1).padStart(2, "0")}</span>
                             </div>
