@@ -818,7 +818,7 @@ export default function FanDashboard() {
 
       <div className="max-w-[1400px] mx-auto px-6 py-6">
         {/* Header */}
-        <header className="flex items-center justify-between mb-6">
+        <header className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-5">
             <div className="flex items-center gap-3">
               <div className="relative w-11 h-11 rounded-2xl bg-gradient-to-br from-[#000dff] to-blue-500 flex items-center justify-center shadow-lg shadow-blue-300/50">
@@ -844,7 +844,7 @@ export default function FanDashboard() {
         </header>
 
         {/* Roster */}
-        <section className="mb-6">
+        <section className="mb-8">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-baseline gap-3">
               <h2 className="text-xs uppercase tracking-[0.15em] text-slate-400 font-semibold">Roster</h2>
@@ -892,8 +892,8 @@ export default function FanDashboard() {
         </section>
 
         {/* Main */}
-        <div className="grid grid-cols-12 gap-5">
-          <section className="col-span-12 lg:col-span-8 space-y-5">
+        <div className="grid grid-cols-12 gap-4">
+          <section className="col-span-12 lg:col-span-8 space-y-4">
             {/* Hero */}
             <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#000dff] to-blue-500 p-6 text-white">
               <div className="absolute top-0 right-0 w-72 h-72 opacity-20 -mr-20 -mt-20"><div className="w-full h-full rounded-full bg-white blur-3xl" /></div>
@@ -1021,7 +1021,7 @@ export default function FanDashboard() {
             </div>
           </section>
 
-          <aside className="col-span-12 lg:col-span-4 space-y-5">
+          <aside className="col-span-12 lg:col-span-4 space-y-4">
             {(() => {
               const PLAT_ORDER_PAGES = ["Discord", "Reddit", "Instagram", "Instagram Channels", "X", "X Communities", "TikTok"];
               const availablePlatformsSet = new Set(artist.pages.map((p) => p.platform).filter(Boolean));
@@ -1119,7 +1119,7 @@ export default function FanDashboard() {
         </div>
 
         {/* Deep Analytics */}
-        <section className="mt-10">
+        <section className="mt-8">
           <div className="flex items-baseline justify-between mb-4">
             <div className="flex items-baseline gap-3">
               <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Deep <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#000dff] to-blue-500 pr-1">Analytics</span></h2>
@@ -1235,7 +1235,7 @@ export default function FanDashboard() {
         </section>
 
         {/* Live Feed */}
-        <section className="mt-10">
+        <section className="mt-8">
           <div className="flex items-baseline justify-between mb-4">
             <div className="flex items-baseline gap-3">
               <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Live <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#000dff] to-blue-500 pr-1">Feed</span></h2>
