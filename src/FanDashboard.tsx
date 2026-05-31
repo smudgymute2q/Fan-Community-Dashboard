@@ -1021,7 +1021,7 @@ export default function FanDashboard() {
             </div>
           </section>
 
-          <aside className="col-span-12 lg:col-span-4 flex flex-col">
+          <aside className="col-span-12 lg:col-span-4 space-y-5">
             {(() => {
               const PLAT_ORDER_PAGES = ["Discord", "Reddit", "Instagram", "Instagram Channels", "X", "X Communities", "TikTok"];
               const availablePlatformsSet = new Set(artist.pages.map((p) => p.platform).filter(Boolean));
@@ -1036,7 +1036,7 @@ export default function FanDashboard() {
                 .filter((p) => p.platform === effectivePlatform)
                 .sort((a, b) => b.followers - a.followers);
               return (
-                <div className="bg-white border border-slate-200 rounded-3xl shadow-sm flex flex-col flex-1">
+                <div className="bg-white border border-slate-200 rounded-3xl shadow-sm">
                   <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
                     <div>
                       <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Fan Page Tracker</div>
@@ -1071,10 +1071,10 @@ export default function FanDashboard() {
                       )}
                     </div>
                   </div>
-                  <div className="relative flex flex-col flex-1 min-h-0">
+                  <div className="relative">
                   <div
                     ref={pagesListRef}
-                    className="p-2 flex-1 overflow-y-auto [overscroll-behavior:contain]"
+                    className="p-2 max-h-[594px] overflow-y-auto [overscroll-behavior:contain]"
                     onScroll={(e) => { const el = e.currentTarget; setPagesAtBottom(el.scrollTop + el.clientHeight >= el.scrollHeight - 8); }}
                   >
                     {filteredPages.length === 0 ? (
