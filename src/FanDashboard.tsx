@@ -965,7 +965,7 @@ export default function FanDashboard() {
                     <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Net growth</div>
                     <div className={`text-base font-bold tabular-nums flex items-center gap-1 ${rangeStats.net >= 0 ? "text-emerald-600" : "text-rose-500"}`}>
                       {rangeStats.net >= 0 ? "+" : ""}{fmt(rangeStats.net)}
-                      <span className="text-[10px] font-semibold">({rangeStats.pct >= 0 ? "+" : ""}{rangeStats.pct.toFixed(1)}%)</span>
+                      <span className="text-[10px] font-semibold">({rangeStats.pct >= 0 ? "+" : ""}{rangeStats.pct.toFixed(1).replace(/\.0$/, "")}%)</span>
                     </div>
                   </div>
                   <div className="flex-1 px-4">
