@@ -1092,7 +1092,7 @@ export default function FanDashboard() {
                   <div className="relative flex flex-col flex-1 min-h-0">
                   <div
                     ref={pagesListRef}
-                    className="p-2 flex-1 overflow-y-auto [overscroll-behavior:contain] flex flex-col justify-evenly"
+                    className="px-2 flex-1 overflow-y-auto [overscroll-behavior:contain] flex flex-col justify-evenly"
                     onScroll={(e) => { const el = e.currentTarget; setPagesAtBottom(el.scrollTop + el.clientHeight >= el.scrollHeight - 8); }}
                   >
                     {filteredPages.length === 0 ? (
@@ -1102,7 +1102,7 @@ export default function FanDashboard() {
                         const platCfg = PLATFORMS[effectivePlatform] || { soft: "#f1f5f9", color: "#64748b" };
                         const Tag = p.link ? "a" : "div";
                         return (
-                          <Tag key={p.link || `${p.platform}-${p.name}-${i}`} {...(p.link ? { href: p.link, target: "_blank", rel: "noopener noreferrer" } : {})} className="p-3 flex items-center gap-3 hover:bg-slate-50 transition cursor-pointer group rounded-xl no-underline">
+                          <Tag key={p.link || `${p.platform}-${p.name}-${i}`} {...(p.link ? { href: p.link, target: "_blank", rel: "noopener noreferrer" } : {})} className="px-3 flex items-center gap-3 hover:bg-slate-50 transition cursor-pointer group rounded-xl no-underline">
                             <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: platCfg.soft }}>
                               <span className="text-sm font-bold" style={{ color: platCfg.color }}>{String(i + 1).padStart(2, "0")}</span>
                             </div>
