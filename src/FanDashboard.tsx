@@ -1224,7 +1224,7 @@ export default function FanDashboard() {
                     <div key={a.slug} className="w-full p-3 flex items-center gap-3 rounded-xl">
                       <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold ${i === 0 ? "bg-amber-100 text-amber-700" : i === 1 ? "bg-slate-100 text-slate-700" : i === 2 ? "bg-orange-100 text-orange-700" : "bg-slate-50 text-slate-500"}`}>{i + 1}</div>
                       <span className="flex-1 text-sm font-semibold text-slate-900 truncate">{a.name}</span>
-                      <span className={`text-xs font-bold tabular-nums px-2 py-0.5 rounded-full ${up ? "bg-emerald-100 text-emerald-700" : "bg-rose-100 text-rose-700"}`}>{up ? "+" : ""}{fmt(a.totals.delta)}</span>
+                      <span className={`text-xs font-bold tabular-nums px-2 py-0.5 rounded-full ${up ? "bg-emerald-100 text-emerald-600" : "bg-rose-100 text-rose-500"}`}>{up ? "+" : ""}{fmt(a.totals.delta)}</span>
                     </div>
                   );
                 })}
