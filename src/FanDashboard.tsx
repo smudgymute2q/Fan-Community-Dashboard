@@ -1098,7 +1098,7 @@ export default function FanDashboard() {
                     {filteredPages.length === 0 ? (
                       <div className="px-3 py-6 text-center text-xs text-slate-400">No {effectivePlatform} pages tracked yet</div>
                     ) : (
-                      <div className="flex flex-col min-h-full justify-between">
+                      <div className="flex flex-col min-h-full justify-evenly">
                       {filteredPages.map((p, i) => {
                         const platCfg = PLATFORMS[effectivePlatform] || { soft: "#f1f5f9", color: "#64748b" };
                         const Tag = p.link ? "a" : "div";
