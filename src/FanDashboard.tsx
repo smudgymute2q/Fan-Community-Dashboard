@@ -737,18 +737,23 @@ export default function FanDashboard() {
 
   const history = useMemo(() => {
     if (yearRange === "all") return fullHistory;
-    const now = new Date();
-    if (yearRange === "ytd") return fullHistory.filter((r) => r.date >= "2026-01");
+    // Use the latest date in the dataset so ranges are always relative to
+    // the most recent data point, not today (data may lag by weeks/months).
+    const latestDate = fullHistory.length > 0
+      ? new Date(fullHistory[fullHistory.length - 1].date + "-01")
+      : new Date();
+    const latestYear = latestDate.getFullYear();
+    if (yearRange === "ytd") return fullHistory.filter((r) => r.date >= `${latestYear}-01`);
     if (yearRange === "12m") {
-      const cutoff = new Date(now); cutoff.setMonth(cutoff.getMonth() - 12);
+      const cutoff = new Date(latestDate); cutoff.setMonth(cutoff.getMonth() - 12);
       return fullHistory.filter((r) => new Date(r.date + "-01") >= cutoff);
     }
     if (yearRange === "6m") {
-      const cutoff = new Date(now); cutoff.setMonth(cutoff.getMonth() - 6);
+      const cutoff = new Date(latestDate); cutoff.setMonth(cutoff.getMonth() - 6);
       return fullHistory.filter((r) => new Date(r.date + "-01") >= cutoff);
     }
     if (yearRange === "3m") {
-      const cutoff = new Date(now); cutoff.setMonth(cutoff.getMonth() - 3);
+      const cutoff = new Date(latestDate); cutoff.setMonth(cutoff.getMonth() - 3);
       return fullHistory.filter((r) => new Date(r.date + "-01") >= cutoff);
     }
     return fullHistory.filter((r) => r.date.startsWith(yearRange));
