@@ -510,9 +510,6 @@ export default function FanDashboard() {
   const [pagesDropdownOpen, setPagesDropdownOpen] = useState(false);
   const pagesListRef = React.useRef<HTMLDivElement>(null);
   const [pagesAtBottom, setPagesAtBottom] = useState(false);
-  const [entryGap, setEntryGap] = useState(4);
-  const heroChartRef = React.useRef<HTMLDivElement>(null);
-  const [heroChartHeight, setHeroChartHeight] = useState<number | null>(null);
   const [redditPosts, setRedditPosts] = useState<any[]>([]);
   const [redditLoading, setRedditLoading] = useState(false);
 
@@ -527,39 +524,6 @@ export default function FanDashboard() {
     const id = setInterval(() => setNowTick((t) => t + 1), 60000);
     return () => clearInterval(id);
   }, []);
-
-  useEffect(() => {
-    const el = heroChartRef.current;
-    if (!el) return;
-    const obs = new ResizeObserver(() => setHeroChartHeight(el.offsetHeight));
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
-  React.useLayoutEffect(() => {
-    const container = pagesListRef.current;
-    if (!container) return;
-    const FIXED_GAP = 4;
-    const compute = () => {
-      if (container.scrollHeight <= container.clientHeight) {
-        setEntryGap(FIXED_GAP);
-        return;
-      }
-      const firstEntry = container.firstElementChild?.firstElementChild as HTMLElement | null;
-      if (!firstEntry) { setEntryGap(FIXED_GAP); return; }
-      const entryH = firstEntry.getBoundingClientRect().height;
-      if (entryH === 0) { setEntryGap(FIXED_GAP); return; }
-      const style = window.getComputedStyle(container);
-      const availH = container.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom);
-      const n = Math.floor((availH + FIXED_GAP) / (entryH + FIXED_GAP));
-      if (n <= 1) { setEntryGap(FIXED_GAP); return; }
-      setEntryGap(Math.max(0, (availH - n * entryH) / (n - 1)));
-    };
-    compute();
-    const obs = new ResizeObserver(compute);
-    obs.observe(container);
-    return () => obs.disconnect();
-  }, [selectedSlug, pagesPlatform]);
 
   useEffect(() => {
     let cancelled = false;
@@ -930,7 +894,6 @@ export default function FanDashboard() {
         {/* Main */}
         <div className="grid grid-cols-12 gap-5">
           <section className="col-span-12 lg:col-span-8 space-y-5">
-            <div ref={heroChartRef} className="space-y-5">
             {/* Hero */}
             <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#000dff] to-blue-600 px-6 py-4 text-white">
               <div className="absolute top-0 right-0 w-72 h-72 opacity-20 -mr-20 -mt-20"><div className="w-full h-full rounded-full bg-white blur-3xl" /></div>
@@ -1044,7 +1007,6 @@ export default function FanDashboard() {
                 )}
               </div>
             </div>
-            </div>
 
             {/* Current reach */}
             <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
@@ -1074,7 +1036,7 @@ export default function FanDashboard() {
                 .filter((p) => p.platform === effectivePlatform)
                 .sort((a, b) => b.followers - a.followers);
               return (
-                <div className="bg-white border border-slate-200 rounded-3xl shadow-sm flex flex-col" style={heroChartHeight ? { maxHeight: heroChartHeight } : undefined}>
+                <div className="bg-white border border-slate-200 rounded-3xl shadow-sm">
                   <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
                     <div>
                       <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Fan Page Tracker</div>
@@ -1109,21 +1071,20 @@ export default function FanDashboard() {
                       )}
                     </div>
                   </div>
-                  <div className="relative flex-1 flex flex-col min-h-0">
+                  <div className="relative">
                   <div
                     ref={pagesListRef}
-                    className="p-2 flex-1 min-h-0 overflow-y-auto [overscroll-behavior:contain]"
+                    className="p-2 max-h-[594px] overflow-y-auto [overscroll-behavior:contain]"
                     onScroll={(e) => { const el = e.currentTarget; setPagesAtBottom(el.scrollTop + el.clientHeight >= el.scrollHeight - 8); }}
                   >
                     {filteredPages.length === 0 ? (
                       <div className="px-3 py-6 text-center text-xs text-slate-400">No {effectivePlatform} pages tracked yet</div>
                     ) : (
-                      <div style={{ display: "flex", flexDirection: "column", gap: entryGap }}>
-                      {filteredPages.map((p, i) => {
+                      filteredPages.map((p, i) => {
                         const platCfg = PLATFORMS[effectivePlatform] || { soft: "#f1f5f9", color: "#64748b" };
                         const Tag = p.link ? "a" : "div";
                         return (
-                          <Tag key={p.link || `${p.platform}-${p.name}-${i}`} {...(p.link ? { href: p.link, target: "_blank", rel: "noopener noreferrer" } : {})} className="p-2 flex items-center gap-3 hover:bg-slate-50 transition cursor-pointer group rounded-xl no-underline" >
+                          <Tag key={p.link || `${p.platform}-${p.name}-${i}`} {...(p.link ? { href: p.link, target: "_blank", rel: "noopener noreferrer" } : {})} className="p-3 flex items-center gap-3 hover:bg-slate-50 transition cursor-pointer group rounded-xl no-underline" >
                             <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: platCfg.soft }}>
                               <span className="text-sm font-bold" style={{ color: platCfg.color }}>{String(i + 1).padStart(2, "0")}</span>
                             </div>
@@ -1140,8 +1101,7 @@ export default function FanDashboard() {
                             </div>
                           </Tag>
                         );
-                      })}
-                      </div>
+                      })
                     )}
                   </div>
                   </div>
