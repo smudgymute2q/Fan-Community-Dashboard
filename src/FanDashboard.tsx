@@ -510,6 +510,7 @@ export default function FanDashboard() {
   const [pagesDropdownOpen, setPagesDropdownOpen] = useState(false);
   const pagesListRef = React.useRef<HTMLDivElement>(null);
   const [pagesAtBottom, setPagesAtBottom] = useState(false);
+  const [entryGap, setEntryGap] = useState(0);
   const heroChartRef = React.useRef<HTMLDivElement>(null);
   const [heroChartHeight, setHeroChartHeight] = useState<number | null>(null);
   const [redditPosts, setRedditPosts] = useState<any[]>([]);
@@ -534,6 +535,26 @@ export default function FanDashboard() {
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
+
+  useEffect(() => {
+    const container = pagesListRef.current;
+    if (!container) return;
+    const compute = () => {
+      const firstEntry = container.firstElementChild?.firstElementChild as HTMLElement | null;
+      if (!firstEntry) { setEntryGap(0); return; }
+      const entryH = firstEntry.getBoundingClientRect().height;
+      if (entryH === 0) { setEntryGap(0); return; }
+      const style = window.getComputedStyle(container);
+      const availH = container.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom);
+      const n = Math.floor(availH / entryH);
+      if (n <= 1) { setEntryGap(0); return; }
+      setEntryGap(Math.max(0, (availH - n * entryH) / (n - 1)));
+    };
+    compute();
+    const obs = new ResizeObserver(compute);
+    obs.observe(container);
+    return () => obs.disconnect();
+  }, [selectedSlug, pagesPlatform]);
 
   useEffect(() => {
     let cancelled = false;
@@ -1092,7 +1113,8 @@ export default function FanDashboard() {
                     {filteredPages.length === 0 ? (
                       <div className="px-3 py-6 text-center text-xs text-slate-400">No {effectivePlatform} pages tracked yet</div>
                     ) : (
-                      filteredPages.map((p, i) => {
+                      <div style={{ display: "flex", flexDirection: "column", gap: entryGap }}>
+                      {filteredPages.map((p, i) => {
                         const platCfg = PLATFORMS[effectivePlatform] || { soft: "#f1f5f9", color: "#64748b" };
                         const Tag = p.link ? "a" : "div";
                         return (
@@ -1113,7 +1135,8 @@ export default function FanDashboard() {
                             </div>
                           </Tag>
                         );
-                      })
+                      })}
+                      </div>
                     )}
                   </div>
                   </div>
