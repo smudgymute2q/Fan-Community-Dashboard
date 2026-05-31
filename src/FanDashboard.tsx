@@ -369,7 +369,7 @@ function KpiTile({ platform, value, delta }) {
   const cfg = PLATFORMS[platform];
   return (
     <div className="relative rounded-2xl p-4 bg-white border border-slate-200">
-      <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider mb-2 text-slate-400">
+      <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider mb-2 text-slate-400">
         {cfg && <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: cfg.color }} />}
         {platform}
       </div>
@@ -418,7 +418,7 @@ function ArtistPill({ artist, active, onClick }) {
 function ChartTooltip({ active, payload, label }) {
   if (!active || !payload || !payload.length) return null;
   return (
-    <div className="bg-white border border-slate-200 rounded-xl shadow-xl p-3 text-xs">
+    <div className="bg-white border border-slate-200 rounded-xl shadow-lg p-3 text-xs">
       <div className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mb-2">{label && typeof label === "string" && label.includes("-") ? monthLabel(label) : label}</div>
       <div className="space-y-1.5">
         {payload.slice().sort((a, b) => b.value - a.value).map((p) => (
@@ -847,7 +847,7 @@ export default function FanDashboard() {
         <section className="mb-6">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-baseline gap-3">
-              <h2 className="text-xs uppercase tracking-[0.15em] text-slate-400 font-bold">Roster</h2>
+              <h2 className="text-xs uppercase tracking-[0.15em] text-slate-400 font-semibold">Roster</h2>
               <span className="text-xs text-slate-400 font-medium">{artists.length} artists tracked</span>
             </div>
           </div>
@@ -900,11 +900,11 @@ export default function FanDashboard() {
               <div className="absolute bottom-0 left-1/2 w-64 h-64 opacity-10 -mb-32"><div className="w-full h-full rounded-full bg-yellow-200 blur-3xl" /></div>
               <div className="relative flex items-center justify-between gap-6">
                 <div>
-                  <div className="text-[10px] uppercase tracking-[0.2em] text-white/70 font-bold mb-2">Now viewing</div>
+                  <div className="text-[10px] uppercase tracking-[0.2em] text-white/70 font-semibold mb-2">Now viewing</div>
                   <h3 className="text-5xl font-bold tracking-tight leading-none">{artist.name}</h3>
                 </div>
                 <div className="text-right">
-                  <div className="text-[10px] uppercase tracking-[0.2em] text-white/70 font-bold mb-2">Cumulative reach</div>
+                  <div className="text-[10px] uppercase tracking-[0.2em] text-white/70 font-semibold mb-2">Cumulative reach</div>
                   <div className="font-bold text-4xl tabular-nums leading-none">{fmtFull(artist.totals.value)}</div>
                   <div className="mt-2 flex items-center justify-end gap-2">
                     <span className={`inline-flex items-center gap-0.5 text-xs font-bold px-2 py-0.5 rounded-full ${artist.totals.delta >= 0 ? "bg-emerald-100 text-emerald-600" : "bg-rose-100 text-rose-500"}`}>
@@ -921,7 +921,7 @@ export default function FanDashboard() {
               <div className="flex flex-col gap-4 mb-5">
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                   <div>
-                    <div className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Fan Network Growth</div>
+                    <div className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Fan Network Growth</div>
                     <div className="text-base font-semibold text-slate-900 mt-0.5">Followers across platforms</div>
                   </div>
 
@@ -962,25 +962,25 @@ export default function FanDashboard() {
               {rangeStats && (
                 <div className="flex mb-4 p-4 bg-blue-50 rounded-2xl border border-blue-100 divide-x divide-blue-200">
                   <div className="flex-1 pr-4">
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Net growth</div>
+                    <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1">Net growth</div>
                     <div className={`text-base font-bold tabular-nums flex items-center gap-1 ${rangeStats.net >= 0 ? "text-emerald-600" : "text-rose-500"}`}>
                       {rangeStats.net >= 0 ? "+" : ""}{fmt(rangeStats.net)}
                       <span className="text-[10px] font-semibold">({rangeStats.pct >= 0 ? "+" : ""}{rangeStats.pct.toFixed(1).replace(/\.0$/, "")}%)</span>
                     </div>
                   </div>
                   <div className="flex-1 px-4">
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Best month</div>
+                    <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1">Best month</div>
                     <div className="text-base font-bold text-slate-900">
                       {rangeStats.bestMonth ? monthLabel(rangeStats.bestMonth) : "—"}
                       {rangeStats.bestGain > 0 && <span className="text-xs text-emerald-600 ml-1.5 font-semibold">+{fmt(rangeStats.bestGain)}</span>}
                     </div>
                   </div>
                   <div className="flex-1 px-4">
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Range start</div>
+                    <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1">Range start</div>
                     <div className="text-base font-bold tabular-nums text-slate-900">{fmt(rangeStats.startTotal)}</div>
                   </div>
                   <div className="flex-1 pl-4">
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Range end</div>
+                    <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1">Range end</div>
                     <div className="text-base font-bold tabular-nums text-slate-900">{fmt(rangeStats.endTotal)}</div>
                   </div>
                 </div>
@@ -1011,7 +1011,7 @@ export default function FanDashboard() {
             {/* Current reach */}
             <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
               <div className="mb-5">
-                <div className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Current Reach</div>
+                <div className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Current Reach</div>
                 <div className="text-base font-semibold text-slate-900 mt-0.5">Per-platform follower counts</div>
                 <div className="text-xs text-slate-400">Change vs previous month</div>
               </div>
@@ -1039,7 +1039,7 @@ export default function FanDashboard() {
                 <div className="bg-white border border-slate-200 rounded-3xl shadow-sm">
                   <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
                     <div>
-                      <div className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Fan Page Tracker</div>
+                      <div className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Fan Page Tracker</div>
                       <div className="text-sm font-semibold text-slate-900 mt-0.5">Admin-run pages</div>
                     </div>
                     <div className="relative">
@@ -1130,7 +1130,7 @@ export default function FanDashboard() {
             <div className="col-span-12 md:col-span-4 bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
               <div className="flex items-center gap-2 mb-1">
                 <div className="w-6 h-6 rounded-xl bg-blue-100 flex items-center justify-center"><PieIcon size={12} className="text-blue-600" /></div>
-                <div className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Platform Share</div>
+                <div className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Platform Share</div>
               </div>
               <div className="text-sm font-semibold text-slate-900 mb-3">Distribution of total reach</div>
               <div
@@ -1157,7 +1157,7 @@ export default function FanDashboard() {
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                  <div className="text-[9px] font-bold uppercase tracking-widest text-slate-400">Total</div>
+                  <div className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">Total</div>
                   <div className="font-bold text-lg text-slate-900 tabular-nums">{fmt(artist.totals.value)}</div>
                 </div>
                 {pieHover && piePos && (
@@ -1188,7 +1188,7 @@ export default function FanDashboard() {
 <div className="col-span-12 md:col-span-4 flex flex-col bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
               <div className="flex items-center gap-2 mb-1">
                 <div className="w-6 h-6 rounded-xl bg-amber-100 flex items-center justify-center"><Zap size={12} className="text-amber-600" /></div>
-                <div className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Growth Velocity · 12mo</div>
+                <div className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Growth Velocity · 12mo</div>
               </div>
               <div className="text-sm font-semibold text-slate-900 mb-3">Net added per month</div>
               <div className="flex-1 min-h-[200px]">
@@ -1198,8 +1198,8 @@ export default function FanDashboard() {
                     <XAxis dataKey="date" tickFormatter={(ym) => monthLabel(ym).split(" ")[0]} axisLine={false} tickLine={false} interval={1} />
                     <YAxis tickFormatter={fmt} axisLine={false} tickLine={false} width={40} />
                     <Tooltip content={({ active, payload, label }) => active && payload?.length ? (
-                      <div className="bg-white border border-slate-200 rounded-xl shadow-xl p-3 text-xs">
-                        <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{monthLabel(label)}</div>
+                      <div className="bg-white border border-slate-200 rounded-xl shadow-lg p-3 text-xs">
+                        <div className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">{monthLabel(label)}</div>
                         <div className="font-bold tabular-nums text-slate-900 text-sm mt-1">{payload[0].value >= 0 ? "+" : ""}{fmtFull(payload[0].value)}</div>
                       </div>
                     ) : null} cursor={{ fill: "#f1f5f9" }} wrapperStyle={{ transition: "none" }} />
@@ -1214,7 +1214,7 @@ export default function FanDashboard() {
             <div className="col-span-12 md:col-span-4 bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
               <div className="flex items-center gap-2 mb-1">
                 <div className="w-6 h-6 rounded-xl bg-emerald-100 flex items-center justify-center"><ArrowUpRight size={12} className="text-emerald-600" /></div>
-                <div className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Fastest Movers · 28d</div>
+                <div className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Fastest Movers · 28d</div>
               </div>
               <div className="text-sm font-semibold text-slate-900 mb-3">Biggest swings across the roster</div>
               <div className="-mx-2">
