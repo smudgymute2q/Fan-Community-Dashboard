@@ -904,7 +904,9 @@ export default function FanDashboard() {
 
         {/* Main */}
         <div className="grid grid-cols-12 gap-5">
-          <section ref={leftSectionRef} className="col-span-12 lg:col-span-8 space-y-5">
+          <section className="col-span-12 lg:col-span-8 space-y-5">
+            {/* Hero + Growth chart — measured to cap Fan Page Tracker height */}
+            <div ref={leftSectionRef} className="space-y-5">
             {/* Hero */}
             <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#000dff] to-blue-600 px-6 py-4 text-white">
               <div className="absolute top-0 right-0 w-72 h-72 opacity-20 -mr-20 -mt-20"><div className="w-full h-full rounded-full bg-white blur-3xl" /></div>
@@ -1018,6 +1020,8 @@ export default function FanDashboard() {
                 )}
               </div>
             </div>
+
+            </div>{/* end measured wrapper */}
 
             {/* Current reach */}
             <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
