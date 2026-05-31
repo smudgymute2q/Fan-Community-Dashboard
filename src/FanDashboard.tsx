@@ -1008,20 +1008,9 @@ export default function FanDashboard() {
               </div>
             </div>
 
-            {/* Current reach */}
-            <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
-              <div className="mb-5">
-                <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Current Reach</div>
-                <div className="text-base font-semibold text-slate-900 mt-0.5">Per-platform follower counts</div>
-                <div className="text-xs text-slate-500">Change vs previous month</div>
-              </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {orderedPlats.map((p) => <KpiTile key={p} platform={p} value={artist.platforms[p].value} delta={artist.platforms[p].delta} />)}
-              </div>
-            </div>
           </section>
 
-          <aside className="col-span-12 lg:col-span-4 space-y-5">
+          <aside className="col-span-12 lg:col-span-4 flex flex-col">
             {(() => {
               const PLAT_ORDER_PAGES = ["Discord", "Reddit", "Instagram", "Instagram Channels", "X", "X Communities", "TikTok"];
               const availablePlatformsSet = new Set(artist.pages.map((p) => p.platform).filter(Boolean));
@@ -1036,7 +1025,7 @@ export default function FanDashboard() {
                 .filter((p) => p.platform === effectivePlatform)
                 .sort((a, b) => b.followers - a.followers);
               return (
-                <div className="bg-white border border-slate-200 rounded-3xl shadow-sm">
+                <div className="bg-white border border-slate-200 rounded-3xl shadow-sm flex flex-col flex-1">
                   <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
                     <div>
                       <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Fan Page Tracker</div>
@@ -1071,10 +1060,10 @@ export default function FanDashboard() {
                       )}
                     </div>
                   </div>
-                  <div className="relative">
+                  <div className="relative flex-1 flex flex-col min-h-0">
                   <div
                     ref={pagesListRef}
-                    className="p-2 max-h-[594px] overflow-y-auto [overscroll-behavior:contain]"
+                    className="p-2 flex-1 overflow-y-auto [overscroll-behavior:contain]"
                     onScroll={(e) => { const el = e.currentTarget; setPagesAtBottom(el.scrollTop + el.clientHeight >= el.scrollHeight - 8); }}
                   >
                     {filteredPages.length === 0 ? (
@@ -1116,6 +1105,18 @@ export default function FanDashboard() {
             })()}
 
           </aside>
+        </div>
+
+        {/* Current reach — full width below the grid */}
+        <div className="mt-5 bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
+          <div className="mb-5">
+            <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Current Reach</div>
+            <div className="text-base font-semibold text-slate-900 mt-0.5">Per-platform follower counts</div>
+            <div className="text-xs text-slate-500">Change vs previous month</div>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {orderedPlats.map((p) => <KpiTile key={p} platform={p} value={artist.platforms[p].value} delta={artist.platforms[p].delta} />)}
+          </div>
         </div>
 
         {/* Deep Analytics */}
