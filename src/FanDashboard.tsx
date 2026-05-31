@@ -407,7 +407,7 @@ function ArtistPill({ artist, active, onClick }) {
           <div className={`text-sm font-semibold leading-tight ${active ? "text-white" : "text-slate-900"}`}>{artist.name}</div>
           <div className="flex items-center gap-1.5 mt-0.5">
             <span className={`text-xs font-semibold tabular-nums ${active ? "text-white" : "text-slate-700"}`}>{fmt(artist.totals.value)}</span>
-            <span className={`text-[10px] font-semibold ${active ? "text-blue-100" : artist.totals.delta >= 0 ? "text-emerald-600" : "text-rose-500"}`}>{artist.totals.delta >= 0 ? "+" : ""}{fmt(artist.totals.delta)}</span>
+            <span className={`text-xs font-semibold ${active ? "text-blue-100" : artist.totals.delta >= 0 ? "text-emerald-600" : "text-rose-500"}`}>{artist.totals.delta >= 0 ? "+" : ""}{fmt(artist.totals.delta)}</span>
           </div>
         </div>
       </div>
