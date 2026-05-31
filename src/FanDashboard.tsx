@@ -510,6 +510,7 @@ export default function FanDashboard() {
   const [pagesDropdownOpen, setPagesDropdownOpen] = useState(false);
   const pagesListRef = React.useRef<HTMLDivElement>(null);
   const [pagesAtBottom, setPagesAtBottom] = useState(false);
+  const [entryGap, setEntryGap] = useState(4);
   const heroChartRef = React.useRef<HTMLDivElement>(null);
   const [heroChartHeight, setHeroChartHeight] = useState<number | null>(null);
   const [redditPosts, setRedditPosts] = useState<any[]>([]);
@@ -535,6 +536,30 @@ export default function FanDashboard() {
     return () => obs.disconnect();
   }, []);
 
+  React.useLayoutEffect(() => {
+    const container = pagesListRef.current;
+    if (!container) return;
+    const FIXED_GAP = 4;
+    const compute = () => {
+      if (container.scrollHeight <= container.clientHeight) {
+        setEntryGap(FIXED_GAP);
+        return;
+      }
+      const firstEntry = container.firstElementChild?.firstElementChild as HTMLElement | null;
+      if (!firstEntry) { setEntryGap(FIXED_GAP); return; }
+      const entryH = firstEntry.getBoundingClientRect().height;
+      if (entryH === 0) { setEntryGap(FIXED_GAP); return; }
+      const style = window.getComputedStyle(container);
+      const availH = container.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom);
+      const n = Math.floor((availH + FIXED_GAP) / (entryH + FIXED_GAP));
+      if (n <= 1) { setEntryGap(FIXED_GAP); return; }
+      setEntryGap(Math.max(0, (availH - n * entryH) / (n - 1)));
+    };
+    compute();
+    const obs = new ResizeObserver(compute);
+    obs.observe(container);
+    return () => obs.disconnect();
+  }, [selectedSlug, pagesPlatform]);
 
   useEffect(() => {
     let cancelled = false;
@@ -1093,7 +1118,7 @@ export default function FanDashboard() {
                     {filteredPages.length === 0 ? (
                       <div className="px-3 py-6 text-center text-xs text-slate-400">No {effectivePlatform} pages tracked yet</div>
                     ) : (
-                      <div className="flex flex-col gap-1">
+                      <div style={{ display: "flex", flexDirection: "column", gap: entryGap }}>
                       {filteredPages.map((p, i) => {
                         const platCfg = PLATFORMS[effectivePlatform] || { soft: "#f1f5f9", color: "#64748b" };
                         const Tag = p.link ? "a" : "div";
