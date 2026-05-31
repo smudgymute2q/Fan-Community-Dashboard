@@ -433,18 +433,6 @@ function ChartTooltip({ active, payload, label }) {
   );
 }
 
-function PieTooltip({ active, payload }) {
-  if (!active || !payload || !payload.length) return null;
-  const p = payload[0];
-  return (
-    <div className="bg-white border border-slate-200 rounded-lg shadow-lg px-3 py-2 text-xs flex items-center gap-2">
-      <span className="w-2 h-2 rounded-full shrink-0" style={{ background: p.payload?.fill || p.fill }} />
-      <span className="text-slate-600 font-medium">{p.name}</span>
-      <span className="font-bold tabular-nums text-slate-900">{fmtFull(p.value)}</span>
-    </div>
-  );
-}
-
 function engagementSummary(post) {
   const e = post.engagement;
   if (post.platform === "Reddit") return [{ icon: ArrowUp, label: fmt(e.upvotes) }, { icon: MessageSquare, label: fmt(e.comments) }];
