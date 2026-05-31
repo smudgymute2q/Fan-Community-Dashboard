@@ -536,7 +536,7 @@ export default function FanDashboard() {
     return () => obs.disconnect();
   }, []);
 
-  useEffect(() => {
+  React.useLayoutEffect(() => {
     const container = pagesListRef.current;
     if (!container) return;
     const compute = () => {
