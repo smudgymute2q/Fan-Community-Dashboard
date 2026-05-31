@@ -512,6 +512,17 @@ export default function FanDashboard() {
   const [pagesAtBottom, setPagesAtBottom] = useState(false);
   const [redditPosts, setRedditPosts] = useState<any[]>([]);
   const [redditLoading, setRedditLoading] = useState(false);
+  const leftSectionRef = React.useRef<HTMLElement>(null);
+  const [leftSectionHeight, setLeftSectionHeight] = useState<number | null>(null);
+
+  // Track left column height so the Fan Page Tracker can match it at max
+  useEffect(() => {
+    const el = leftSectionRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => setLeftSectionHeight(entry.contentRect.height));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   // ---- Sheets data loading ----
   const [sheetsData, setSheetsData] = useState<Record<string, any>>({});
@@ -893,7 +904,7 @@ export default function FanDashboard() {
 
         {/* Main */}
         <div className="grid grid-cols-12 gap-5">
-          <section className="col-span-12 lg:col-span-8 space-y-5">
+          <section ref={leftSectionRef} className="col-span-12 lg:col-span-8 space-y-5">
             {/* Hero */}
             <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#000dff] to-blue-600 px-6 py-4 text-white">
               <div className="absolute top-0 right-0 w-72 h-72 opacity-20 -mr-20 -mt-20"><div className="w-full h-full rounded-full bg-white blur-3xl" /></div>
@@ -1036,7 +1047,10 @@ export default function FanDashboard() {
                 .filter((p) => p.platform === effectivePlatform)
                 .sort((a, b) => b.followers - a.followers);
               return (
-                <div className="bg-white border border-slate-200 rounded-3xl shadow-sm">
+                <div
+                    className="bg-white border border-slate-200 rounded-3xl shadow-sm flex flex-col"
+                    style={leftSectionHeight ? { maxHeight: leftSectionHeight } : {}}
+                  >
                   <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
                     <div>
                       <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Fan Page Tracker</div>
@@ -1071,10 +1085,10 @@ export default function FanDashboard() {
                       )}
                     </div>
                   </div>
-                  <div className="relative">
+                  <div className="relative flex flex-col flex-1 min-h-0">
                   <div
                     ref={pagesListRef}
-                    className="p-2 max-h-[594px] overflow-y-auto [overscroll-behavior:contain]"
+                    className="p-2 flex-1 overflow-y-auto [overscroll-behavior:contain]"
                     onScroll={(e) => { const el = e.currentTarget; setPagesAtBottom(el.scrollTop + el.clientHeight >= el.scrollHeight - 8); }}
                   >
                     {filteredPages.length === 0 ? (
