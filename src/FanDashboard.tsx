@@ -512,6 +512,16 @@ export default function FanDashboard() {
   const [pagesAtBottom, setPagesAtBottom] = useState(false);
   const [redditPosts, setRedditPosts] = useState<any[]>([]);
   const [redditLoading, setRedditLoading] = useState(false);
+  const chartSectionRef = React.useRef<HTMLDivElement>(null);
+  const [chartSectionHeight, setChartSectionHeight] = useState<number | null>(null);
+
+  useEffect(() => {
+    const el = chartSectionRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => setChartSectionHeight(entry.contentRect.height));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   // ---- Sheets data loading ----
   const [sheetsData, setSheetsData] = useState<Record<string, any>>({});
@@ -894,6 +904,7 @@ export default function FanDashboard() {
         {/* Main */}
         <div className="grid grid-cols-12 gap-5">
           <section className="col-span-12 lg:col-span-8 space-y-5">
+            <div ref={chartSectionRef} className="space-y-5">
             {/* Hero */}
             <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#000dff] to-blue-600 px-6 py-4 text-white">
               <div className="absolute top-0 right-0 w-72 h-72 opacity-20 -mr-20 -mt-20"><div className="w-full h-full rounded-full bg-white blur-3xl" /></div>
@@ -1008,6 +1019,7 @@ export default function FanDashboard() {
               </div>
             </div>
 
+            </div>{/* end chart section */}
             {/* Current reach */}
             <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
               <div className="mb-5">
@@ -1074,7 +1086,8 @@ export default function FanDashboard() {
                   <div className="relative">
                   <div
                     ref={pagesListRef}
-                    className="max-h-[640px] overflow-y-auto [overscroll-behavior:contain]"
+                    style={{ maxHeight: chartSectionHeight ? chartSectionHeight - 100 : 640 }}
+                    className="overflow-y-auto [overscroll-behavior:contain]"
                     onScroll={(e) => { const el = e.currentTarget; setPagesAtBottom(el.scrollTop + el.clientHeight >= el.scrollHeight - 8); }}
                   >
                     {filteredPages.length === 0 ? (
