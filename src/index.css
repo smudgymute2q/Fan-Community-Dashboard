@@ -1,1 +1,13 @@
 @import "tailwindcss";
+
+/* ---- Design tokens (single source of truth) ----
+   Change a value here and it updates everywhere it's used.
+   Each maps to the Tailwind utility it replaced, so the look is unchanged. */
+@theme {
+  --color-primary: #0f172a;   /* was slate-900 — primary text */
+  --color-secondary: #475569; /* was slate-600 — secondary text */
+  --color-muted: #94a3b8;     /* was slate-400 — muted / label text */
+  --color-pos: #059669;       /* was emerald-600 — positive delta */
+  --color-neg: #f43f5e;       /* was rose-500 — negative delta */
+  --color-brand: #000dff;     /* brand accent */
+}

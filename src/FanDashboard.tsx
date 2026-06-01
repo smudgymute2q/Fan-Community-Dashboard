@@ -360,20 +360,20 @@ function monthlyVelocity(history, plats) {
 }
 
 function DeltaPill({ value, small = false }) {
-  if (value === 0 || value === null || value === undefined) return <span className={`text-slate-400 ${small ? "text-[10px]" : "text-xs"} font-medium`}>0</span>;
+  if (value === 0 || value === null || value === undefined) return <span className={`text-muted ${small ? "text-[10px]" : "text-xs"} font-medium`}>0</span>;
   const up = value > 0;
-  return <span className={`font-semibold ${small ? "text-[10px]" : "text-xs"} ${up ? "text-emerald-600" : "text-rose-500"}`}>{up ? "+" : ""}{fmt(value)}</span>;
+  return <span className={`font-semibold ${small ? "text-[10px]" : "text-xs"} ${up ? "text-pos" : "text-neg"}`}>{up ? "+" : ""}{fmt(value)}</span>;
 }
 
 function KpiTile({ platform, value, delta }) {
   const cfg = PLATFORMS[platform];
   return (
     <div className="relative rounded-2xl p-4 bg-white border border-slate-200">
-      <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider mb-2 text-slate-400">
+      <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider mb-2 text-muted">
         {cfg && <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: cfg.color }} />}
         {platform}
       </div>
-      <div className="font-bold tabular-nums leading-none text-2xl text-slate-900">{fmtFull(value)}</div>
+      <div className="font-bold tabular-nums leading-none text-2xl text-primary">{fmtFull(value)}</div>
       <div className="mt-2"><DeltaPill value={delta} /></div>
     </div>
   );
@@ -398,16 +398,16 @@ function ArtistPill({ artist, active, onClick }) {
   const initial = artist.name.charAt(0);
   const icon = ARTIST_ICONS[artist.slug];
   return (
-    <button onClick={onClick} className={`group relative shrink-0 text-left px-3.5 py-2.5 rounded-2xl border transition-all ${active ? "bg-gradient-to-br from-[#000dff] to-blue-500 text-white border-transparent" : "bg-white border-slate-200"}`}>
+    <button onClick={onClick} className={`group relative shrink-0 text-left px-3.5 py-2.5 rounded-2xl border transition-all ${active ? "bg-gradient-to-br from-brand to-blue-500 text-white border-transparent" : "bg-white border-slate-200"}`}>
       <div className="flex items-center gap-2.5">
-        <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm overflow-hidden shrink-0 ${active ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600"}`}>
+        <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm overflow-hidden shrink-0 ${active ? "bg-white/20 text-white" : "bg-slate-100 text-secondary"}`}>
           {icon ? <img src={icon} alt={artist.name} className="w-full h-full object-cover" /> : initial}
         </div>
         <div>
-          <div className={`text-sm font-semibold leading-tight ${active ? "text-white" : "text-slate-900"}`}>{artist.name}</div>
+          <div className={`text-sm font-semibold leading-tight ${active ? "text-white" : "text-primary"}`}>{artist.name}</div>
           <div className="flex items-center gap-1.5 mt-0.5">
-            <span className={`text-xs font-semibold tabular-nums ${active ? "text-white" : "text-slate-600"}`}>{fmt(artist.totals.value)}</span>
-            <span className={`text-[10px] font-semibold ${artist.totals.delta >= 0 ? (active ? "text-emerald-300" : "text-emerald-600") : (active ? "text-rose-300" : "text-rose-500")}`}>{artist.totals.delta >= 0 ? "+" : ""}{fmt(artist.totals.delta)}</span>
+            <span className={`text-xs font-semibold tabular-nums ${active ? "text-white" : "text-secondary"}`}>{fmt(artist.totals.value)}</span>
+            <span className={`text-[10px] font-semibold ${artist.totals.delta >= 0 ? (active ? "text-emerald-300" : "text-pos") : (active ? "text-rose-300" : "text-neg")}`}>{artist.totals.delta >= 0 ? "+" : ""}{fmt(artist.totals.delta)}</span>
           </div>
         </div>
       </div>
@@ -419,13 +419,13 @@ function ChartTooltip({ active, payload, label }) {
   if (!active || !payload || !payload.length) return null;
   return (
     <div className="bg-white border border-slate-200 rounded-xl shadow-lg p-3 text-xs">
-      <div className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mb-2">{label && typeof label === "string" && label.includes("-") ? monthLabel(label) : label}</div>
+      <div className="text-[10px] text-muted font-semibold uppercase tracking-wider mb-2">{label && typeof label === "string" && label.includes("-") ? monthLabel(label) : label}</div>
       <div className="space-y-1.5">
         {payload.slice().sort((a, b) => b.value - a.value).map((p) => (
           <div key={p.dataKey || p.name} className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full shrink-0" style={{ background: p.color || p.fill }} />
-            <span className="text-slate-600 flex-1">{p.name}</span>
-            <span className="font-semibold tabular-nums text-slate-900 ml-3">{fmtFull(p.value)}</span>
+            <span className="text-secondary flex-1">{p.name}</span>
+            <span className="font-semibold tabular-nums text-primary ml-3">{fmtFull(p.value)}</span>
           </div>
         ))}
       </div>
@@ -445,7 +445,7 @@ function engagementSummary(post) {
 const SENTIMENT_STYLE = {
   hype: { bg: "bg-amber-100", text: "text-amber-700", label: "HYPE" },
   positive: { bg: "bg-emerald-100", text: "text-emerald-700", label: "POSITIVE" },
-  neutral: { bg: "bg-slate-100", text: "text-slate-600", label: "NEUTRAL" },
+  neutral: { bg: "bg-slate-100", text: "text-secondary", label: "NEUTRAL" },
   negative: { bg: "bg-rose-100", text: "text-rose-700", label: "WATCH" },
 };
 
@@ -461,16 +461,16 @@ function FeedCard({ post }) {
               <span className="w-2 h-2 rounded-full" style={{ background: cfg.color }} />
             </div>
             <div className="min-w-0">
-              <div className="text-xs font-semibold text-slate-900 truncate">{post.page}</div>
-              <div className="text-[10px] text-slate-400 truncate">@{post.author.replace(/^u\//, "").replace(/^@/, "")} · {post.time}</div>
+              <div className="text-xs font-semibold text-primary truncate">{post.page}</div>
+              <div className="text-[10px] text-muted truncate">@{post.author.replace(/^u\//, "").replace(/^@/, "")} · {post.time}</div>
             </div>
           </div>
           <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full ${sent.bg} ${sent.text} shrink-0`}>{sent.label}</span>
         </div>
-        {post.title && <div className="text-[13px] text-slate-900 font-semibold leading-snug mb-1 line-clamp-2">{post.title}</div>}
-        <div className="text-xs text-slate-600 leading-relaxed line-clamp-3">{post.body}</div>
+        {post.title && <div className="text-[13px] text-primary font-semibold leading-snug mb-1 line-clamp-2">{post.title}</div>}
+        <div className="text-xs text-secondary leading-relaxed line-clamp-3">{post.body}</div>
         {post.media && (
-          <div className="mt-3 flex items-center gap-1.5 text-[10px] text-slate-400 bg-slate-50 px-2 py-1 rounded-xl w-fit">
+          <div className="mt-3 flex items-center gap-1.5 text-[10px] text-muted bg-slate-50 px-2 py-1 rounded-xl w-fit">
             {post.media === "video" ? <Play size={10} /> : <ImageIcon size={10} />}
             <span className="uppercase tracking-wider font-semibold">{post.media}</span>
           </div>
@@ -480,14 +480,14 @@ function FeedCard({ post }) {
             {engagementSummary(post).map((e, i) => {
               const Icon = e.icon;
               return (
-                <div key={i} className="flex items-center gap-1 text-[11px] text-slate-600 font-medium">
+                <div key={i} className="flex items-center gap-1 text-[11px] text-secondary font-medium">
                   <Icon size={11} strokeWidth={2.2} />
                   <span className="tabular-nums">{e.label}</span>
                 </div>
               );
             })}
           </div>
-          {post.link ? <a href={post.link} target="_blank" rel="noopener noreferrer" className="opacity-0 group-hover:opacity-100 transition text-[10px] text-slate-400 hover:text-slate-900 flex items-center gap-1 font-medium">open <ExternalLink size={10} /></a> : <span className="opacity-0 group-hover:opacity-100 transition text-[10px] text-slate-400 flex items-center gap-1 font-medium">open <ExternalLink size={10} /></span>}
+          {post.link ? <a href={post.link} target="_blank" rel="noopener noreferrer" className="opacity-0 group-hover:opacity-100 transition text-[10px] text-muted hover:text-primary flex items-center gap-1 font-medium">open <ExternalLink size={10} /></a> : <span className="opacity-0 group-hover:opacity-100 transition text-[10px] text-muted flex items-center gap-1 font-medium">open <ExternalLink size={10} /></span>}
         </div>
       </div>
     </div>
@@ -810,8 +810,8 @@ export default function FanDashboard() {
       {sheetsLoading && (
         <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm pointer-events-none bg-white/60">
           <div className="flex flex-col items-center gap-3">
-            <div className="w-8 h-8 rounded-full border-2 border-[#000dff] border-t-transparent animate-spin" />
-            <span className="text-xs font-semibold text-slate-600">Loading data…</span>
+            <div className="w-8 h-8 rounded-full border-2 border-brand border-t-transparent animate-spin" />
+            <span className="text-xs font-semibold text-secondary">Loading data…</span>
           </div>
         </div>
       )}
@@ -821,7 +821,7 @@ export default function FanDashboard() {
         <header className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-5">
             <div className="flex items-center gap-3">
-              <div className="relative w-11 h-11 rounded-2xl bg-gradient-to-br from-[#000dff] to-blue-500 flex items-center justify-center shadow-lg shadow-blue-300/50">
+              <div className="relative w-11 h-11 rounded-2xl bg-gradient-to-br from-brand to-blue-500 flex items-center justify-center shadow-lg shadow-blue-300/50">
                 <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none">
                   <path d="M4 20 L4 4 L12 4 L12 11 L20 11 L20 20 Z" stroke="white" strokeWidth="1.8" strokeLinejoin="round" />
                   <circle cx="12" cy="11" r="1.5" fill="white" />
@@ -829,10 +829,10 @@ export default function FanDashboard() {
                 <div className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full ring-2 ring-white animate-pulse" />
               </div>
               <div className="leading-none">
-                <div className="text-xl font-bold text-slate-900 tracking-tight">
-                  FAN<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#000dff] to-blue-500">INTEL</span>
+                <div className="text-xl font-bold text-primary tracking-tight">
+                  FAN<span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-blue-500">INTEL</span>
                 </div>
-                <div className="text-[10px] uppercase tracking-[0.2em] text-slate-400 font-semibold mt-1">Community Intelligence</div>
+                <div className="text-[10px] uppercase tracking-[0.2em] text-muted font-semibold mt-1">Community Intelligence</div>
               </div>
             </div>
             <div className="h-8 w-px bg-slate-200" />
@@ -847,8 +847,8 @@ export default function FanDashboard() {
         <section className="mb-8">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-baseline gap-3">
-              <h2 className="text-xs uppercase tracking-[0.15em] text-slate-400 font-semibold">Roster</h2>
-              <span className="text-xs text-slate-400 font-medium">{artists.length} artists tracked</span>
+              <h2 className="text-xs uppercase tracking-[0.15em] text-muted font-semibold">Roster</h2>
+              <span className="text-xs text-muted font-medium">{artists.length} artists tracked</span>
             </div>
           </div>
           <div className="relative">
@@ -857,7 +857,7 @@ export default function FanDashboard() {
               onClick={() => { setRosterAtStart(true); isScrollingToStart.current = true; rosterRef.current?.scrollTo({ left: 0, behavior: "smooth" }); }}
               className={`absolute left-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition-opacity duration-150 ${rosterAtStart ? "opacity-0 pointer-events-none" : "opacity-100"}`}
             >
-              <ChevronDown size={13} className="rotate-90 text-slate-400" />
+              <ChevronDown size={13} className="rotate-90 text-muted" />
             </button>
             <div
               ref={rosterRef}
@@ -886,7 +886,7 @@ export default function FanDashboard() {
               onClick={() => { const el = rosterRef.current; if (el) { setRosterAtEnd(true); isScrollingToEnd.current = true; el.scrollTo({ left: el.scrollWidth - el.clientWidth, behavior: "smooth" }); } }}
               className={`absolute right-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition-opacity duration-150 ${rosterAtEnd ? "opacity-0 pointer-events-none" : "opacity-100"}`}
             >
-              <ChevronDown size={13} className="-rotate-90 text-slate-400" />
+              <ChevronDown size={13} className="-rotate-90 text-muted" />
             </button>
           </div>
         </section>
@@ -895,7 +895,7 @@ export default function FanDashboard() {
         <div className="grid grid-cols-12 gap-4">
           <section className="col-span-12 lg:col-span-8 space-y-4">
             {/* Hero */}
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#000dff] to-blue-500 p-6 text-white">
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand to-blue-500 p-6 text-white">
               <div className="absolute top-0 right-0 w-72 h-72 opacity-20 -mr-20 -mt-20"><div className="w-full h-full rounded-full bg-white blur-3xl" /></div>
               <div className="absolute bottom-0 left-1/2 w-64 h-64 opacity-10 -mb-32"><div className="w-full h-full rounded-full bg-yellow-200 blur-3xl" /></div>
               <div className="relative flex items-center justify-between gap-6">
@@ -907,7 +907,7 @@ export default function FanDashboard() {
                   <div className="text-[10px] uppercase tracking-[0.2em] text-white/70 font-semibold mb-2">Cumulative reach</div>
                   <div className="font-bold text-4xl tabular-nums leading-none">{fmtFull(artist.totals.value)}</div>
                   <div className="mt-2 flex items-center justify-end gap-2">
-                    <span className={`inline-flex items-center gap-0.5 text-xs font-bold px-2 py-0.5 rounded-full ${artist.totals.delta >= 0 ? "bg-emerald-100 text-emerald-600" : "bg-rose-100 text-rose-500"}`}>
+                    <span className={`inline-flex items-center gap-0.5 text-xs font-bold px-2 py-0.5 rounded-full ${artist.totals.delta >= 0 ? "bg-emerald-100 text-pos" : "bg-rose-100 text-neg"}`}>
                       {artist.totals.delta >= 0 ? "+" : ""}{fmt(artist.totals.delta)}
                     </span>
                     <span className="text-[10px] text-white/70 font-medium">last 28d</span>
@@ -921,8 +921,8 @@ export default function FanDashboard() {
               <div className="flex flex-col gap-4 mb-5">
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                   <div>
-                    <div className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Fan Network Growth</div>
-                    <div className="text-base font-semibold text-slate-900 mt-0.5">Followers across platforms</div>
+                    <div className="text-[10px] uppercase tracking-wider text-muted font-semibold">Fan Network Growth</div>
+                    <div className="text-base font-semibold text-primary mt-0.5">Followers across platforms</div>
                   </div>
 
                   <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
@@ -937,7 +937,7 @@ export default function FanDashboard() {
                         key={opt.key}
                         onClick={() => setYearRange(opt.key)}
                         className={`text-xs font-semibold px-3 py-1.5 rounded-xl transition ${
-                          yearRange === opt.key ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-900"
+                          yearRange === opt.key ? "bg-white text-primary shadow-sm" : "text-secondary hover:text-primary"
                         }`}
                       >
                         {opt.label}
@@ -950,7 +950,7 @@ export default function FanDashboard() {
                   {orderedPlats.map((p) => {
                     const off = hiddenPlats.has(p);
                     return (
-                      <button key={p} onClick={() => togglePlat(p)} className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[10px] font-semibold transition ${off ? "border-slate-200 text-slate-400 bg-slate-50" : "border-slate-200 text-slate-600 bg-white hover:border-slate-300"}`}>
+                      <button key={p} onClick={() => togglePlat(p)} className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[10px] font-semibold transition ${off ? "border-slate-200 text-muted bg-slate-50" : "border-slate-200 text-secondary bg-white hover:border-slate-300"}`}>
                         <span className="w-1.5 h-1.5 rounded-full" style={{ background: off ? "#cbd5e1" : PLATFORMS[p].color }} />
                         {p}
                       </button>
@@ -962,33 +962,33 @@ export default function FanDashboard() {
               {rangeStats && (
                 <div className="flex mb-4 p-4 bg-blue-50 rounded-2xl border border-blue-100 divide-x divide-blue-200">
                   <div className="flex-1 pr-4">
-                    <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1">Net growth</div>
-                    <div className={`text-base font-bold tabular-nums flex items-center gap-1 ${rangeStats.net >= 0 ? "text-emerald-600" : "text-rose-500"}`}>
+                    <div className="text-[10px] font-semibold uppercase tracking-wider text-muted mb-1">Net growth</div>
+                    <div className={`text-base font-bold tabular-nums flex items-center gap-1 ${rangeStats.net >= 0 ? "text-pos" : "text-neg"}`}>
                       {rangeStats.net >= 0 ? "+" : ""}{fmt(rangeStats.net)}
                       <span className="text-[10px] font-semibold">({rangeStats.pct >= 0 ? "+" : ""}{rangeStats.pct.toFixed(1).replace(/\.0$/, "")}%)</span>
                     </div>
                   </div>
                   <div className="flex-1 px-4">
-                    <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1">Best month</div>
-                    <div className="text-base font-bold text-slate-900">
+                    <div className="text-[10px] font-semibold uppercase tracking-wider text-muted mb-1">Best month</div>
+                    <div className="text-base font-bold text-primary">
                       {rangeStats.bestMonth ? monthLabel(rangeStats.bestMonth) : "—"}
-                      {rangeStats.bestGain > 0 && <span className="text-xs text-emerald-600 ml-1.5 font-semibold">+{fmt(rangeStats.bestGain)}</span>}
+                      {rangeStats.bestGain > 0 && <span className="text-xs text-pos ml-1.5 font-semibold">+{fmt(rangeStats.bestGain)}</span>}
                     </div>
                   </div>
                   <div className="flex-1 px-4">
-                    <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1">Range start</div>
-                    <div className="text-base font-bold tabular-nums text-slate-900">{fmt(rangeStats.startTotal)}</div>
+                    <div className="text-[10px] font-semibold uppercase tracking-wider text-muted mb-1">Range start</div>
+                    <div className="text-base font-bold tabular-nums text-primary">{fmt(rangeStats.startTotal)}</div>
                   </div>
                   <div className="flex-1 pl-4">
-                    <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1">Range end</div>
-                    <div className="text-base font-bold tabular-nums text-slate-900">{fmt(rangeStats.endTotal)}</div>
+                    <div className="text-[10px] font-semibold uppercase tracking-wider text-muted mb-1">Range end</div>
+                    <div className="text-base font-bold tabular-nums text-primary">{fmt(rangeStats.endTotal)}</div>
                   </div>
                 </div>
               )}
 
               <div className="h-[320px] -mx-2">
                 {history.length === 0 ? (
-                  <div className="h-full flex items-center justify-center text-slate-400 text-sm">No data in the selected range</div>
+                  <div className="h-full flex items-center justify-center text-muted text-sm">No data in the selected range</div>
                 ) : (
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={history} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
@@ -1011,9 +1011,9 @@ export default function FanDashboard() {
             {/* Current reach */}
             <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
               <div className="mb-5">
-                <div className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Current Reach</div>
-                <div className="text-base font-semibold text-slate-900 mt-0.5">Per-platform follower counts</div>
-                <div className="text-xs text-slate-400">Change vs previous month</div>
+                <div className="text-[10px] uppercase tracking-wider text-muted font-semibold">Current Reach</div>
+                <div className="text-base font-semibold text-primary mt-0.5">Per-platform follower counts</div>
+                <div className="text-xs text-muted">Change vs previous month</div>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {orderedPlats.map((p) => <KpiTile key={p} platform={p} value={artist.platforms[p].value} delta={artist.platforms[p].delta} />)}
@@ -1039,8 +1039,8 @@ export default function FanDashboard() {
                 <div className="bg-white border border-slate-200 rounded-3xl shadow-sm">
                   <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
                     <div>
-                      <div className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Fan Page Tracker</div>
-                      <div className="text-sm font-semibold text-slate-900 mt-0.5">Admin-run pages</div>
+                      <div className="text-[10px] uppercase tracking-wider text-muted font-semibold">Fan Page Tracker</div>
+                      <div className="text-sm font-semibold text-primary mt-0.5">Admin-run pages</div>
                     </div>
                     <div className="relative">
                       {pagesDropdownOpen && (
@@ -1048,11 +1048,11 @@ export default function FanDashboard() {
                       )}
                       <button
                         onClick={() => setPagesDropdownOpen((o) => !o)}
-                        className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-slate-200 text-[10px] font-semibold text-slate-600 bg-white hover:border-slate-300 transition"
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-slate-200 text-[10px] font-semibold text-secondary bg-white hover:border-slate-300 transition"
                       >
                         <span className="w-1.5 h-1.5 rounded-full" style={{ background: PLATFORMS[effectivePlatform]?.color ?? "#94a3b8" }} />
                         {effectivePlatform}
-                        <ChevronDown size={10} className="text-slate-400" />
+                        <ChevronDown size={10} className="text-muted" />
                       </button>
                       {pagesDropdownOpen && (
                         <div className="absolute right-0 top-full mt-1.5 z-20 bg-white border border-slate-200 rounded-2xl shadow-lg py-1.5 min-w-[200px]">
@@ -1060,11 +1060,11 @@ export default function FanDashboard() {
                             <button
                               key={plat}
                               onClick={() => { setPagesPlatform(plat); setPagesDropdownOpen(false); setPagesAtBottom(false); if (pagesListRef.current) pagesListRef.current.scrollTop = 0; }}
-                              className={`w-full flex items-center gap-2 px-3 py-1.5 text-[11px] font-semibold transition hover:bg-slate-50 ${plat === effectivePlatform ? "text-slate-900" : "text-slate-400"}`}
+                              className={`w-full flex items-center gap-2 px-3 py-1.5 text-[11px] font-semibold transition hover:bg-slate-50 ${plat === effectivePlatform ? "text-primary" : "text-muted"}`}
                             >
                               <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: PLATFORMS[plat]?.color ?? "#94a3b8" }} />
                               {plat}
-                              {plat === effectivePlatform && <span className="ml-auto text-[#000dff]">✓</span>}
+                              {plat === effectivePlatform && <span className="ml-auto text-brand">✓</span>}
                             </button>
                           ))}
                         </div>
@@ -1078,7 +1078,7 @@ export default function FanDashboard() {
                     onScroll={(e) => { const el = e.currentTarget; setPagesAtBottom(el.scrollTop + el.clientHeight >= el.scrollHeight - 8); }}
                   >
                     {filteredPages.length === 0 ? (
-                      <div className="px-3 py-6 text-center text-xs text-slate-400">No {effectivePlatform} pages tracked yet</div>
+                      <div className="px-3 py-6 text-center text-xs text-muted">No {effectivePlatform} pages tracked yet</div>
                     ) : (
                       filteredPages.map((p, i) => {
                         const platCfg = PLATFORMS[effectivePlatform] || { soft: "#f1f5f9", color: "#64748b" };
@@ -1090,14 +1090,14 @@ export default function FanDashboard() {
                             </div>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-1">
-                                <div className="text-sm font-semibold text-slate-900 group-hover:text-[#000dff] transition truncate">{p.name}</div>
+                                <div className="text-sm font-semibold text-primary group-hover:text-brand transition truncate">{p.name}</div>
                                 {p.managed && <Star size={11} className="shrink-0 text-amber-400 fill-amber-400" />}
                               </div>
-                              <div className="text-[10px] text-slate-400 mt-0.5">{p.latest ? `Last post ${fmtPageDate(p.latest)}` : p.platform}</div>
+                              <div className="text-[10px] text-muted mt-0.5">{p.latest ? `Last post ${fmtPageDate(p.latest)}` : p.platform}</div>
                             </div>
                             <div className="text-right">
-                              <div className="text-sm font-bold tabular-nums text-slate-900">{fmtFull(p.followers)}</div>
-                              <div className="text-[10px] text-slate-400">{["Discord","Reddit","X Communities","Instagram Channels"].includes(effectivePlatform) ? "members" : "followers"}</div>
+                              <div className="text-sm font-bold tabular-nums text-primary">{fmtFull(p.followers)}</div>
+                              <div className="text-[10px] text-muted">{["Discord","Reddit","X Communities","Instagram Channels"].includes(effectivePlatform) ? "members" : "followers"}</div>
                             </div>
                           </Tag>
                         );
@@ -1107,8 +1107,8 @@ export default function FanDashboard() {
                   </div>
                   {filteredPages.length > 0 && (
                     <div className="px-5 py-2.5 border-t border-slate-100 flex items-center justify-between">
-                      <span className="text-[10px] text-slate-400 font-medium">{filteredPages.length} {(() => { const n = filteredPages.length; if (effectivePlatform === "Discord") return n === 1 ? "server" : "servers"; if (effectivePlatform === "Reddit") return n === 1 ? "subreddit" : "subreddits"; if (effectivePlatform === "Instagram Channels") return n === 1 ? "channel" : "channels"; if (effectivePlatform === "X Communities") return n === 1 ? "community" : "communities"; return n === 1 ? "page" : "pages"; })()} tracked</span>
-                      {!pagesAtBottom && filteredPages.length > 9 && <span className="text-[10px] text-slate-400 font-medium flex items-center gap-1">scroll for more <ChevronDown size={10} /></span>}
+                      <span className="text-[10px] text-muted font-medium">{filteredPages.length} {(() => { const n = filteredPages.length; if (effectivePlatform === "Discord") return n === 1 ? "server" : "servers"; if (effectivePlatform === "Reddit") return n === 1 ? "subreddit" : "subreddits"; if (effectivePlatform === "Instagram Channels") return n === 1 ? "channel" : "channels"; if (effectivePlatform === "X Communities") return n === 1 ? "community" : "communities"; return n === 1 ? "page" : "pages"; })()} tracked</span>
+                      {!pagesAtBottom && filteredPages.length > 9 && <span className="text-[10px] text-muted font-medium flex items-center gap-1">scroll for more <ChevronDown size={10} /></span>}
                     </div>
                   )}
                 </div>
@@ -1122,7 +1122,7 @@ export default function FanDashboard() {
         <section className="mt-8">
           <div className="flex items-baseline justify-between mb-4">
             <div className="flex items-baseline gap-3">
-              <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Deep <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#000dff] to-blue-500 pr-1">Analytics</span></h2>
+              <h2 className="text-3xl font-bold text-primary tracking-tight">Deep <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-blue-500 pr-1">Analytics</span></h2>
             </div>
           </div>
 
@@ -1130,9 +1130,9 @@ export default function FanDashboard() {
             <div className="col-span-12 md:col-span-4 bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
               <div className="flex items-center gap-2 mb-1">
                 <div className="w-6 h-6 rounded-xl bg-blue-100 flex items-center justify-center"><PieIcon size={12} className="text-blue-600" /></div>
-                <div className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Platform Share</div>
+                <div className="text-[10px] uppercase tracking-wider text-muted font-semibold">Platform Share</div>
               </div>
-              <div className="text-sm font-semibold text-slate-900 mb-3">Distribution of total reach</div>
+              <div className="text-sm font-semibold text-primary mb-3">Distribution of total reach</div>
               <div
                 className="relative h-[200px]"
                 onMouseMove={(e) => {
@@ -1157,8 +1157,8 @@ export default function FanDashboard() {
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                  <div className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">Total</div>
-                  <div className="font-bold text-lg text-slate-900 tabular-nums">{fmt(artist.totals.value)}</div>
+                  <div className="text-[10px] font-semibold uppercase tracking-widest text-muted">Total</div>
+                  <div className="font-bold text-lg text-primary tabular-nums">{fmt(artist.totals.value)}</div>
                 </div>
                 {pieHover && piePos && (
                   <div
@@ -1166,8 +1166,8 @@ export default function FanDashboard() {
                     style={{ left: piePos.x + 14, top: piePos.y - 16, transform: "translateY(-50%)" }}
                   >
                     <span className="w-2 h-2 rounded-full shrink-0" style={{ background: pieHover.fill }} />
-                    <span className="text-slate-600 font-medium">{pieHover.name}</span>
-                    <span className="font-bold tabular-nums text-slate-900">{fmtFull(pieHover.value)}</span>
+                    <span className="text-secondary font-medium">{pieHover.name}</span>
+                    <span className="font-bold tabular-nums text-primary">{fmtFull(pieHover.value)}</span>
                   </div>
                 )}
               </div>
@@ -1177,8 +1177,8 @@ export default function FanDashboard() {
                   return (
                     <div key={d.name} className="flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full" style={{ background: d.fill }} />
-                      <span className="text-slate-600 flex-1 font-medium">{d.name}</span>
-                      <span className="font-bold text-slate-900 tabular-nums">{pct}%</span>
+                      <span className="text-secondary flex-1 font-medium">{d.name}</span>
+                      <span className="font-bold text-primary tabular-nums">{pct}%</span>
                     </div>
                   );
                 })}
@@ -1188,9 +1188,9 @@ export default function FanDashboard() {
 <div className="col-span-12 md:col-span-4 flex flex-col bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
               <div className="flex items-center gap-2 mb-1">
                 <div className="w-6 h-6 rounded-xl bg-amber-100 flex items-center justify-center"><Zap size={12} className="text-amber-600" /></div>
-                <div className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Growth Velocity · 12mo</div>
+                <div className="text-[10px] uppercase tracking-wider text-muted font-semibold">Growth Velocity · 12mo</div>
               </div>
-              <div className="text-sm font-semibold text-slate-900 mb-3">Net added per month</div>
+              <div className="text-sm font-semibold text-primary mb-3">Net added per month</div>
               <div className="flex-1 min-h-[200px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={monthlyVelocity(history, orderedPlats)} margin={{ top: 8, right: 0, left: 0, bottom: 0 }}>
@@ -1199,8 +1199,8 @@ export default function FanDashboard() {
                     <YAxis tickFormatter={fmt} axisLine={false} tickLine={false} width={40} />
                     <Tooltip content={({ active, payload, label }) => active && payload?.length ? (
                       <div className="bg-white border border-slate-200 rounded-xl shadow-lg p-3 text-xs">
-                        <div className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">{monthLabel(label)}</div>
-                        <div className="font-bold tabular-nums text-slate-900 text-sm mt-1">{payload[0].value >= 0 ? "+" : ""}{fmtFull(payload[0].value)}</div>
+                        <div className="text-[10px] text-muted font-semibold uppercase tracking-wider">{monthLabel(label)}</div>
+                        <div className="font-bold tabular-nums text-primary text-sm mt-1">{payload[0].value >= 0 ? "+" : ""}{fmtFull(payload[0].value)}</div>
                       </div>
                     ) : null} cursor={{ fill: "#f1f5f9" }} wrapperStyle={{ transition: "none" }} />
                     <Bar dataKey="net" radius={[6, 6, 0, 0]} isAnimationActive={false}>
@@ -1213,18 +1213,18 @@ export default function FanDashboard() {
 
             <div className="col-span-12 md:col-span-4 bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
               <div className="flex items-center gap-2 mb-1">
-                <div className="w-6 h-6 rounded-xl bg-emerald-100 flex items-center justify-center"><ArrowUpRight size={12} className="text-emerald-600" /></div>
-                <div className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Fastest Movers · 28d</div>
+                <div className="w-6 h-6 rounded-xl bg-emerald-100 flex items-center justify-center"><ArrowUpRight size={12} className="text-pos" /></div>
+                <div className="text-[10px] uppercase tracking-wider text-muted font-semibold">Fastest Movers · 28d</div>
               </div>
-              <div className="text-sm font-semibold text-slate-900 mb-3">Biggest swings across the roster</div>
+              <div className="text-sm font-semibold text-primary mb-3">Biggest swings across the roster</div>
               <div className="-mx-2">
                 {artists.slice().sort((a, b) => Math.abs(b.totals.delta) - Math.abs(a.totals.delta)).slice(0, 5).map((a, i) => {
                   const up = a.totals.delta >= 0;
                   return (
                     <div key={a.slug} className="w-full p-3 flex items-center gap-3 rounded-xl">
-                      <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold ${i === 0 ? "bg-amber-100 text-amber-700" : i === 1 ? "bg-slate-100 text-slate-600" : i === 2 ? "bg-orange-100 text-orange-700" : "bg-slate-50 text-slate-400"}`}>{i + 1}</div>
-                      <span className="flex-1 text-sm font-semibold text-slate-900 truncate">{a.name}</span>
-                      <span className={`text-xs font-bold tabular-nums px-2 py-0.5 rounded-full ${up ? "bg-emerald-100 text-emerald-600" : "bg-rose-100 text-rose-500"}`}>{up ? "+" : ""}{fmt(a.totals.delta)}</span>
+                      <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold ${i === 0 ? "bg-amber-100 text-amber-700" : i === 1 ? "bg-slate-100 text-secondary" : i === 2 ? "bg-orange-100 text-orange-700" : "bg-slate-50 text-muted"}`}>{i + 1}</div>
+                      <span className="flex-1 text-sm font-semibold text-primary truncate">{a.name}</span>
+                      <span className={`text-xs font-bold tabular-nums px-2 py-0.5 rounded-full ${up ? "bg-emerald-100 text-pos" : "bg-rose-100 text-neg"}`}>{up ? "+" : ""}{fmt(a.totals.delta)}</span>
                     </div>
                   );
                 })}
@@ -1238,7 +1238,7 @@ export default function FanDashboard() {
         <section className="mt-8">
           <div className="flex items-baseline justify-between mb-4">
             <div className="flex items-baseline gap-3">
-              <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Live <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#000dff] to-blue-500 pr-1">Feed</span></h2>
+              <h2 className="text-3xl font-bold text-primary tracking-tight">Live <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-blue-500 pr-1">Feed</span></h2>
             </div>
             <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-full">
               <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -1247,7 +1247,7 @@ export default function FanDashboard() {
           </div>
 
           <div className="flex items-center gap-2 mb-4 flex-wrap">
-            <Filter size={14} className="text-slate-400" />
+            <Filter size={14} className="text-muted" />
             {(() => {
               const mockNonReddit = (MOCK_FEED[artist.slug] || []).filter((p) => p.platform !== "Reddit");
               const posts = [...redditPosts, ...mockNonReddit];
@@ -1258,7 +1258,7 @@ export default function FanDashboard() {
                 const cfg = f !== "All" ? PLATFORMS[f] : null;
                 const count = f === "All" ? posts.length : posts.filter((p) => p.platform === f).length;
                 return (
-                  <button key={f} onClick={() => setFeedFilter(f)} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition ${active ? "bg-slate-900 dark:bg-[#000dff] text-white" : "bg-white border border-slate-200 text-slate-600 hover:border-slate-300"}`}>
+                  <button key={f} onClick={() => setFeedFilter(f)} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition ${active ? "bg-slate-900 dark:bg-brand text-white" : "bg-white border border-slate-200 text-secondary hover:border-slate-300"}`}>
                     {cfg && <span className="w-1.5 h-1.5 rounded-full" style={{ background: cfg.color }} />}
                     {f}
                     <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${active ? "bg-white/20" : "bg-slate-100"}`}>{count}</span>
@@ -1273,14 +1273,14 @@ export default function FanDashboard() {
             const posts = [...redditPosts, ...mockNonReddit];
             const filtered = feedFilter === "All" ? posts : posts.filter((p) => p.platform === feedFilter);
             if (redditLoading && posts.length === 0) {
-              return <div className="flex items-center justify-center py-12 text-sm text-slate-400">Loading Reddit posts…</div>;
+              return <div className="flex items-center justify-center py-12 text-sm text-muted">Loading Reddit posts…</div>;
             }
             if (posts.length === 0) {
               return (
                 <div className="border-2 border-dashed border-slate-200 rounded-3xl bg-white p-10 text-center">
-                  <AlertCircle size={20} className="text-slate-400 mx-auto mb-2" />
-                  <div className="text-sm text-slate-600 font-medium">No feed data for this artist yet</div>
-                  <div className="text-xs text-slate-400 mt-1">Connect a Reddit or Discord page to start tracking</div>
+                  <AlertCircle size={20} className="text-muted mx-auto mb-2" />
+                  <div className="text-sm text-secondary font-medium">No feed data for this artist yet</div>
+                  <div className="text-xs text-muted mt-1">Connect a Reddit or Discord page to start tracking</div>
                 </div>
               );
             }
