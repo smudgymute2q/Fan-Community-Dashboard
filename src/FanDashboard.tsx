@@ -58,21 +58,9 @@ const WORKER_URL = "https://fanintel.smudgy-mute2q.workers.dev";
 // Published ID from File → Share → Publish to the web
 const SHEET_ID = "2PACX-1vRX8lP3Nb-LWMmUoTtHDHihOX-SkhFMUXoQJIuinbUhctXSjgJ1CCI9NvO1MQZKdgy9jtG33DgrOtre";
 
-// Tab names: "{ArtistName} (Fan Network)" / "{ArtistName} (Fan Pages)"
-const SHEET_TABS: Record<string, { network: string; pages: string }> = {
-  "opium":       { network: "Opium (Fan Network)",          pages: "Opium (Fan Pages)" },
-  "playboi-carti":  { network: "Playboi Carti (Fan Network)",  pages: "Playboi Carti (Fan Pages)" },
-  "ken-carson":     { network: "Ken Carson (Fan Network)",      pages: "Ken Carson (Fan Pages)" },
-  "destroy-lonely": { network: "Destroy Lonely (Fan Network)",  pages: "Destroy Lonely (Fan Pages)" },
-  "hxg":  { network: "HXG (Fan Network)",             pages: "HXG (Fan Pages)" },
-  "pierre-bourne":  { network: "Pi'erre Bourne (Fan Network)",  pages: "Pi'erre Bourne (Fan Pages)" },
-  "rema":           { network: "Rema (Fan Network)",            pages: "Rema (Fan Pages)" },
-  "2hollis":        { network: "2hollis (Fan Network)",          pages: "2hollis (Fan Pages)" },
-  "untiljapan":     { network: "untiljapan (Fan Network)",      pages: "untiljapan (Fan Pages)" },
-  "jim-legxacy":    { network: "Jim Legxacy (Fan Network)",     pages: "Jim Legxacy (Fan Pages)" },
-  "apollored1":     { network: "ApolloRed1 (Fan Network)",      pages: "ApolloRed1 (Fan Pages)" },
-  "destin-laurel":  { network: "Destin Laurel (Fan Network)",  pages: "Destin Laurel (Fan Pages)" },
-};
+// Sheet tab names are derived from each artist's name:
+// "{name} (Fan Network)" / "{name} (Fan Pages)" — see ARTISTS / loadFallback.
+const sheetTabs = (name: string) => ({ network: `${name} (Fan Network)`, pages: `${name} (Fan Pages)` });
 
 // ---- LocalStorage cache utilities ----
 const CACHE_MS = { sheets: 86_400_000, reddit: 900_000 }; // 24h / 15m
@@ -252,18 +240,18 @@ function parsePagesTab(rows: string[][]) {
 
 // ---- Static fallback artist data (used while sheets are loading or on fetch error) ----
 const STATIC_ARTISTS = [
-  { slug: "opium", name: "Opium", totals: { value: 168074, delta: 808 }, platforms: { Discord: { value: 8809, delta: 1 }, Reddit: { value: 19795, delta: 425 }, Instagram: { value: 95339, delta: 415 }, "Instagram Channels": { value: 9400, delta: -200 }, X: { value: 1775, delta: 154 }, TikTok: { value: 32956, delta: 13 } }, pages: [{ name: "/opium00", followers: 8809, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "playboi-carti", name: "Playboi Carti", totals: { value: 1495905, delta: 4537 }, platforms: { Discord: { value: 182148, delta: 338 }, Reddit: { value: 1029516, delta: 8064 }, Instagram: { value: 253236, delta: -3425 }, "Instagram Channels": { value: 23900, delta: -400 }, X: { value: 6995, delta: -38 }, "X Communities": { value: 110, delta: -2 } }, pages: [{ name: "/playboicarti", followers: 182148, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/pbc00", followers: 13193, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "ken-carson", name: "Ken Carson", totals: { value: 536568, delta: 11932 }, platforms: { Discord: { value: 76270, delta: 236 }, Reddit: { value: 75448, delta: 904 }, Instagram: { value: 212157, delta: 8336 }, "Instagram Channels": { value: 22500, delta: 1000 }, X: { value: 45700, delta: 300 }, "X Communities": { value: 79146, delta: 9 }, TikTok: { value: 24300, delta: 100 } }, pages: [{ name: "/kencarson", followers: 76270, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/BuZYYKZQ", followers: 153, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "destroy-lonely", name: "Destroy Lonely", totals: { value: 213034, delta: 59171 }, platforms: { Discord: { value: 36318, delta: 98 }, Reddit: { value: 55756, delta: 499 }, Instagram: { value: 65854, delta: 7484 }, "Instagram Channels": { value: 1600, delta: -2400 }, X: { value: 28706, delta: 28690 }, "X Communities": { value: 9200, delta: 0 }, TikTok: { value: 15600, delta: 0 } }, pages: [{ name: "/destroylonely", followers: 36318, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/bh3", followers: 1867, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "hxg", name: "HXG", totals: { value: 37566, delta: -231 }, platforms: { Discord: { value: 10277, delta: -51 }, Reddit: { value: 8943, delta: 35 }, Instagram: { value: 18346, delta: -215 } }, pages: [{ name: "/hxg", followers: 10277, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "pierre-bourne", name: "Pi'erre Bourne", totals: { value: 37147, delta: 171 }, platforms: { Discord: { value: 4955, delta: 53 }, Reddit: { value: 22381, delta: 104 }, Instagram: { value: 9424, delta: -14 }, "Instagram Channels": { value: 387, delta: 28 } }, pages: [{ name: "/pierrebourne", followers: 4955, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/yopierre", followers: 372, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "rema", name: "Rema", totals: { value: 2123652, delta: 4239 }, platforms: { Discord: { value: 2541, delta: 23 }, Reddit: { value: 308, delta: 4 }, Instagram: { value: 698524, delta: 3991 }, X: { value: 22179, delta: -79 }, TikTok: { value: 1400100, delta: 300 } }, pages: [{ name: "/heisrema", followers: 2541, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "2hollis", name: "2hollis", totals: { value: 0, delta: 0 }, platforms: {}, pages: [] },
-  { slug: "untiljapan", name: "untiljapan", totals: { value: 6802, delta: 136 }, platforms: { Discord: { value: 2039, delta: 44 }, Reddit: { value: 1416, delta: -7 }, Instagram: { value: 1713, delta: 22 }, X: { value: 1079, delta: 60 }, "X Communities": { value: 555, delta: 17 }, TikTok: { value: 9, delta: 0 } }, pages: [{ name: "/untiljapan", followers: 2039, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "jim-legxacy", name: "Jim Legxacy", totals: { value: 10144, delta: 2202 }, platforms: { Discord: { value: 6089, delta: 1410 }, Reddit: { value: 359, delta: 39 }, Instagram: { value: 322, delta: 131 }, X: { value: 2362, delta: 235 }, "X Communities": { value: 261, delta: 23 }, TikTok: { value: 751, delta: 364 } }, pages: [{ name: "/PfeRaWF4bG", followers: 6089, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "apollored1", name: "ApolloRed1", totals: { value: 1659, delta: 80 }, platforms: { Discord: { value: 283, delta: 44 }, Reddit: { value: 56, delta: 8 }, Instagram: { value: 1320, delta: 28 } }, pages: [{ name: "/apollohub", followers: 564, latest: "Apr 9, 2026", platform: "Discord" }, { name: "/apollored1", followers: 283, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "destin-laurel", name: "Destin Laurel", totals: { value: 0, delta: 0 }, platforms: {}, pages: [] },
+  { slug: "opium", name: "Opium", subreddit: "opium", totals: { value: 168074, delta: 808 }, platforms: { Discord: { value: 8809, delta: 1 }, Reddit: { value: 19795, delta: 425 }, Instagram: { value: 95339, delta: 415 }, "Instagram Channels": { value: 9400, delta: -200 }, X: { value: 1775, delta: 154 }, TikTok: { value: 32956, delta: 13 } }, pages: [{ name: "/opium00", followers: 8809, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "playboi-carti", name: "Playboi Carti", subreddit: "playboicarti", totals: { value: 1495905, delta: 4537 }, platforms: { Discord: { value: 182148, delta: 338 }, Reddit: { value: 1029516, delta: 8064 }, Instagram: { value: 253236, delta: -3425 }, "Instagram Channels": { value: 23900, delta: -400 }, X: { value: 6995, delta: -38 }, "X Communities": { value: 110, delta: -2 } }, pages: [{ name: "/playboicarti", followers: 182148, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/pbc00", followers: 13193, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "ken-carson", name: "Ken Carson", subreddit: "kencarson", totals: { value: 536568, delta: 11932 }, platforms: { Discord: { value: 76270, delta: 236 }, Reddit: { value: 75448, delta: 904 }, Instagram: { value: 212157, delta: 8336 }, "Instagram Channels": { value: 22500, delta: 1000 }, X: { value: 45700, delta: 300 }, "X Communities": { value: 79146, delta: 9 }, TikTok: { value: 24300, delta: 100 } }, pages: [{ name: "/kencarson", followers: 76270, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/BuZYYKZQ", followers: 153, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "destroy-lonely", name: "Destroy Lonely", subreddit: "destroylonely", totals: { value: 213034, delta: 59171 }, platforms: { Discord: { value: 36318, delta: 98 }, Reddit: { value: 55756, delta: 499 }, Instagram: { value: 65854, delta: 7484 }, "Instagram Channels": { value: 1600, delta: -2400 }, X: { value: 28706, delta: 28690 }, "X Communities": { value: 9200, delta: 0 }, TikTok: { value: 15600, delta: 0 } }, pages: [{ name: "/destroylonely", followers: 36318, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/bh3", followers: 1867, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "hxg", name: "HXG", subreddit: "homixidegang", totals: { value: 37566, delta: -231 }, platforms: { Discord: { value: 10277, delta: -51 }, Reddit: { value: 8943, delta: 35 }, Instagram: { value: 18346, delta: -215 } }, pages: [{ name: "/hxg", followers: 10277, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "pierre-bourne", name: "Pi'erre Bourne", subreddit: "pierrebourne", totals: { value: 37147, delta: 171 }, platforms: { Discord: { value: 4955, delta: 53 }, Reddit: { value: 22381, delta: 104 }, Instagram: { value: 9424, delta: -14 }, "Instagram Channels": { value: 387, delta: 28 } }, pages: [{ name: "/pierrebourne", followers: 4955, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/yopierre", followers: 372, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "rema", name: "Rema", subreddit: "rema", totals: { value: 2123652, delta: 4239 }, platforms: { Discord: { value: 2541, delta: 23 }, Reddit: { value: 308, delta: 4 }, Instagram: { value: 698524, delta: 3991 }, X: { value: 22179, delta: -79 }, TikTok: { value: 1400100, delta: 300 } }, pages: [{ name: "/heisrema", followers: 2541, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "2hollis", name: "2hollis", subreddit: "2hollis", totals: { value: 0, delta: 0 }, platforms: {}, pages: [] },
+  { slug: "untiljapan", name: "untiljapan", subreddit: "untiljapan", totals: { value: 6802, delta: 136 }, platforms: { Discord: { value: 2039, delta: 44 }, Reddit: { value: 1416, delta: -7 }, Instagram: { value: 1713, delta: 22 }, X: { value: 1079, delta: 60 }, "X Communities": { value: 555, delta: 17 }, TikTok: { value: 9, delta: 0 } }, pages: [{ name: "/untiljapan", followers: 2039, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "jim-legxacy", name: "Jim Legxacy", subreddit: "jimlegxacy", totals: { value: 10144, delta: 2202 }, platforms: { Discord: { value: 6089, delta: 1410 }, Reddit: { value: 359, delta: 39 }, Instagram: { value: 322, delta: 131 }, X: { value: 2362, delta: 235 }, "X Communities": { value: 261, delta: 23 }, TikTok: { value: 751, delta: 364 } }, pages: [{ name: "/PfeRaWF4bG", followers: 6089, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "apollored1", name: "ApolloRed1", subreddit: "apollored1", totals: { value: 1659, delta: 80 }, platforms: { Discord: { value: 283, delta: 44 }, Reddit: { value: 56, delta: 8 }, Instagram: { value: 1320, delta: 28 } }, pages: [{ name: "/apollohub", followers: 564, latest: "Apr 9, 2026", platform: "Discord" }, { name: "/apollored1", followers: 283, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "destin-laurel", name: "Destin Laurel", subreddit: "destinlaurel", totals: { value: 0, delta: 0 }, platforms: {}, pages: [] },
 ];
 
 const MOCK_FEED = {
@@ -387,24 +375,12 @@ function KpiTile({ platform, value, delta }) {
   );
 }
 
-const ARTIST_ICONS: Record<string, string> = {
-  "opium":          "/Fan-Community-Dashboard/icons/opium.png",
-  "playboi-carti":  "/Fan-Community-Dashboard/icons/playboi-carti.png",
-  "ken-carson":     "/Fan-Community-Dashboard/icons/ken-carson.png",
-  "destroy-lonely": "/Fan-Community-Dashboard/icons/destroy-lonely.png",
-  "hxg":            "/Fan-Community-Dashboard/icons/hxg.png",
-  "pierre-bourne":  "/Fan-Community-Dashboard/icons/pierre-bourne.png",
-  "rema":           "/Fan-Community-Dashboard/icons/rema.png",
-  "2hollis":        "/Fan-Community-Dashboard/icons/2hollis.png",
-  "untiljapan":     "/Fan-Community-Dashboard/icons/untiljapan.png",
-  "jim-legxacy":    "/Fan-Community-Dashboard/icons/jim-legxacy.png",
-  "apollored1":     "/Fan-Community-Dashboard/icons/apollored1.png",
-  "destin-laurel":  "/Fan-Community-Dashboard/icons/destin-laurel.png",
-};
+// Icon path is derived from slug: {BASE_URL}icons/{slug}.png
+const iconFor = (slug: string) => `${import.meta.env.BASE_URL}icons/${slug}.png`;
 
 function ArtistPill({ artist, active, onClick }) {
   const initial = artist.name.charAt(0);
-  const icon = ARTIST_ICONS[artist.slug];
+  const icon = iconFor(artist.slug);
   return (
     <button onClick={onClick} className={`group relative shrink-0 text-left px-3.5 py-2.5 rounded-2xl border transition-all ${active ? "bg-gradient-to-br from-brand to-blue-500 text-white border-transparent" : "bg-white border-line"}`}>
       <div className="flex items-center gap-2.5">
@@ -581,8 +557,7 @@ export default function FanDashboard() {
       const results: Record<string, any> = {};
       await Promise.all(
         STATIC_ARTISTS.map(async (a) => {
-          const tabs = SHEET_TABS[a.slug];
-          if (!tabs) return;
+          const tabs = sheetTabs(a.name);
           const networkGid = gidMap[tabs.network];
           const pagesGid = gidMap[tabs.pages];
           if (!networkGid || !pagesGid) {
@@ -639,23 +614,8 @@ export default function FanDashboard() {
     setPieHover(null);
   }, [selectedSlug]);
 
-  const ARTIST_SUBREDDITS: Record<string, string> = {
-    "opium": "opium",
-    "playboi-carti": "playboicarti",
-    "ken-carson": "kencarson",
-    "destroy-lonely": "destroylonely",
-    "hxg": "homixidegang",
-    "pierre-bourne": "pierrebourne",
-    "rema": "rema",
-    "untiljapan": "untiljapan",
-    "jim-legxacy": "jimlegxacy",
-    "2hollis": "2hollis",
-    "apollored1": "apollored1",
-    "destin-laurel": "destinlaurel",
-  };
-
   useEffect(() => {
-    const subreddit = ARTIST_SUBREDDITS[selectedSlug];
+    const subreddit = STATIC_ARTISTS.find((a) => a.slug === selectedSlug)?.subreddit;
     if (!subreddit) { setRedditPosts([]); return; }
     let cancelled = false;
     setRedditLoading(true);
