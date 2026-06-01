@@ -770,7 +770,14 @@ export default function FanDashboard() {
 
   const togglePlat = (p) => {
     const next = new Set(hiddenPlats);
-    if (next.has(p)) next.delete(p); else next.add(p);
+    if (next.has(p)) {
+      next.delete(p);
+    } else {
+      // Keep at least one platform active — block hiding the last visible one
+      const visibleCount = orderedPlats.filter((x) => !next.has(x)).length;
+      if (visibleCount <= 1) return;
+      next.add(p);
+    }
     setHiddenPlats(next);
   };
 
