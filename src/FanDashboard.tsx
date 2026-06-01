@@ -43,6 +43,10 @@ const PLATFORMS = {
   TikTok: { color: "#00F2EA", soft: "#E0FDFB" },
 };
 
+// ---- Reusable class tokens (single source of truth for repeated patterns) ----
+const CARD = "bg-white border border-slate-200 rounded-3xl shadow-sm";
+const EYEBROW = "text-[10px] font-semibold uppercase tracking-wider text-muted";
+
 // ---- Cloudflare Worker proxy ----
 const WORKER_URL = "https://fanintel.smudgy-mute2q.workers.dev";
 
@@ -369,7 +373,7 @@ function KpiTile({ platform, value, delta }) {
   const cfg = PLATFORMS[platform];
   return (
     <div className="relative rounded-2xl p-4 bg-white border border-slate-200">
-      <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider mb-2 text-muted">
+      <div className={`${EYEBROW} flex items-center gap-1.5 mb-2`}>
         {cfg && <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: cfg.color }} />}
         {platform}
       </div>
@@ -419,7 +423,7 @@ function ChartTooltip({ active, payload, label }) {
   if (!active || !payload || !payload.length) return null;
   return (
     <div className="bg-white border border-slate-200 rounded-xl shadow-lg p-3 text-xs">
-      <div className="text-[10px] text-muted font-semibold uppercase tracking-wider mb-2">{label && typeof label === "string" && label.includes("-") ? monthLabel(label) : label}</div>
+      <div className={`${EYEBROW} mb-2`}>{label && typeof label === "string" && label.includes("-") ? monthLabel(label) : label}</div>
       <div className="space-y-1.5">
         {payload.slice().sort((a, b) => b.value - a.value).map((p) => (
           <div key={p.dataKey || p.name} className="flex items-center gap-2">
@@ -917,11 +921,11 @@ export default function FanDashboard() {
             </div>
 
             {/* Growth chart */}
-            <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
+            <div className={`${CARD} p-6`}>
               <div className="flex flex-col gap-4 mb-5">
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                   <div>
-                    <div className="text-[10px] uppercase tracking-wider text-muted font-semibold">Fan Network Growth</div>
+                    <div className={EYEBROW}>Fan Network Growth</div>
                     <div className="text-base font-semibold text-primary mt-0.5">Followers across platforms</div>
                   </div>
 
@@ -962,25 +966,25 @@ export default function FanDashboard() {
               {rangeStats && (
                 <div className="flex mb-4 p-4 bg-blue-50 rounded-2xl border border-blue-100 divide-x divide-blue-200">
                   <div className="flex-1 pr-4">
-                    <div className="text-[10px] font-semibold uppercase tracking-wider text-muted mb-1">Net growth</div>
+                    <div className={`${EYEBROW} mb-1`}>Net growth</div>
                     <div className={`text-base font-bold tabular-nums flex items-center gap-1 ${rangeStats.net >= 0 ? "text-pos" : "text-neg"}`}>
                       {rangeStats.net >= 0 ? "+" : ""}{fmt(rangeStats.net)}
                       <span className="text-[10px] font-semibold">({rangeStats.pct >= 0 ? "+" : ""}{rangeStats.pct.toFixed(1).replace(/\.0$/, "")}%)</span>
                     </div>
                   </div>
                   <div className="flex-1 px-4">
-                    <div className="text-[10px] font-semibold uppercase tracking-wider text-muted mb-1">Best month</div>
+                    <div className={`${EYEBROW} mb-1`}>Best month</div>
                     <div className="text-base font-bold text-primary">
                       {rangeStats.bestMonth ? monthLabel(rangeStats.bestMonth) : "—"}
                       {rangeStats.bestGain > 0 && <span className="text-xs text-pos ml-1.5 font-semibold">+{fmt(rangeStats.bestGain)}</span>}
                     </div>
                   </div>
                   <div className="flex-1 px-4">
-                    <div className="text-[10px] font-semibold uppercase tracking-wider text-muted mb-1">Range start</div>
+                    <div className={`${EYEBROW} mb-1`}>Range start</div>
                     <div className="text-base font-bold tabular-nums text-primary">{fmt(rangeStats.startTotal)}</div>
                   </div>
                   <div className="flex-1 pl-4">
-                    <div className="text-[10px] font-semibold uppercase tracking-wider text-muted mb-1">Range end</div>
+                    <div className={`${EYEBROW} mb-1`}>Range end</div>
                     <div className="text-base font-bold tabular-nums text-primary">{fmt(rangeStats.endTotal)}</div>
                   </div>
                 </div>
@@ -1009,9 +1013,9 @@ export default function FanDashboard() {
             </div>
 
             {/* Current reach */}
-            <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
+            <div className={`${CARD} p-6`}>
               <div className="mb-5">
-                <div className="text-[10px] uppercase tracking-wider text-muted font-semibold">Current Reach</div>
+                <div className={EYEBROW}>Current Reach</div>
                 <div className="text-base font-semibold text-primary mt-0.5">Per-platform follower counts</div>
                 <div className="text-xs text-muted">Change vs previous month</div>
               </div>
@@ -1036,10 +1040,10 @@ export default function FanDashboard() {
                 .filter((p) => p.platform === effectivePlatform)
                 .sort((a, b) => b.followers - a.followers);
               return (
-                <div className="bg-white border border-slate-200 rounded-3xl shadow-sm">
+                <div className={CARD}>
                   <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
                     <div>
-                      <div className="text-[10px] uppercase tracking-wider text-muted font-semibold">Fan Page Tracker</div>
+                      <div className={EYEBROW}>Fan Page Tracker</div>
                       <div className="text-sm font-semibold text-primary mt-0.5">Admin-run pages</div>
                     </div>
                     <div className="relative">
@@ -1127,10 +1131,10 @@ export default function FanDashboard() {
           </div>
 
           <div className="grid grid-cols-12 gap-4">
-            <div className="col-span-12 md:col-span-4 bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
+            <div className={`col-span-12 md:col-span-4 ${CARD} p-6`}>
               <div className="flex items-center gap-2 mb-1">
                 <div className="w-6 h-6 rounded-xl bg-blue-100 flex items-center justify-center"><PieIcon size={12} className="text-blue-600" /></div>
-                <div className="text-[10px] uppercase tracking-wider text-muted font-semibold">Platform Share</div>
+                <div className={EYEBROW}>Platform Share</div>
               </div>
               <div className="text-sm font-semibold text-primary mb-3">Distribution of total reach</div>
               <div
@@ -1185,10 +1189,10 @@ export default function FanDashboard() {
               </div>
             </div>
 
-<div className="col-span-12 md:col-span-4 flex flex-col bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
+<div className={`col-span-12 md:col-span-4 flex flex-col ${CARD} p-6`}>
               <div className="flex items-center gap-2 mb-1">
                 <div className="w-6 h-6 rounded-xl bg-amber-100 flex items-center justify-center"><Zap size={12} className="text-amber-600" /></div>
-                <div className="text-[10px] uppercase tracking-wider text-muted font-semibold">Growth Velocity · 12mo</div>
+                <div className={EYEBROW}>Growth Velocity · 12mo</div>
               </div>
               <div className="text-sm font-semibold text-primary mb-3">Net added per month</div>
               <div className="flex-1 min-h-[200px]">
@@ -1199,7 +1203,7 @@ export default function FanDashboard() {
                     <YAxis tickFormatter={fmt} axisLine={false} tickLine={false} width={40} />
                     <Tooltip content={({ active, payload, label }) => active && payload?.length ? (
                       <div className="bg-white border border-slate-200 rounded-xl shadow-lg p-3 text-xs">
-                        <div className="text-[10px] text-muted font-semibold uppercase tracking-wider">{monthLabel(label)}</div>
+                        <div className={EYEBROW}>{monthLabel(label)}</div>
                         <div className="font-bold tabular-nums text-primary text-sm mt-1">{payload[0].value >= 0 ? "+" : ""}{fmtFull(payload[0].value)}</div>
                       </div>
                     ) : null} cursor={{ fill: "#f1f5f9" }} wrapperStyle={{ transition: "none" }} />
@@ -1211,10 +1215,10 @@ export default function FanDashboard() {
               </div>
             </div>
 
-            <div className="col-span-12 md:col-span-4 bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
+            <div className={`col-span-12 md:col-span-4 ${CARD} p-6`}>
               <div className="flex items-center gap-2 mb-1">
                 <div className="w-6 h-6 rounded-xl bg-emerald-100 flex items-center justify-center"><ArrowUpRight size={12} className="text-pos" /></div>
-                <div className="text-[10px] uppercase tracking-wider text-muted font-semibold">Fastest Movers · 28d</div>
+                <div className={EYEBROW}>Fastest Movers · 28d</div>
               </div>
               <div className="text-sm font-semibold text-primary mb-3">Biggest swings across the roster</div>
               <div className="-mx-2">
