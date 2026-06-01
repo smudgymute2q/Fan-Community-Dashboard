@@ -612,6 +612,7 @@ export default function FanDashboard() {
     setFeedFilter("All");
     setPagesPlatform("Discord");
     setPieHover(null);
+    setHiddenPlats(new Set());
   }, [selectedSlug]);
 
   useEffect(() => {
