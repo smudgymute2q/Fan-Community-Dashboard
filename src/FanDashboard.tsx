@@ -43,8 +43,12 @@ const PLATFORMS = {
   TikTok: { color: "#00F2EA", soft: "#E0FDFB" },
 };
 
+// ---- Platform display order + classification ----
+const PLAT_ORDER = ["Discord", "Reddit", "Instagram", "Instagram Channels", "X", "X Communities", "TikTok"];
+const MEMBER_PLATFORMS = new Set(["Discord", "Reddit", "X Communities", "Instagram Channels"]);
+
 // ---- Reusable class tokens (single source of truth for repeated patterns) ----
-const CARD = "bg-white border border-slate-200 rounded-3xl shadow-sm";
+const CARD = "bg-white border border-line rounded-3xl shadow-sm";
 const EYEBROW = "text-[10px] font-semibold uppercase tracking-wider text-muted";
 
 // ---- Cloudflare Worker proxy ----
@@ -372,7 +376,7 @@ function DeltaPill({ value, small = false }) {
 function KpiTile({ platform, value, delta }) {
   const cfg = PLATFORMS[platform];
   return (
-    <div className="relative rounded-2xl p-4 bg-white border border-slate-200">
+    <div className="relative rounded-2xl p-4 bg-white border border-line">
       <div className={`${EYEBROW} flex items-center gap-1.5 mb-2`}>
         {cfg && <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: cfg.color }} />}
         {platform}
@@ -402,7 +406,7 @@ function ArtistPill({ artist, active, onClick }) {
   const initial = artist.name.charAt(0);
   const icon = ARTIST_ICONS[artist.slug];
   return (
-    <button onClick={onClick} className={`group relative shrink-0 text-left px-3.5 py-2.5 rounded-2xl border transition-all ${active ? "bg-gradient-to-br from-brand to-blue-500 text-white border-transparent" : "bg-white border-slate-200"}`}>
+    <button onClick={onClick} className={`group relative shrink-0 text-left px-3.5 py-2.5 rounded-2xl border transition-all ${active ? "bg-gradient-to-br from-brand to-blue-500 text-white border-transparent" : "bg-white border-line"}`}>
       <div className="flex items-center gap-2.5">
         <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm overflow-hidden shrink-0 ${active ? "bg-white/20 text-white" : "bg-slate-100 text-secondary"}`}>
           {icon ? <img src={icon} alt={artist.name} className="w-full h-full object-cover" /> : initial}
@@ -422,7 +426,7 @@ function ArtistPill({ artist, active, onClick }) {
 function ChartTooltip({ active, payload, label }) {
   if (!active || !payload || !payload.length) return null;
   return (
-    <div className="bg-white border border-slate-200 rounded-xl shadow-lg p-3 text-xs">
+    <div className="bg-white border border-line rounded-xl shadow-lg p-3 text-xs">
       <div className={`${EYEBROW} mb-2`}>{label && typeof label === "string" && label.includes("-") ? monthLabel(label) : label}</div>
       <div className="space-y-1.5">
         {payload.slice().sort((a, b) => b.value - a.value).map((p) => (
@@ -457,7 +461,7 @@ function FeedCard({ post }) {
   const cfg = PLATFORMS[post.platform];
   const sent = SENTIMENT_STYLE[post.sentiment];
   return (
-    <div className="group relative bg-white border border-slate-200 rounded-2xl hover:border-slate-300 hover:shadow-lg hover:-translate-y-0.5 transition-all overflow-hidden">
+    <div className="group relative bg-white border border-line rounded-2xl hover:border-slate-300 hover:shadow-lg hover:-translate-y-0.5 transition-all overflow-hidden">
       <div className="p-4">
         <div className="flex items-center justify-between gap-2 mb-3">
           <div className="flex items-center gap-2 min-w-0">
@@ -479,7 +483,7 @@ function FeedCard({ post }) {
             <span className="uppercase tracking-wider font-semibold">{post.media}</span>
           </div>
         )}
-        <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100">
+        <div className="flex items-center justify-between mt-3 pt-3 border-t border-divider">
           <div className="flex items-center gap-3.5">
             {engagementSummary(post).map((e, i) => {
               const Icon = e.icon;
@@ -783,8 +787,26 @@ export default function FanDashboard() {
     return { startTotal, endTotal, net, pct, bestMonth, bestGain };
   }, [history, artist]);
 
-  const PLAT_ORDER = ["Discord", "Reddit", "Instagram", "Instagram Channels", "X", "X Communities", "TikTok"];
   const orderedPlats = PLAT_ORDER.filter((p) => artist.platforms[p] !== undefined);
+
+  // Y-axis tick scale — computed once, used for both ticks and domain
+  const yScale = useMemo(() => {
+    const active = orderedPlats.filter((p) => !hiddenPlats.has(p));
+    const cur = Math.max(...active.map((p) => artist.platforms[p]?.value || 0), 1);
+    const hist = Math.max(...history.flatMap((d) => active.map((p) => (d[p] as number) || 0)), 1);
+    const maxVal = hist <= cur * 2 ? hist : cur;
+    const rawStep = maxVal / 4;
+    const mag = Math.pow(10, Math.floor(Math.log10(rawStep)));
+    const norm = rawStep / mag;
+    const step = ([1, 1.5, 2, 2.5, 3, 4, 5, 6, 7, 8, 10].find((f) => f >= norm) ?? 10) * mag;
+    return { ticks: [0, step, step * 2, step * 3, step * 4], max: step * 4 };
+  }, [orderedPlats, hiddenPlats, artist, history]);
+
+  // Feed mock posts (non-Reddit) — shared by the filter tabs and the feed grid
+  const mockNonReddit = useMemo(
+    () => (MOCK_FEED[artist.slug] || []).filter((p) => p.platform !== "Reddit"),
+    [artist.slug]
+  );
 
   const togglePlat = (p) => {
     const next = new Set(hiddenPlats);
@@ -859,7 +881,7 @@ export default function FanDashboard() {
             <div className={`absolute left-0 -top-2 -bottom-2 w-20 pointer-events-none z-[5] transition-opacity duration-150 ${rosterAtStart ? "opacity-0" : "opacity-100"}`} style={{ background: "linear-gradient(to right, #f1f5f9, transparent)" }} />
             <button
               onClick={() => { setRosterAtStart(true); isScrollingToStart.current = true; rosterRef.current?.scrollTo({ left: 0, behavior: "smooth" }); }}
-              className={`absolute left-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition-opacity duration-150 ${rosterAtStart ? "opacity-0 pointer-events-none" : "opacity-100"}`}
+              className={`absolute left-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white border border-line rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition-opacity duration-150 ${rosterAtStart ? "opacity-0 pointer-events-none" : "opacity-100"}`}
             >
               <ChevronDown size={13} className="rotate-90 text-muted" />
             </button>
@@ -888,7 +910,7 @@ export default function FanDashboard() {
             <div className={`absolute right-0 -top-2 -bottom-2 w-20 pointer-events-none z-[5] transition-opacity duration-150 ${rosterAtEnd ? "opacity-0" : "opacity-100"}`} style={{ background: "linear-gradient(to left, #f1f5f9, transparent)" }} />
             <button
               onClick={() => { const el = rosterRef.current; if (el) { setRosterAtEnd(true); isScrollingToEnd.current = true; el.scrollTo({ left: el.scrollWidth - el.clientWidth, behavior: "smooth" }); } }}
-              className={`absolute right-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition-opacity duration-150 ${rosterAtEnd ? "opacity-0 pointer-events-none" : "opacity-100"}`}
+              className={`absolute right-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white border border-line rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition-opacity duration-150 ${rosterAtEnd ? "opacity-0 pointer-events-none" : "opacity-100"}`}
             >
               <ChevronDown size={13} className="-rotate-90 text-muted" />
             </button>
@@ -954,7 +976,7 @@ export default function FanDashboard() {
                   {orderedPlats.map((p) => {
                     const off = hiddenPlats.has(p);
                     return (
-                      <button key={p} onClick={() => togglePlat(p)} className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[10px] font-semibold transition ${off ? "border-slate-200 text-muted bg-slate-50" : "border-slate-200 text-secondary bg-white hover:border-slate-300"}`}>
+                      <button key={p} onClick={() => togglePlat(p)} className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[10px] font-semibold transition ${off ? "border-line text-muted bg-slate-50" : "border-line text-secondary bg-white hover:border-slate-300"}`}>
                         <span className="w-1.5 h-1.5 rounded-full" style={{ background: off ? "#cbd5e1" : PLATFORMS[p].color }} />
                         {p}
                       </button>
@@ -998,7 +1020,7 @@ export default function FanDashboard() {
                     <LineChart data={history} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
                       <CartesianGrid strokeDasharray="3 4" vertical={false} />
                       <XAxis dataKey="date" tickFormatter={monthLabel} interval={Math.max(0, Math.floor(history.length / 8))} axisLine={{ stroke: "#e2e8f0" }} tickLine={false} />
-                      <YAxis tickFormatter={fmt} axisLine={false} tickLine={false} width={48} ticks={(() => { const cur = Math.max(...orderedPlats.filter(p => !hiddenPlats.has(p)).map(p => artist.platforms[p]?.value || 0), 1); const hist = Math.max(...history.flatMap(d => orderedPlats.filter(p => !hiddenPlats.has(p)).map(p => (d[p] as number) || 0)), 1); const maxVal = hist <= cur * 2 ? hist : cur; const rawStep = maxVal / 4; const mag = Math.pow(10, Math.floor(Math.log10(rawStep))); const norm = rawStep / mag; const step = ([1,1.5,2,2.5,3,4,5,6,7,8,10].find(f => f >= norm) ?? 10) * mag; return [0, step, step * 2, step * 3, step * 4]; })()} domain={[0, (() => { const cur = Math.max(...orderedPlats.filter(p => !hiddenPlats.has(p)).map(p => artist.platforms[p]?.value || 0), 1); const hist = Math.max(...history.flatMap(d => orderedPlats.filter(p => !hiddenPlats.has(p)).map(p => (d[p] as number) || 0)), 1); const maxVal = hist <= cur * 2 ? hist : cur; const rawStep = maxVal / 4; const mag = Math.pow(10, Math.floor(Math.log10(rawStep))); const norm = rawStep / mag; const step = ([1,1.5,2,2.5,3,4,5,6,7,8,10].find(f => f >= norm) ?? 10) * mag; return step * 4; })()]} />
+                      <YAxis tickFormatter={fmt} axisLine={false} tickLine={false} width={48} ticks={yScale.ticks} domain={[0, yScale.max]} />
                       <Tooltip content={<ChartTooltip />} cursor={{ stroke: "#cbd5e1", strokeDasharray: "3 3" }} wrapperStyle={{ transition: "none" }} />
                       {(() => {
                         return orderedPlats.map((p) => {
@@ -1027,9 +1049,8 @@ export default function FanDashboard() {
 
           <aside className="col-span-12 lg:col-span-4 space-y-4">
             {(() => {
-              const PLAT_ORDER_PAGES = ["Discord", "Reddit", "Instagram", "Instagram Channels", "X", "X Communities", "TikTok"];
               const availablePlatformsSet = new Set(artist.pages.map((p) => p.platform).filter(Boolean));
-              const availablePlatforms = PLAT_ORDER_PAGES.filter((p) => availablePlatformsSet.has(p));
+              const availablePlatforms = PLAT_ORDER.filter((p) => availablePlatformsSet.has(p));
               // Always use a platform that actually exists in the list
               const effectivePlatform = availablePlatforms.includes(pagesPlatform)
                 ? pagesPlatform
@@ -1041,7 +1062,7 @@ export default function FanDashboard() {
                 .sort((a, b) => b.followers - a.followers);
               return (
                 <div className={CARD}>
-                  <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+                  <div className="px-5 py-4 border-b border-divider flex items-center justify-between">
                     <div>
                       <div className={EYEBROW}>Fan Page Tracker</div>
                       <div className="text-sm font-semibold text-primary mt-0.5">Admin-run pages</div>
@@ -1052,14 +1073,14 @@ export default function FanDashboard() {
                       )}
                       <button
                         onClick={() => setPagesDropdownOpen((o) => !o)}
-                        className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-slate-200 text-[10px] font-semibold text-secondary bg-white hover:border-slate-300 transition"
+                        className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-line text-[10px] font-semibold text-secondary bg-white hover:border-slate-300 transition"
                       >
                         <span className="w-1.5 h-1.5 rounded-full" style={{ background: PLATFORMS[effectivePlatform]?.color ?? "#94a3b8" }} />
                         {effectivePlatform}
                         <ChevronDown size={10} className="text-muted" />
                       </button>
                       {pagesDropdownOpen && (
-                        <div className="absolute right-0 top-full mt-1.5 z-20 bg-white border border-slate-200 rounded-2xl shadow-lg py-1.5 min-w-[200px]">
+                        <div className="absolute right-0 top-full mt-1.5 z-20 bg-white border border-line rounded-2xl shadow-lg py-1.5 min-w-[200px]">
                           {availablePlatforms.map((plat) => (
                             <button
                               key={plat}
@@ -1101,7 +1122,7 @@ export default function FanDashboard() {
                             </div>
                             <div className="text-right">
                               <div className="text-sm font-bold tabular-nums text-primary">{fmtFull(p.followers)}</div>
-                              <div className="text-[10px] text-muted">{["Discord","Reddit","X Communities","Instagram Channels"].includes(effectivePlatform) ? "members" : "followers"}</div>
+                              <div className="text-[10px] text-muted">{MEMBER_PLATFORMS.has(effectivePlatform) ? "members" : "followers"}</div>
                             </div>
                           </Tag>
                         );
@@ -1110,7 +1131,7 @@ export default function FanDashboard() {
                   </div>
                   </div>
                   {filteredPages.length > 0 && (
-                    <div className="px-5 py-2.5 border-t border-slate-100 flex items-center justify-between">
+                    <div className="px-5 py-2.5 border-t border-divider flex items-center justify-between">
                       <span className="text-[10px] text-muted font-medium">{filteredPages.length} {(() => { const n = filteredPages.length; if (effectivePlatform === "Discord") return n === 1 ? "server" : "servers"; if (effectivePlatform === "Reddit") return n === 1 ? "subreddit" : "subreddits"; if (effectivePlatform === "Instagram Channels") return n === 1 ? "channel" : "channels"; if (effectivePlatform === "X Communities") return n === 1 ? "community" : "communities"; return n === 1 ? "page" : "pages"; })()} tracked</span>
                       {!pagesAtBottom && filteredPages.length > 9 && <span className="text-[10px] text-muted font-medium flex items-center gap-1">scroll for more <ChevronDown size={10} /></span>}
                     </div>
@@ -1166,7 +1187,7 @@ export default function FanDashboard() {
                 </div>
                 {pieHover && piePos && (
                   <div
-                    className="absolute pointer-events-none z-10 flex items-center gap-2 text-xs bg-white border border-slate-200 rounded-xl px-3 py-1.5 shadow-lg"
+                    className="absolute pointer-events-none z-10 flex items-center gap-2 text-xs bg-white border border-line rounded-xl px-3 py-1.5 shadow-lg"
                     style={{ left: piePos.x + 14, top: piePos.y - 16, transform: "translateY(-50%)" }}
                   >
                     <span className="w-2 h-2 rounded-full shrink-0" style={{ background: pieHover.fill }} />
@@ -1202,7 +1223,7 @@ export default function FanDashboard() {
                     <XAxis dataKey="date" tickFormatter={(ym) => monthLabel(ym).split(" ")[0]} axisLine={false} tickLine={false} interval={1} />
                     <YAxis tickFormatter={fmt} axisLine={false} tickLine={false} width={40} />
                     <Tooltip content={({ active, payload, label }) => active && payload?.length ? (
-                      <div className="bg-white border border-slate-200 rounded-xl shadow-lg p-3 text-xs">
+                      <div className="bg-white border border-line rounded-xl shadow-lg p-3 text-xs">
                         <div className={EYEBROW}>{monthLabel(label)}</div>
                         <div className="font-bold tabular-nums text-primary text-sm mt-1">{payload[0].value >= 0 ? "+" : ""}{fmtFull(payload[0].value)}</div>
                       </div>
@@ -1253,7 +1274,6 @@ export default function FanDashboard() {
           <div className="flex items-center gap-2 mb-4 flex-wrap">
             <Filter size={14} className="text-muted" />
             {(() => {
-              const mockNonReddit = (MOCK_FEED[artist.slug] || []).filter((p) => p.platform !== "Reddit");
               const posts = [...redditPosts, ...mockNonReddit];
               const platsInFeed = Array.from(new Set(posts.map((p) => p.platform)));
               const filters = ["All", ...platsInFeed];
@@ -1262,7 +1282,7 @@ export default function FanDashboard() {
                 const cfg = f !== "All" ? PLATFORMS[f] : null;
                 const count = f === "All" ? posts.length : posts.filter((p) => p.platform === f).length;
                 return (
-                  <button key={f} onClick={() => setFeedFilter(f)} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition ${active ? "bg-slate-900 dark:bg-brand text-white" : "bg-white border border-slate-200 text-secondary hover:border-slate-300"}`}>
+                  <button key={f} onClick={() => setFeedFilter(f)} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition ${active ? "bg-slate-900 dark:bg-brand text-white" : "bg-white border border-line text-secondary hover:border-slate-300"}`}>
                     {cfg && <span className="w-1.5 h-1.5 rounded-full" style={{ background: cfg.color }} />}
                     {f}
                     <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${active ? "bg-white/20" : "bg-slate-100"}`}>{count}</span>
@@ -1273,7 +1293,6 @@ export default function FanDashboard() {
           </div>
 
           {(() => {
-            const mockNonReddit = (MOCK_FEED[artist.slug] || []).filter((p) => p.platform !== "Reddit");
             const posts = [...redditPosts, ...mockNonReddit];
             const filtered = feedFilter === "All" ? posts : posts.filter((p) => p.platform === feedFilter);
             if (redditLoading && posts.length === 0) {
@@ -1281,7 +1300,7 @@ export default function FanDashboard() {
             }
             if (posts.length === 0) {
               return (
-                <div className="border-2 border-dashed border-slate-200 rounded-3xl bg-white p-10 text-center">
+                <div className="border-2 border-dashed border-line rounded-3xl bg-white p-10 text-center">
                   <AlertCircle size={20} className="text-muted mx-auto mb-2" />
                   <div className="text-sm text-secondary font-medium">No feed data for this artist yet</div>
                   <div className="text-xs text-muted mt-1">Connect a Reddit or Discord page to start tracking</div>

@@ -10,4 +10,6 @@
   --color-pos: #059669;       /* was emerald-600 — positive delta */
   --color-neg: #f43f5e;       /* was rose-500 — negative delta */
   --color-brand: #000dff;     /* brand accent */
+  --color-line: #e2e8f0;      /* was slate-200 — card / control borders */
+  --color-divider: #f1f5f9;   /* was slate-100 — internal dividers */
 }
