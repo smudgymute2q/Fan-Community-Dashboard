@@ -788,9 +788,9 @@ export default function FanDashboard() {
     : syncedAt
     ? (() => {
         const mins = Math.floor((Date.now() - syncedAt.getTime()) / 60000);
-        if (mins < 60) return `data updated ${mins || "<1"}m ago`;
+        if (mins < 60) return `synced ${mins || "<1"}m ago`;
         const hrs = Math.floor(mins / 60);
-        return `data updated ${hrs}h ago`;
+        return `synced ${hrs}h ago`;
       })()
     : "live";
 
