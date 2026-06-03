@@ -522,7 +522,7 @@ export default function FanDashboard() {
         if (!json?.artists || Object.keys(json.artists).length === 0) return false;
         if (cancelled) return true;
         setSheetsData(json.artists);
-        setSyncedAt(json.syncedAt ? new Date(json.syncedAt) : new Date());
+        setSyncedAt(json.syncedAt ? new Date(json.syncedAt) : null);
         setSheetsLoading(false);
         return true;
       } catch {
@@ -786,7 +786,12 @@ export default function FanDashboard() {
   const syncLabel = sheetsLoading
     ? "syncing…"
     : syncedAt
-    ? `synced ${Math.floor((Date.now() - syncedAt.getTime()) / 60000) || "<1"}m ago`
+    ? (() => {
+        const mins = Math.floor((Date.now() - syncedAt.getTime()) / 60000);
+        if (mins < 60) return `data updated ${mins || "<1"}m ago`;
+        const hrs = Math.floor(mins / 60);
+        return `data updated ${hrs}h ago`;
+      })()
     : "live";
 
   return (
