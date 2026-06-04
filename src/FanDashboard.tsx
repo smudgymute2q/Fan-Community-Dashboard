@@ -961,26 +961,26 @@ export default function FanDashboard() {
               {rangeStats && (
                 <div className="flex mb-4 p-4 bg-blue-50 rounded-2xl border border-blue-100 divide-x divide-blue-200">
                   <div className="flex-1 pr-4">
+                    <div className={`${EYEBROW} mb-1`}>Range start</div>
+                    <div className="text-base font-bold tabular-nums text-primary">{fmt(rangeStats.startTotal)}</div>
+                  </div>
+                  <div className="flex-1 px-4">
+                    <div className={`${EYEBROW} mb-1`}>Range end</div>
+                    <div className="text-base font-bold tabular-nums text-primary">{fmt(rangeStats.endTotal)}</div>
+                  </div>
+                  <div className="flex-1 px-4">
                     <div className={`${EYEBROW} mb-1`}>Net growth</div>
                     <div className={`text-base font-bold tabular-nums flex items-center gap-1 ${rangeStats.net >= 0 ? "text-pos" : "text-neg"}`}>
                       {rangeStats.net >= 0 ? "+" : ""}{fmt(rangeStats.net)}
                       <span className="text-[10px] font-semibold">({rangeStats.pct >= 0 ? "+" : ""}{rangeStats.pct.toFixed(1).replace(/\.0$/, "")}%)</span>
                     </div>
                   </div>
-                  <div className="flex-1 px-4">
+                  <div className="flex-1 pl-4">
                     <div className={`${EYEBROW} mb-1`}>Best month</div>
                     <div className="text-base font-bold text-primary">
                       {rangeStats.bestMonth ? monthLabel(rangeStats.bestMonth) : "—"}
                       {rangeStats.bestGain > 0 && <span className="text-xs text-pos ml-1.5 font-semibold">+{fmt(rangeStats.bestGain)}</span>}
                     </div>
-                  </div>
-                  <div className="flex-1 px-4">
-                    <div className={`${EYEBROW} mb-1`}>Range start</div>
-                    <div className="text-base font-bold tabular-nums text-primary">{fmt(rangeStats.startTotal)}</div>
-                  </div>
-                  <div className="flex-1 pl-4">
-                    <div className={`${EYEBROW} mb-1`}>Range end</div>
-                    <div className="text-base font-bold tabular-nums text-primary">{fmt(rangeStats.endTotal)}</div>
                   </div>
                 </div>
               )}
