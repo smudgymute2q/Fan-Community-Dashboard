@@ -820,11 +820,10 @@ export default function FanDashboard() {
       const nFit = Math.floor(availH / entryH);
       const n = filteredPages.length >= 9 ? Math.min(filteredPages.length, nFit) : nFit;
       if (n < 1) { setEntryGap(0); return; }
-      // Wrapper paddingTop = gap+12, paddingBottom = gap+1 (see JSX below).
-      // That makes every content-to-content gap equal: entry_pb(12) + gap + entry_pt(12) = gap+24,
-      // top slot: (gap+12) + entry_pt(12) = gap+24, bottom slot: entry_pb(12) + (gap+1) + border(1) + footer_pt(10) = gap+24.
-      // Solving for gap: n*entryH + (n+1)*gap + 13 = availH → gap = (availH - n*entryH - 13) / (n+1).
-      setEntryGap(Math.max(0, (availH - n * entryH - 13) / (n + 1)));
+      // Wrapper paddingTop = paddingBottom = gap+12 (see JSX below).
+      // The user visually compares header-border→content vs content→footer-border.
+      // Both equal (gap+12) + entry_pt(12) = gap+24. Formula: n*entryH + (n+1)*gap + 24 = availH.
+      setEntryGap(Math.max(0, (availH - n * entryH - 24) / (n + 1)));
     };
     compute();
     const obs = new ResizeObserver(compute);
@@ -1136,7 +1135,7 @@ export default function FanDashboard() {
                     {filteredPages.length === 0 ? (
                       <div className="px-3 py-6 text-center text-xs text-muted">No {effectivePlatform} pages tracked yet</div>
                     ) : (
-                      <div style={{ display: "flex", flexDirection: "column", gap: entryGap, padding: `${entryGap + 12}px 0 ${entryGap + 1}px` }}>
+                      <div style={{ display: "flex", flexDirection: "column", gap: entryGap, padding: `${entryGap + 12}px 0` }}>
                       {filteredPages.map((p, i) => {
                         const platCfg = PLATFORMS[effectivePlatform] || { soft: "#f1f5f9", color: "#64748b" };
                         const Tag = p.link ? "a" : "div";
