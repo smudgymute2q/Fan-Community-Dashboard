@@ -820,10 +820,7 @@ export default function FanDashboard() {
       const nFit = Math.floor(availH / entryH);
       const n = filteredPages.length >= 9 ? Math.min(filteredPages.length, nFit) : nFit;
       if (n < 1) { setEntryGap(0); return; }
-      // Wrapper paddingTop = paddingBottom = gap+12 (see JSX below).
-      // The user visually compares header-border→content vs content→footer-border.
-      // Both equal (gap+12) + entry_pt(12) = gap+24. Formula: n*entryH + (n+1)*gap + 24 = availH.
-      setEntryGap(Math.max(0, (availH - n * entryH - 24) / (n + 1)));
+      setEntryGap(Math.max(0, (availH - n * entryH) / (n - 1)));
     };
     compute();
     const obs = new ResizeObserver(compute);
@@ -1129,13 +1126,13 @@ export default function FanDashboard() {
                   <div className={`relative ${shouldExpand ? "flex-1 flex flex-col min-h-0" : ""}`}>
                   <div
                     ref={pagesListRef}
-                    className={`px-2 py-0 overflow-y-auto [overscroll-behavior:contain] ${shouldExpand ? "flex-1 min-h-0" : "max-h-[594px]"}`}
+                    className={`px-2 py-2 overflow-y-auto [overscroll-behavior:contain] ${shouldExpand ? "flex-1 min-h-0" : "max-h-[594px]"}`}
                     onScroll={(e) => { const el = e.currentTarget; setPagesAtBottom(el.scrollTop + el.clientHeight >= el.scrollHeight - 8); }}
                   >
                     {filteredPages.length === 0 ? (
                       <div className="px-3 py-6 text-center text-xs text-muted">No {effectivePlatform} pages tracked yet</div>
                     ) : (
-                      <div style={{ display: "flex", flexDirection: "column", gap: entryGap, padding: `${entryGap + 12}px 0` }}>
+                      <div style={{ display: "flex", flexDirection: "column", gap: entryGap }}>
                       {filteredPages.map((p, i) => {
                         const platCfg = PLATFORMS[effectivePlatform] || { soft: "#f1f5f9", color: "#64748b" };
                         const Tag = p.link ? "a" : "div";
