@@ -799,7 +799,7 @@ export default function FanDashboard() {
 
   // Dynamic entry gap — only when card is expanded (9+ entries)
   React.useLayoutEffect(() => {
-    const isExpanded = filteredPages.length >= 9 && heroChartHeight !== null;
+    const isExpanded = heroChartHeight !== null;
     if (!isExpanded) { setEntryGap(0); return; }
     const container = pagesListRef.current;
     if (!container) return;
@@ -1078,7 +1078,7 @@ export default function FanDashboard() {
             {(() => {
               const availablePlatforms = fpAvailablePlatforms;
               const effectivePlatform = fpEffectivePlatform;
-              const shouldExpand = filteredPages.length >= 9 && heroChartHeight !== null;
+              const shouldExpand = heroChartHeight !== null;
               return (
                 <div className={`${CARD} flex flex-col`} style={shouldExpand ? { maxHeight: heroChartHeight } : undefined}>
                   <div className="px-5 py-4 border-b border-divider flex items-center justify-between">
@@ -1123,7 +1123,7 @@ export default function FanDashboard() {
                   >
                     {filteredPages.length === 0 ? (
                       <div className="px-3 py-6 text-center text-xs text-muted">No {effectivePlatform} pages tracked yet</div>
-                    ) : shouldExpand ? (
+                    ) : (
                       <div style={{ display: "flex", flexDirection: "column", gap: entryGap }}>
                       {filteredPages.map((p, i) => {
                         const platCfg = PLATFORMS[effectivePlatform] || { soft: "#f1f5f9", color: "#64748b" };
@@ -1148,29 +1148,6 @@ export default function FanDashboard() {
                         );
                       })}
                       </div>
-                    ) : (
-                      filteredPages.map((p, i) => {
-                        const platCfg = PLATFORMS[effectivePlatform] || { soft: "#f1f5f9", color: "#64748b" };
-                        const Tag = p.link ? "a" : "div";
-                        return (
-                          <Tag key={p.link || `${p.platform}-${p.name}-${i}`} {...(p.link ? { href: p.link, target: "_blank", rel: "noopener noreferrer" } : {})} className="p-3 flex items-center gap-3 hover:bg-slate-50 transition cursor-pointer group rounded-xl no-underline" >
-                            <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: platCfg.soft }}>
-                              <span className="text-sm font-bold" style={{ color: platCfg.color }}>{String(i + 1).padStart(2, "0")}</span>
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-1">
-                                <div className="text-sm font-semibold text-primary group-hover:text-brand transition truncate">{p.name}</div>
-                                {p.managed && <Star size={11} className="shrink-0 text-amber-400 fill-amber-400" />}
-                              </div>
-                              <div className="text-[10px] text-muted mt-0.5">{p.latest ? `Last post ${fmtPageDate(p.latest)}` : p.platform}</div>
-                            </div>
-                            <div className="text-right">
-                              <div className="text-sm font-bold tabular-nums text-primary">{fmtFull(p.followers)}</div>
-                              <div className="text-[10px] text-muted">{MEMBER_PLATFORMS.has(effectivePlatform) ? "members" : "followers"}</div>
-                            </div>
-                          </Tag>
-                        );
-                      })
                     )}
                   </div>
                   </div>
