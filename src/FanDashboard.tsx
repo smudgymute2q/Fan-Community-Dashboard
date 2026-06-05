@@ -1160,7 +1160,7 @@ export default function FanDashboard() {
                   </div>
                   </div>
                   {filteredPages.length > 0 && (
-                    <div className="px-5 py-2 border-t border-divider flex items-center justify-between shrink-0">
+                    <div className="px-5 pt-0 pb-2 border-t border-divider flex items-center justify-between shrink-0">
                       <span className="text-[10px] text-muted font-medium">{filteredPages.length} {(() => { const n = filteredPages.length; if (effectivePlatform === "Discord") return n === 1 ? "server" : "servers"; if (effectivePlatform === "Reddit") return n === 1 ? "subreddit" : "subreddits"; if (effectivePlatform === "Instagram Channels") return n === 1 ? "channel" : "channels"; if (effectivePlatform === "X Communities") return n === 1 ? "community" : "communities"; return n === 1 ? "page" : "pages"; })()} tracked</span>
                       {!pagesAtBottom && filteredPages.length > 9 && <span className="text-[10px] text-muted font-medium flex items-center gap-1">scroll for more <ChevronDown size={10} /></span>}
                     </div>
