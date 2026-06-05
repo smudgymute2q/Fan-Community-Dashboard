@@ -810,8 +810,8 @@ export default function FanDashboard() {
       const entryH = firstEntry.getBoundingClientRect().height;
       if (entryH === 0) { setEntryGap(0); return; }
       const style = window.getComputedStyle(container);
-      // List has py-0; top padding lives in the entries wrapper (8px top).
-      const padH = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom) + 8;
+      // List has py-0; vertical padding lives in the entries wrapper (8px top + 8px bottom = 16px).
+      const padH = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom) + 16;
       // Compute available height from heroChartHeight minus card chrome (header + footer).
       // container.clientHeight gives 0 gap on first load for compact cards (<9 entries)
       // because the card is still at natural height; using heroChartHeight ensures the
@@ -1137,7 +1137,7 @@ export default function FanDashboard() {
                     {filteredPages.length === 0 ? (
                       <div className="px-3 py-6 text-center text-xs text-muted">No {effectivePlatform} pages tracked yet</div>
                     ) : (
-                      <div style={{ display: "flex", flexDirection: "column", gap: entryGap, paddingTop: 8 }}>
+                      <div style={{ display: "flex", flexDirection: "column", gap: entryGap, padding: '8px 0' }}>
                       {filteredPages.map((p, i) => {
                         const platCfg = PLATFORMS[effectivePlatform] || { soft: "#f1f5f9", color: "#64748b" };
                         const Tag = p.link ? "a" : "div";
