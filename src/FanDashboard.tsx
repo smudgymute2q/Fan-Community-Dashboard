@@ -1181,7 +1181,7 @@ export default function FanDashboard() {
           </div>
 
           <div className="grid grid-cols-12 gap-4">
-            <div className={`col-span-12 md:col-span-4 ${CARD} p-6`}>
+            <div className={`col-span-12 md:col-span-4 ${CARD} px-6 pt-4 pb-6`}>
               <div className="flex items-center gap-2 mb-1">
                 <div className="w-6 h-6 rounded-xl bg-blue-100 flex items-center justify-center"><PieIcon size={12} className="text-blue-600" /></div>
                 <div className={EYEBROW}>Platform Share</div>
@@ -1239,7 +1239,7 @@ export default function FanDashboard() {
               </div>
             </div>
 
-<div className={`col-span-12 md:col-span-4 flex flex-col ${CARD} p-6`}>
+<div className={`col-span-12 md:col-span-4 flex flex-col ${CARD} px-6 pt-4 pb-6`}>
               <div className="flex items-center gap-2 mb-1">
                 <div className="w-6 h-6 rounded-xl bg-amber-100 flex items-center justify-center"><Zap size={12} className="text-amber-600" /></div>
                 <div className={EYEBROW}>Growth Velocity · 12mo</div>
@@ -1265,7 +1265,7 @@ export default function FanDashboard() {
               </div>
             </div>
 
-            <div className={`col-span-12 md:col-span-4 ${CARD} p-6`}>
+            <div className={`col-span-12 md:col-span-4 ${CARD} px-6 pt-4 pb-6`}>
               <div className="flex items-center gap-2 mb-1">
                 <div className="w-6 h-6 rounded-xl bg-emerald-100 flex items-center justify-center"><ArrowUpRight size={12} className="text-pos" /></div>
                 <div className={EYEBROW}>Fastest Movers · 28d</div>
