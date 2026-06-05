@@ -1130,7 +1130,7 @@ export default function FanDashboard() {
                   <div className={`relative ${shouldExpand ? "flex-1 flex flex-col min-h-0" : ""}`}>
                   <div
                     ref={pagesListRef}
-                    className={`p-2 overflow-y-auto [overscroll-behavior:contain] ${shouldExpand ? "flex-1 min-h-0" : "max-h-[594px]"}`}
+                    className={`pt-2 px-2 pb-0 overflow-y-auto [overscroll-behavior:contain] ${shouldExpand ? "flex-1 min-h-0" : "max-h-[594px]"}`}
                     onScroll={(e) => { const el = e.currentTarget; setPagesAtBottom(el.scrollTop + el.clientHeight >= el.scrollHeight - 8); }}
                   >
                     {filteredPages.length === 0 ? (
@@ -1164,7 +1164,7 @@ export default function FanDashboard() {
                   </div>
                   </div>
                   {filteredPages.length > 0 && (
-                    <div className="px-5 py-2.5 border-t border-divider flex items-center justify-between shrink-0">
+                    <div className="px-5 pt-1.5 pb-2.5 border-t border-divider flex items-center justify-between shrink-0">
                       <span className="text-[10px] text-muted font-medium">{filteredPages.length} {(() => { const n = filteredPages.length; if (effectivePlatform === "Discord") return n === 1 ? "server" : "servers"; if (effectivePlatform === "Reddit") return n === 1 ? "subreddit" : "subreddits"; if (effectivePlatform === "Instagram Channels") return n === 1 ? "channel" : "channels"; if (effectivePlatform === "X Communities") return n === 1 ? "community" : "communities"; return n === 1 ? "page" : "pages"; })()} tracked</span>
                       {!pagesAtBottom && filteredPages.length > 9 && <span className="text-[10px] text-muted font-medium flex items-center gap-1">scroll for more <ChevronDown size={10} /></span>}
                     </div>
