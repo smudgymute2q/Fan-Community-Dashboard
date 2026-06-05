@@ -804,7 +804,8 @@ export default function FanDashboard() {
     const container = pagesListRef.current;
     if (!container) return;
     const compute = () => {
-      const firstEntry = container.firstElementChild as HTMLElement | null;
+      // firstElementChild is the flex wrapper div — go one level deeper for the actual entry
+      const firstEntry = container.firstElementChild?.firstElementChild as HTMLElement | null;
       if (!firstEntry) { setEntryGap(0); return; }
       const entryH = firstEntry.getBoundingClientRect().height;
       if (entryH === 0) { setEntryGap(0); return; }
