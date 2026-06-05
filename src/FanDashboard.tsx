@@ -810,7 +810,7 @@ export default function FanDashboard() {
       if (entryH === 0) { setEntryGap(0); return; }
       const style = window.getComputedStyle(container);
       const availH = container.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom);
-      const n = Math.floor(availH / entryH);
+      const n = Math.min(filteredPages.length, Math.floor(availH / entryH));
       if (n <= 1) { setEntryGap(0); return; }
       setEntryGap(Math.max(0, (availH - n * entryH) / (n - 1)));
     };
@@ -1080,7 +1080,7 @@ export default function FanDashboard() {
               const effectivePlatform = fpEffectivePlatform;
               const shouldExpand = heroChartHeight !== null;
               return (
-                <div className={`${CARD} flex flex-col`} style={shouldExpand ? { maxHeight: heroChartHeight } : undefined}>
+                <div className={`${CARD} flex flex-col`} style={shouldExpand ? { height: heroChartHeight } : undefined}>
                   <div className="px-5 py-4 border-b border-divider flex items-center justify-between">
                     <div>
                       <div className={EYEBROW}>Fan Page Tracker</div>
