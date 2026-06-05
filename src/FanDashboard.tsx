@@ -486,6 +486,9 @@ export default function FanDashboard() {
   const [feedFilter, setFeedFilter] = useState("All");
   const [yearRange, setYearRange] = useState("all");
   const [pagesPlatform, setPagesPlatform] = useState("Discord");
+  const heroChartRef = React.useRef<HTMLDivElement>(null);
+  const [heroChartHeight, setHeroChartHeight] = useState<number | null>(null);
+  const [entryGap, setEntryGap] = useState(0);
   const rosterRef = React.useRef<HTMLDivElement>(null);
   const [rosterAtStart, setRosterAtStart] = useState(true);
   const [rosterAtEnd, setRosterAtEnd] = useState(false);
@@ -507,6 +510,16 @@ export default function FanDashboard() {
   useEffect(() => {
     const id = setInterval(() => setNowTick((t) => t + 1), 60000);
     return () => clearInterval(id);
+  }, []);
+
+  // Measure hero + growth chart combined height
+  useEffect(() => {
+    const el = heroChartRef.current;
+    if (!el) return;
+    const obs = new ResizeObserver(() => setHeroChartHeight(el.offsetHeight));
+    obs.observe(el);
+    setHeroChartHeight(el.offsetHeight);
+    return () => obs.disconnect();
   }, []);
 
   useEffect(() => {
@@ -769,6 +782,44 @@ export default function FanDashboard() {
     [artist.slug]
   );
 
+  // Fan Page Tracker — computed here so they're available to the gap layout effect
+  const fpAvailablePlatforms = useMemo(() => {
+    const set = new Set(artist.pages.map((p) => p.platform).filter(Boolean));
+    return PLAT_ORDER.filter((p) => set.has(p));
+  }, [artist.pages]);
+  const fpEffectivePlatform = fpAvailablePlatforms.includes(pagesPlatform)
+    ? pagesPlatform
+    : fpAvailablePlatforms.includes("Discord")
+    ? "Discord"
+    : fpAvailablePlatforms[0] || "Discord";
+  const filteredPages = useMemo(
+    () => artist.pages.filter((p) => p.platform === fpEffectivePlatform).sort((a, b) => b.followers - a.followers),
+    [artist.pages, fpEffectivePlatform]
+  );
+
+  // Dynamic entry gap — only when 9+ entries and card is expanded to heroChartHeight
+  React.useLayoutEffect(() => {
+    const shouldExpand = filteredPages.length >= 9 && heroChartHeight !== null;
+    if (!shouldExpand) { setEntryGap(0); return; }
+    const container = pagesListRef.current;
+    if (!container) return;
+    const compute = () => {
+      const firstEntry = container.firstElementChild as HTMLElement | null;
+      if (!firstEntry) { setEntryGap(0); return; }
+      const entryH = firstEntry.getBoundingClientRect().height;
+      if (entryH === 0) { setEntryGap(0); return; }
+      const style = window.getComputedStyle(container);
+      const availH = container.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom);
+      const n = Math.floor(availH / entryH);
+      if (n <= 1) { setEntryGap(0); return; }
+      setEntryGap(Math.max(0, (availH - n * entryH) / (n - 1)));
+    };
+    compute();
+    const obs = new ResizeObserver(compute);
+    obs.observe(container);
+    return () => obs.disconnect();
+  }, [filteredPages.length, heroChartHeight, selectedSlug, pagesPlatform]);
+
   const togglePlat = (p) => {
     const next = new Set(hiddenPlats);
     if (next.has(p)) {
@@ -893,6 +944,8 @@ export default function FanDashboard() {
         {/* Main */}
         <div className="grid grid-cols-12 gap-4">
           <section className="col-span-12 lg:col-span-8 space-y-4">
+            {/* Hero + Growth Chart — measured for Fan Page Tracker height matching */}
+            <div ref={heroChartRef} className="space-y-4">
             {/* Hero */}
             <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand to-blue-500 p-6 text-white">
               <div className="absolute top-0 right-0 w-72 h-72 opacity-20 -mr-20 -mt-20"><div className="w-full h-full rounded-full bg-white blur-3xl" /></div>
@@ -1006,6 +1059,7 @@ export default function FanDashboard() {
                 )}
               </div>
             </div>
+            </div>{/* end heroChartRef wrapper */}
 
             {/* Current reach */}
             <div className={`${CARD} p-6`}>
@@ -1022,19 +1076,11 @@ export default function FanDashboard() {
 
           <aside className="col-span-12 lg:col-span-4 space-y-4">
             {(() => {
-              const availablePlatformsSet = new Set(artist.pages.map((p) => p.platform).filter(Boolean));
-              const availablePlatforms = PLAT_ORDER.filter((p) => availablePlatformsSet.has(p));
-              // Always use a platform that actually exists in the list
-              const effectivePlatform = availablePlatforms.includes(pagesPlatform)
-                ? pagesPlatform
-                : availablePlatforms.includes("Discord")
-                ? "Discord"
-                : availablePlatforms[0] || "Discord";
-              const filteredPages = artist.pages
-                .filter((p) => p.platform === effectivePlatform)
-                .sort((a, b) => b.followers - a.followers);
+              const availablePlatforms = fpAvailablePlatforms;
+              const effectivePlatform = fpEffectivePlatform;
+              const shouldExpand = filteredPages.length >= 9 && heroChartHeight !== null;
               return (
-                <div className={CARD}>
+                <div className={`${CARD} flex flex-col`} style={shouldExpand ? { maxHeight: heroChartHeight } : undefined}>
                   <div className="px-5 py-4 border-b border-divider flex items-center justify-between">
                     <div>
                       <div className={EYEBROW}>Fan Page Tracker</div>
@@ -1069,16 +1115,17 @@ export default function FanDashboard() {
                       )}
                     </div>
                   </div>
-                  <div className="relative">
+                  <div className="relative flex-1 flex flex-col min-h-0">
                   <div
                     ref={pagesListRef}
-                    className="p-2 max-h-[594px] overflow-y-auto [overscroll-behavior:contain]"
+                    className="p-2 flex-1 min-h-0 overflow-y-auto [overscroll-behavior:contain]"
                     onScroll={(e) => { const el = e.currentTarget; setPagesAtBottom(el.scrollTop + el.clientHeight >= el.scrollHeight - 8); }}
                   >
                     {filteredPages.length === 0 ? (
                       <div className="px-3 py-6 text-center text-xs text-muted">No {effectivePlatform} pages tracked yet</div>
                     ) : (
-                      filteredPages.map((p, i) => {
+                      <div style={{ display: "flex", flexDirection: "column", gap: entryGap }}>
+                      {filteredPages.map((p, i) => {
                         const platCfg = PLATFORMS[effectivePlatform] || { soft: "#f1f5f9", color: "#64748b" };
                         const Tag = p.link ? "a" : "div";
                         return (
@@ -1099,12 +1146,13 @@ export default function FanDashboard() {
                             </div>
                           </Tag>
                         );
-                      })
+                      })}
+                      </div>
                     )}
                   </div>
                   </div>
                   {filteredPages.length > 0 && (
-                    <div className="px-5 py-2.5 border-t border-divider flex items-center justify-between">
+                    <div className="px-5 py-2.5 border-t border-divider flex items-center justify-between shrink-0">
                       <span className="text-[10px] text-muted font-medium">{filteredPages.length} {(() => { const n = filteredPages.length; if (effectivePlatform === "Discord") return n === 1 ? "server" : "servers"; if (effectivePlatform === "Reddit") return n === 1 ? "subreddit" : "subreddits"; if (effectivePlatform === "Instagram Channels") return n === 1 ? "channel" : "channels"; if (effectivePlatform === "X Communities") return n === 1 ? "community" : "communities"; return n === 1 ? "page" : "pages"; })()} tracked</span>
                       {!pagesAtBottom && filteredPages.length > 9 && <span className="text-[10px] text-muted font-medium flex items-center gap-1">scroll for more <ChevronDown size={10} /></span>}
                     </div>
