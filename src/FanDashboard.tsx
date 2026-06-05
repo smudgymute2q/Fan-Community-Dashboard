@@ -818,7 +818,11 @@ export default function FanDashboard() {
       const chrome = Math.max(0, (fpCardRef.current?.clientHeight ?? 0) - container.clientHeight);
       const availH = (heroChartHeight ?? 0) - chrome - padH;
       if (availH <= 0) { setEntryGap(0); return; }
-      const n = Math.floor(availH / entryH);
+      const nFit = Math.floor(availH / entryH);
+      // For 9+ entries (expanded card), cap at actual entry count so they fill the list
+      // completely rather than leaving empty space when heroChartHeight is large (nFit > count).
+      // For <9 entries (compact card), use nFit so the gap matches the 9+ reference size.
+      const n = filteredPages.length >= 9 ? Math.min(filteredPages.length, nFit) : nFit;
       if (n <= 1) { setEntryGap(0); return; }
       setEntryGap(Math.max(0, (availH - n * entryH) / (n - 1)));
     };
