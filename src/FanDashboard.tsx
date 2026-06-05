@@ -1074,7 +1074,7 @@ export default function FanDashboard() {
                     <div className={`absolute bottom-0 inset-x-0 h-4 pointer-events-none z-10 rounded-b-xl transition-opacity duration-150 ${pagesAtBottom ? "opacity-0" : "opacity-100"}`} style={{ background: "linear-gradient(to top, white, transparent)" }} />
                   <div
                     ref={pagesListRef}
-                    className="px-2 py-1 max-h-[594px] overflow-y-auto [overscroll-behavior:contain]"
+                    className="px-2 max-h-[594px] overflow-y-auto [overscroll-behavior:contain]"
                     onScroll={(e) => { const el = e.currentTarget; setPagesAtBottom(el.scrollTop + el.clientHeight >= el.scrollHeight - 8); }}
                   >
                     {filteredPages.length === 0 ? (
