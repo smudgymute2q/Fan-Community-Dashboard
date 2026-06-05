@@ -1070,6 +1070,8 @@ export default function FanDashboard() {
                     </div>
                   </div>
                   <div className="relative">
+                    <div className="absolute top-0 inset-x-0 h-4 pointer-events-none z-10 rounded-t-xl" style={{ background: "linear-gradient(to bottom, white, transparent)" }} />
+                    <div className={`absolute bottom-0 inset-x-0 h-4 pointer-events-none z-10 rounded-b-xl transition-opacity duration-150 ${pagesAtBottom ? "opacity-0" : "opacity-100"}`} style={{ background: "linear-gradient(to top, white, transparent)" }} />
                   <div
                     ref={pagesListRef}
                     className="px-2 py-1 max-h-[594px] overflow-y-auto [overscroll-behavior:contain]"
