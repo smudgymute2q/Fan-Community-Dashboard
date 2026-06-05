@@ -810,22 +810,17 @@ export default function FanDashboard() {
       const entryH = firstEntry.getBoundingClientRect().height;
       if (entryH === 0) { setEntryGap(0); return; }
       const style = window.getComputedStyle(container);
-      // List has py-0; vertical padding lives in the entries wrapper (8px top + 8px bottom = 16px).
-      const padH = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom) + 16;
-      // Compute available height from heroChartHeight minus card chrome (header + footer).
-      // container.clientHeight gives 0 gap on first load for compact cards (<9 entries)
-      // because the card is still at natural height; using heroChartHeight ensures the
-      // gap matches the value 9+ entries would produce regardless of current card height.
+      // List is py-0. Wrapper padding equals entryGap (top + bottom), so we don't subtract
+      // it from availH — instead we use (n+1) as the divisor, which allocates n-1 inter-entry
+      // slots plus 1 slot above the first entry and 1 below the last. Every slot is identical.
+      const padH = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
       const chrome = Math.max(0, (fpCardRef.current?.clientHeight ?? 0) - container.clientHeight);
       const availH = (heroChartHeight ?? 0) - chrome - padH;
       if (availH <= 0) { setEntryGap(0); return; }
       const nFit = Math.floor(availH / entryH);
-      // For 9+ entries (expanded card), cap at actual entry count so they fill the list
-      // completely rather than leaving empty space when heroChartHeight is large (nFit > count).
-      // For <9 entries (compact card), use nFit so the gap matches the 9+ reference size.
       const n = filteredPages.length >= 9 ? Math.min(filteredPages.length, nFit) : nFit;
-      if (n <= 1) { setEntryGap(0); return; }
-      setEntryGap(Math.max(0, (availH - n * entryH) / (n - 1)));
+      if (n < 1) { setEntryGap(0); return; }
+      setEntryGap(Math.max(0, (availH - n * entryH) / (n + 1)));
     };
     compute();
     const obs = new ResizeObserver(compute);
@@ -1137,7 +1132,7 @@ export default function FanDashboard() {
                     {filteredPages.length === 0 ? (
                       <div className="px-3 py-6 text-center text-xs text-muted">No {effectivePlatform} pages tracked yet</div>
                     ) : (
-                      <div style={{ display: "flex", flexDirection: "column", gap: entryGap, padding: '8px 0' }}>
+                      <div style={{ display: "flex", flexDirection: "column", gap: entryGap, padding: `${entryGap}px 0` }}>
                       {filteredPages.map((p, i) => {
                         const platCfg = PLATFORMS[effectivePlatform] || { soft: "#f1f5f9", color: "#64748b" };
                         const Tag = p.link ? "a" : "div";
