@@ -810,7 +810,8 @@ export default function FanDashboard() {
       const entryH = firstEntry.getBoundingClientRect().height;
       if (entryH === 0) { setEntryGap(0); return; }
       const style = window.getComputedStyle(container);
-      const padH = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+      // List has py-0; vertical padding lives in the entries wrapper (8px top + 7px bottom = 15px).
+      const padH = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom) + 15;
       // Compute available height from heroChartHeight minus card chrome (header + footer).
       // container.clientHeight gives 0 gap on first load for compact cards (<9 entries)
       // because the card is still at natural height; using heroChartHeight ensures the
@@ -1130,13 +1131,13 @@ export default function FanDashboard() {
                   <div className={`relative ${shouldExpand ? "flex-1 flex flex-col min-h-0" : ""}`}>
                   <div
                     ref={pagesListRef}
-                    className={`pt-2 px-2 pb-0 overflow-y-auto [overscroll-behavior:contain] ${shouldExpand ? "flex-1 min-h-0" : "max-h-[594px]"}`}
+                    className={`px-2 py-0 overflow-y-auto [overscroll-behavior:contain] ${shouldExpand ? "flex-1 min-h-0" : "max-h-[594px]"}`}
                     onScroll={(e) => { const el = e.currentTarget; setPagesAtBottom(el.scrollTop + el.clientHeight >= el.scrollHeight - 8); }}
                   >
                     {filteredPages.length === 0 ? (
                       <div className="px-3 py-6 text-center text-xs text-muted">No {effectivePlatform} pages tracked yet</div>
                     ) : (
-                      <div style={{ display: "flex", flexDirection: "column", gap: entryGap }}>
+                      <div style={{ display: "flex", flexDirection: "column", gap: entryGap, padding: '8px 0 7px' }}>
                       {filteredPages.map((p, i) => {
                         const platCfg = PLATFORMS[effectivePlatform] || { soft: "#f1f5f9", color: "#64748b" };
                         const Tag = p.link ? "a" : "div";
@@ -1164,7 +1165,7 @@ export default function FanDashboard() {
                   </div>
                   </div>
                   {filteredPages.length > 0 && (
-                    <div className="px-5 pt-1.5 pb-2.5 border-t border-divider flex items-center justify-between shrink-0">
+                    <div className="px-5 pt-0 pb-2.5 border-t border-divider flex items-center justify-between shrink-0">
                       <span className="text-[10px] text-muted font-medium">{filteredPages.length} {(() => { const n = filteredPages.length; if (effectivePlatform === "Discord") return n === 1 ? "server" : "servers"; if (effectivePlatform === "Reddit") return n === 1 ? "subreddit" : "subreddits"; if (effectivePlatform === "Instagram Channels") return n === 1 ? "channel" : "channels"; if (effectivePlatform === "X Communities") return n === 1 ? "community" : "communities"; return n === 1 ? "page" : "pages"; })()} tracked</span>
                       {!pagesAtBottom && filteredPages.length > 9 && <span className="text-[10px] text-muted font-medium flex items-center gap-1">scroll for more <ChevronDown size={10} /></span>}
                     </div>
