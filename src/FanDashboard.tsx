@@ -496,6 +496,7 @@ export default function FanDashboard() {
   const isScrollingToStart = React.useRef(false);
   const [pagesDropdownOpen, setPagesDropdownOpen] = useState(false);
   const pagesListRef = React.useRef<HTMLDivElement>(null);
+  const fpCardRef = React.useRef<HTMLDivElement>(null);
   const [pagesAtBottom, setPagesAtBottom] = useState(false);
   const [redditPosts, setRedditPosts] = useState<any[]>([]);
   const [redditLoading, setRedditLoading] = useState(false);
@@ -809,7 +810,14 @@ export default function FanDashboard() {
       const entryH = firstEntry.getBoundingClientRect().height;
       if (entryH === 0) { setEntryGap(0); return; }
       const style = window.getComputedStyle(container);
-      const availH = container.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom);
+      const padH = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+      // Derive available height from heroChartHeight minus card chrome (header + footer).
+      // Using container.clientHeight gives 0 gap for compact cards because the card hasn't
+      // grown yet — computing from heroChartHeight lets the gap push the card to its target
+      // height via natural content expansion.
+      const chrome = Math.max(0, (fpCardRef.current?.clientHeight ?? 0) - container.clientHeight);
+      const availH = (heroChartHeight ?? 0) - chrome - padH;
+      if (availH <= 0) { setEntryGap(0); return; }
       const n = Math.min(filteredPages.length, Math.floor(availH / entryH));
       if (n <= 1) { setEntryGap(0); return; }
       setEntryGap(Math.max(0, (availH - n * entryH) / (n - 1)));
@@ -1080,7 +1088,7 @@ export default function FanDashboard() {
               const effectivePlatform = fpEffectivePlatform;
               const shouldExpand = heroChartHeight !== null;
               return (
-                <div className={`${CARD} flex flex-col`} style={shouldExpand ? { height: heroChartHeight } : undefined}>
+                <div ref={fpCardRef} className={`${CARD} flex flex-col`} style={shouldExpand ? { maxHeight: heroChartHeight } : undefined}>
                   <div className="px-5 py-4 border-b border-divider flex items-center justify-between">
                     <div>
                       <div className={EYEBROW}>Fan Page Tracker</div>
