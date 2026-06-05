@@ -797,14 +797,11 @@ export default function FanDashboard() {
     [artist.pages, fpEffectivePlatform]
   );
 
-  // Dynamic entry gap — only when 9+ entries and card is expanded to heroChartHeight
+  // Dynamic entry gap — always applied so spacing is consistent across all platforms
   React.useLayoutEffect(() => {
-    const shouldExpand = filteredPages.length >= 9 && heroChartHeight !== null;
-    if (!shouldExpand) { setEntryGap(0); return; }
     const container = pagesListRef.current;
     if (!container) return;
     const compute = () => {
-      // firstElementChild is the flex wrapper div — go one level deeper for the actual entry
       const firstEntry = container.firstElementChild?.firstElementChild as HTMLElement | null;
       if (!firstEntry) { setEntryGap(0); return; }
       const entryH = firstEntry.getBoundingClientRect().height;
