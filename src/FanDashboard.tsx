@@ -810,8 +810,8 @@ export default function FanDashboard() {
       const entryH = firstEntry.getBoundingClientRect().height;
       if (entryH === 0) { setEntryGap(0); return; }
       const style = window.getComputedStyle(container);
-      // List has py-0; vertical padding lives in the entries wrapper (8px top + 7px bottom = 15px).
-      const padH = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom) + 15;
+      // List has py-0; top padding lives in the entries wrapper (8px top).
+      const padH = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom) + 8;
       // Compute available height from heroChartHeight minus card chrome (header + footer).
       // container.clientHeight gives 0 gap on first load for compact cards (<9 entries)
       // because the card is still at natural height; using heroChartHeight ensures the
@@ -1137,7 +1137,7 @@ export default function FanDashboard() {
                     {filteredPages.length === 0 ? (
                       <div className="px-3 py-6 text-center text-xs text-muted">No {effectivePlatform} pages tracked yet</div>
                     ) : (
-                      <div style={{ display: "flex", flexDirection: "column", gap: entryGap, padding: '8px 0 7px' }}>
+                      <div style={{ display: "flex", flexDirection: "column", gap: entryGap, paddingTop: 8 }}>
                       {filteredPages.map((p, i) => {
                         const platCfg = PLATFORMS[effectivePlatform] || { soft: "#f1f5f9", color: "#64748b" };
                         const Tag = p.link ? "a" : "div";
@@ -1165,7 +1165,7 @@ export default function FanDashboard() {
                   </div>
                   </div>
                   {filteredPages.length > 0 && (
-                    <div className="px-5 pt-0 pb-2.5 border-t border-divider flex items-center justify-between shrink-0">
+                    <div className="px-5 py-2 border-t border-divider flex items-center justify-between shrink-0">
                       <span className="text-[10px] text-muted font-medium">{filteredPages.length} {(() => { const n = filteredPages.length; if (effectivePlatform === "Discord") return n === 1 ? "server" : "servers"; if (effectivePlatform === "Reddit") return n === 1 ? "subreddit" : "subreddits"; if (effectivePlatform === "Instagram Channels") return n === 1 ? "channel" : "channels"; if (effectivePlatform === "X Communities") return n === 1 ? "community" : "communities"; return n === 1 ? "page" : "pages"; })()} tracked</span>
                       {!pagesAtBottom && filteredPages.length > 9 && <span className="text-[10px] text-muted font-medium flex items-center gap-1">scroll for more <ChevronDown size={10} /></span>}
                     </div>
