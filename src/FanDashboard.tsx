@@ -1184,7 +1184,7 @@ export default function FanDashboard() {
             <div className={`col-span-12 md:col-span-4 ${CARD} p-6`}>
               <div className="flex items-start gap-2 mb-1">
                 <div className="w-6 h-6 rounded-xl bg-blue-100 flex items-center justify-center shrink-0"><PieIcon size={12} className="text-blue-600" /></div>
-                <div className={`${EYEBROW} mt-1`}>Platform Share</div>
+                <div className={EYEBROW}>Platform Share</div>
               </div>
               <div className="text-sm font-semibold text-primary mb-3">Distribution of total reach</div>
               <div
@@ -1242,7 +1242,7 @@ export default function FanDashboard() {
 <div className={`col-span-12 md:col-span-4 flex flex-col ${CARD} p-6`}>
               <div className="flex items-start gap-2 mb-1">
                 <div className="w-6 h-6 rounded-xl bg-amber-100 flex items-center justify-center shrink-0"><Zap size={12} className="text-amber-600" /></div>
-                <div className={`${EYEBROW} mt-1`}>Growth Velocity · 12mo</div>
+                <div className={EYEBROW}>Growth Velocity · 12mo</div>
               </div>
               <div className="text-sm font-semibold text-primary mb-3">Net added per month</div>
               <div className="flex-1 min-h-[200px]">
@@ -1265,10 +1265,10 @@ export default function FanDashboard() {
               </div>
             </div>
 
-            <div className={`col-span-12 md:col-span-4 ${CARD} p-6`}>
+            <div className={`col-span-12 md:col-span-4 ${CARD} pt-6 px-6 pb-3`}>
               <div className="flex items-start gap-2 mb-1">
                 <div className="w-6 h-6 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0"><ArrowUpRight size={12} className="text-pos" /></div>
-                <div className={`${EYEBROW} mt-1`}>Fastest Movers · 28d</div>
+                <div className={EYEBROW}>Fastest Movers · 28d</div>
               </div>
               <div className="text-sm font-semibold text-primary mb-3">Biggest swings across the roster</div>
               <div className="-mx-2">
