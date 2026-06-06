@@ -1181,10 +1181,10 @@ export default function FanDashboard() {
           </div>
 
           <div className="grid grid-cols-12 gap-4">
-            <div className={`col-span-12 md:col-span-4 ${CARD} px-6 py-5`}>
-              <div className="flex items-center gap-2 mb-1">
-                <div className="w-6 h-6 rounded-xl bg-blue-100 flex items-center justify-center"><PieIcon size={12} className="text-blue-600" /></div>
-                <div className={EYEBROW}>Platform Share</div>
+            <div className={`col-span-12 md:col-span-4 ${CARD} p-6`}>
+              <div className="flex items-start gap-2 mb-1">
+                <div className="w-6 h-6 rounded-xl bg-blue-100 flex items-center justify-center shrink-0"><PieIcon size={12} className="text-blue-600" /></div>
+                <div className={`${EYEBROW} mt-1`}>Platform Share</div>
               </div>
               <div className="text-sm font-semibold text-primary mb-3">Distribution of total reach</div>
               <div
@@ -1239,10 +1239,10 @@ export default function FanDashboard() {
               </div>
             </div>
 
-<div className={`col-span-12 md:col-span-4 flex flex-col ${CARD} px-6 py-5`}>
-              <div className="flex items-center gap-2 mb-1">
-                <div className="w-6 h-6 rounded-xl bg-amber-100 flex items-center justify-center"><Zap size={12} className="text-amber-600" /></div>
-                <div className={EYEBROW}>Growth Velocity · 12mo</div>
+<div className={`col-span-12 md:col-span-4 flex flex-col ${CARD} p-6`}>
+              <div className="flex items-start gap-2 mb-1">
+                <div className="w-6 h-6 rounded-xl bg-amber-100 flex items-center justify-center shrink-0"><Zap size={12} className="text-amber-600" /></div>
+                <div className={`${EYEBROW} mt-1`}>Growth Velocity · 12mo</div>
               </div>
               <div className="text-sm font-semibold text-primary mb-3">Net added per month</div>
               <div className="flex-1 min-h-[200px]">
@@ -1265,17 +1265,17 @@ export default function FanDashboard() {
               </div>
             </div>
 
-            <div className={`col-span-12 md:col-span-4 ${CARD} px-6 py-5`}>
-              <div className="flex items-center gap-2 mb-1">
-                <div className="w-6 h-6 rounded-xl bg-emerald-100 flex items-center justify-center"><ArrowUpRight size={12} className="text-pos" /></div>
-                <div className={EYEBROW}>Fastest Movers · 28d</div>
+            <div className={`col-span-12 md:col-span-4 ${CARD} p-6`}>
+              <div className="flex items-start gap-2 mb-1">
+                <div className="w-6 h-6 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0"><ArrowUpRight size={12} className="text-pos" /></div>
+                <div className={`${EYEBROW} mt-1`}>Fastest Movers · 28d</div>
               </div>
               <div className="text-sm font-semibold text-primary mb-3">Biggest swings across the roster</div>
               <div className="-mx-2">
                 {artists.slice().sort((a, b) => Math.abs(b.totals.delta) - Math.abs(a.totals.delta)).slice(0, 5).map((a, i) => {
                   const up = a.totals.delta >= 0;
                   return (
-                    <div key={a.slug} className="w-full px-3 py-2 flex items-center gap-3 rounded-xl">
+                    <div key={a.slug} className="w-full p-3 flex items-center gap-3 rounded-xl">
                       <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold ${i === 0 ? "bg-amber-100 text-amber-700" : i === 1 ? "bg-slate-100 text-secondary" : i === 2 ? "bg-orange-100 text-orange-700" : "bg-slate-50 text-muted"}`}>{i + 1}</div>
                       <span className="flex-1 text-sm font-semibold text-primary truncate">{a.name}</span>
                       <span className={`text-xs font-bold tabular-nums px-2 py-0.5 rounded-full ${up ? "bg-emerald-100 text-pos" : "bg-rose-100 text-neg"}`}>{up ? "+" : ""}{fmt(a.totals.delta)}</span>
