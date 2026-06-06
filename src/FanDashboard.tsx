@@ -1288,8 +1288,8 @@ export default function FanDashboard() {
           </div>
         </section>
 
-        {/* Live Feed */}
-        <section className="mt-8">
+        {/* Live Feed — hidden for now */}
+        {false && <section className="mt-8">
           <div className="flex items-baseline justify-between mb-4">
             <div className="flex items-baseline gap-3">
               <h2 className="text-3xl font-bold text-primary tracking-tight">Live <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-blue-500 pr-1">Feed</span></h2>
@@ -1345,7 +1345,7 @@ export default function FanDashboard() {
               <span className="font-semibold">Partially live.</span> Reddit posts are fetched live where available, otherwise showing recent highlights · Discord, X, Instagram &amp; TikTok are mock data.
             </div>
           </div>
-        </section>
+        </section>}
 
       </div>
     </div>
