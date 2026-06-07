@@ -391,7 +391,7 @@ function ArtistPill({ artist, active, onClick }) {
           <div className={`text-sm font-semibold leading-tight ${active ? "text-white" : "text-primary"}`}>{artist.name}</div>
           <div className="flex items-center gap-1.5 mt-0.5">
             <span className={`text-xs font-semibold tabular-nums ${active ? "text-white" : "text-secondary"}`}>{fmt(artist.totals.value)}</span>
-            <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${artist.totals.delta >= 0 ? (active ? "bg-white/20 text-emerald-200" : "bg-emerald-50 text-pos") : (active ? "bg-white/20 text-rose-300" : "bg-rose-50 text-neg")}`}>{artist.totals.delta >= 0 ? "+" : ""}{fmt(artist.totals.delta)}</span>
+            <span className={`text-[10px] font-semibold ${artist.totals.delta >= 0 ? (active ? "text-emerald-300" : "text-pos") : (active ? "text-rose-300" : "text-neg")}`}>{artist.totals.delta >= 0 ? "+" : ""}{fmt(artist.totals.delta)}</span>
           </div>
         </div>
       </div>
@@ -500,9 +500,6 @@ export default function FanDashboard() {
   const [pagesAtBottom, setPagesAtBottom] = useState(false);
   const [redditPosts, setRedditPosts] = useState<any[]>([]);
   const [redditLoading, setRedditLoading] = useState(false);
-  const [showSticky, setShowSticky] = useState(false);
-  const [showRangeStats, setShowRangeStats] = useState(true);
-  const heroCardRef = React.useRef<HTMLDivElement>(null);
 
   // ---- Sheets data loading ----
   const [sheetsData, setSheetsData] = useState<Record<string, any>>({});
@@ -523,15 +520,6 @@ export default function FanDashboard() {
     const obs = new ResizeObserver(() => setHeroChartHeight(el.offsetHeight));
     obs.observe(el);
     setHeroChartHeight(el.offsetHeight);
-    return () => obs.disconnect();
-  }, []);
-
-  // Sticky mini-header — show once the hero card scrolls out of view
-  useEffect(() => {
-    const el = heroCardRef.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(([entry]) => setShowSticky(!entry.isIntersecting), { threshold: 0 });
-    obs.observe(el);
     return () => obs.disconnect();
   }, []);
 
@@ -639,7 +627,6 @@ export default function FanDashboard() {
     setPagesPlatform("Discord");
     setPieHover(null);
     setHiddenPlats(new Set());
-    setShowRangeStats(true);
   }, [selectedSlug]);
 
   useEffect(() => {
@@ -739,10 +726,7 @@ export default function FanDashboard() {
       ? new Date(fullHistory[fullHistory.length - 1].date + "-01")
       : new Date();
     const latestYear = latestDate.getFullYear();
-    if (yearRange === "2y") {
-      const cutoff = new Date(latestDate); cutoff.setFullYear(cutoff.getFullYear() - 2);
-      return fullHistory.filter((r) => new Date(r.date + "-01") >= cutoff);
-    }
+    if (yearRange === "ytd") return fullHistory.filter((r) => r.date >= `${latestYear}-01`);
     if (yearRange === "12m") {
       const cutoff = new Date(latestDate); cutoff.setMonth(cutoff.getMonth() - 12);
       return fullHistory.filter((r) => new Date(r.date + "-01") >= cutoff);
@@ -880,23 +864,6 @@ export default function FanDashboard() {
         .recharts-polar-angle-axis-tick text { fill: #64748b; font-size: 10px; font-weight: 600; }
       `}</style>
 
-      {/* Sticky mini-header — appears once hero scrolls out of view */}
-      <div className={`fixed top-0 left-0 right-0 z-40 transition-all duration-200 ${showSticky ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full pointer-events-none"}`}>
-        <div className="bg-white/90 backdrop-blur-md border-b border-line shadow-sm">
-          <div className="max-w-[1400px] mx-auto px-6 py-2.5 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-2.5">
-              <img src={iconFor(artist.slug)} alt={artist.name} className="w-7 h-7 rounded-xl object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
-              <span className="font-bold text-sm text-primary">{artist.name}</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="font-bold tabular-nums text-sm text-primary">{fmtFull(artist.totals.value)}</span>
-              <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${artist.totals.delta >= 0 ? "bg-emerald-100 text-pos" : "bg-rose-100 text-neg"}`}>{artist.totals.delta >= 0 ? "+" : ""}{fmt(artist.totals.delta)}</span>
-              <span className="text-[10px] text-muted font-medium">last 28d</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Loading overlay — fades away once all sheets are fetched */}
       {sheetsLoading && (
         <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm pointer-events-none bg-white/60">
@@ -988,7 +955,7 @@ export default function FanDashboard() {
             {/* Hero + Growth Chart — measured for Fan Page Tracker height matching */}
             <div ref={heroChartRef} className="space-y-4">
             {/* Hero */}
-            <div ref={heroCardRef} className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand to-blue-500 p-6 text-white">
+            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand to-blue-500 p-6 text-white">
               <div className="absolute top-0 right-0 w-72 h-72 opacity-20 -mr-20 -mt-20"><div className="w-full h-full rounded-full bg-white blur-3xl" /></div>
               <div className="absolute bottom-0 left-1/2 w-64 h-64 opacity-10 -mb-32"><div className="w-full h-full rounded-full bg-yellow-200 blur-3xl" /></div>
               <div className="relative flex items-center justify-between gap-6">
@@ -1023,7 +990,7 @@ export default function FanDashboard() {
                       { key: "3m", label: "3M" },
                       { key: "6m", label: "6M" },
                       { key: "12m", label: "1Y" },
-                      { key: "2y", label: "2Y" },
+                      { key: "ytd", label: "YTD" },
                       { key: "all", label: "All" },
                     ].map((opt) => (
                       <button
@@ -1039,28 +1006,20 @@ export default function FanDashboard() {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between gap-2 flex-wrap">
-                  <div className="flex items-center gap-1.5 flex-wrap">
-                    {orderedPlats.map((p) => {
-                      const off = hiddenPlats.has(p);
-                      return (
-                        <button key={p} onClick={() => togglePlat(p)} className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[10px] font-semibold transition ${off ? "border-line text-muted bg-slate-50" : "border-line text-secondary bg-white hover:border-slate-300"}`}>
-                          <span className="w-1.5 h-1.5 rounded-full" style={{ background: off ? "#cbd5e1" : PLATFORMS[p].color }} />
-                          {p}
-                        </button>
-                      );
-                    })}
-                  </div>
-                  {rangeStats && (
-                    <button onClick={() => setShowRangeStats((s) => !s)} className="flex items-center gap-1 text-[10px] font-semibold text-muted hover:text-secondary transition shrink-0">
-                      <ChevronDown size={11} className={`transition-transform duration-200 ${showRangeStats ? "" : "-rotate-90"}`} />
-                      {showRangeStats ? "Hide stats" : "Show stats"}
-                    </button>
-                  )}
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  {orderedPlats.map((p) => {
+                    const off = hiddenPlats.has(p);
+                    return (
+                      <button key={p} onClick={() => togglePlat(p)} className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[10px] font-semibold transition ${off ? "border-line text-muted bg-slate-50" : "border-line text-secondary bg-white hover:border-slate-300"}`}>
+                        <span className="w-1.5 h-1.5 rounded-full" style={{ background: off ? "#cbd5e1" : PLATFORMS[p].color }} />
+                        {p}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
-              {rangeStats && showRangeStats && (
+              {rangeStats && (
                 <div className="flex mb-4 p-4 bg-blue-50 rounded-2xl border border-blue-100 divide-x divide-blue-200">
                   <div className="flex-1 pr-4">
                     <div className={`${EYEBROW} mb-1`}>Range start</div>
@@ -1110,9 +1069,20 @@ export default function FanDashboard() {
             </div>
             </div>{/* end heroChartRef wrapper */}
 
+            {/* Current reach */}
+            <div className={`${CARD} p-6`}>
+              <div className="mb-5">
+                <div className={EYEBROW}>Current Reach</div>
+                <div className="text-base font-semibold text-primary mt-0.5">Per-platform follower counts</div>
+                <div className="text-xs text-muted">Change vs previous month</div>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {orderedPlats.map((p) => <KpiTile key={p} platform={p} value={artist.platforms[p].value} delta={artist.platforms[p].delta} />)}
+              </div>
+            </div>
           </section>
 
-          <aside className="col-span-12 lg:col-span-4 space-y-4 lg:self-start">
+          <aside className="col-span-12 lg:col-span-4 space-y-4">
             {(() => {
               const availablePlatforms = fpAvailablePlatforms;
               const effectivePlatform = fpEffectivePlatform;
@@ -1212,12 +1182,9 @@ export default function FanDashboard() {
 
           <div className="grid grid-cols-12 gap-4">
             <div className={`col-span-12 md:col-span-4 ${CARD} p-6`}>
-              <div className="flex items-center justify-between mb-1">
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-xl bg-blue-100 flex items-center justify-center"><PieIcon size={12} className="text-blue-600" /></div>
-                  <div className={EYEBROW}>Platform Share</div>
-                </div>
-                <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-blue-50 text-blue-500">Artist</span>
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-6 h-6 rounded-xl bg-blue-100 flex items-center justify-center"><PieIcon size={12} className="text-blue-600" /></div>
+                <div className={EYEBROW}>Platform Share</div>
               </div>
               <div className="text-sm font-semibold text-primary mb-3">Distribution of total reach</div>
               <div
@@ -1273,12 +1240,9 @@ export default function FanDashboard() {
             </div>
 
 <div className={`col-span-12 md:col-span-4 flex flex-col ${CARD} p-6`}>
-              <div className="flex items-center justify-between mb-1">
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-xl bg-amber-100 flex items-center justify-center"><Zap size={12} className="text-amber-600" /></div>
-                  <div className={EYEBROW}>Growth Velocity · 12mo</div>
-                </div>
-                <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-blue-50 text-blue-500">Artist</span>
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-6 h-6 rounded-xl bg-amber-100 flex items-center justify-center"><Zap size={12} className="text-amber-600" /></div>
+                <div className={EYEBROW}>Growth Velocity · 12mo</div>
               </div>
               <div className="text-sm font-semibold text-primary mb-3">Net added per month</div>
               <div className="flex-1 min-h-[200px]">
@@ -1302,12 +1266,9 @@ export default function FanDashboard() {
             </div>
 
             <div className={`col-span-12 md:col-span-4 ${CARD} pt-6 px-6 pb-3`}>
-              <div className="flex items-center justify-between mb-1">
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-xl bg-emerald-100 flex items-center justify-center"><ArrowUpRight size={12} className="text-pos" /></div>
-                  <div className={EYEBROW}>Fastest Movers · 28d</div>
-                </div>
-                <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-slate-100 text-secondary">Roster</span>
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-6 h-6 rounded-xl bg-emerald-100 flex items-center justify-center"><ArrowUpRight size={12} className="text-pos" /></div>
+                <div className={EYEBROW}>Fastest Movers · 28d</div>
               </div>
               <div className="text-sm font-semibold text-primary mb-3">Biggest swings across the roster</div>
               <div className="-mx-2">
