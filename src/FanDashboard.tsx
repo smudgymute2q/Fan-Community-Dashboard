@@ -382,7 +382,7 @@ function ArtistPill({ artist, active, onClick }) {
   const initial = artist.name.charAt(0);
   const icon = iconFor(artist.slug);
   return (
-    <button onClick={onClick} className={`group relative shrink-0 text-left px-3.5 py-2.5 rounded-2xl border transition-all ${active ? "bg-gradient-to-br from-brand to-blue-500 text-white border-transparent" : "bg-white border-line"}`}>
+    <button onClick={onClick} className={`group relative shrink-0 text-left px-3.5 py-2.5 rounded-2xl border transition-all ${active ? "bg-brand text-white border-transparent" : "bg-white border-line"}`}>
       <div className="flex items-center gap-2.5">
         <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm overflow-hidden shrink-0 ${active ? "bg-white/20 text-white" : "bg-slate-100 text-secondary"}`}>
           {icon ? <img src={icon} alt={artist.name} className="w-full h-full object-cover" /> : initial}
@@ -879,7 +879,7 @@ export default function FanDashboard() {
         <header className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-5">
             <div className="flex items-center gap-3">
-              <div className="relative w-11 h-11 rounded-2xl bg-gradient-to-br from-brand to-blue-500 flex items-center justify-center shadow-lg shadow-blue-300/50">
+              <div className="relative w-11 h-11 rounded-2xl bg-brand flex items-center justify-center shadow-lg shadow-blue-300/50">
                 <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none">
                   <path d="M4 20 L4 4 L12 4 L12 11 L20 11 L20 20 Z" stroke="white" strokeWidth="1.8" strokeLinejoin="round" />
                   <circle cx="12" cy="11" r="1.5" fill="white" />
@@ -888,7 +888,7 @@ export default function FanDashboard() {
               </div>
               <div className="leading-none">
                 <div className="text-xl font-bold text-primary tracking-tight">
-                  FAN<span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-blue-500">INTEL</span>
+                  FAN<span className="text-brand">INTEL</span>
                 </div>
                 <div className="text-[10px] uppercase tracking-[0.2em] text-muted font-semibold mt-1">Community Intelligence</div>
               </div>
@@ -955,9 +955,7 @@ export default function FanDashboard() {
             {/* Hero + Growth Chart — measured for Fan Page Tracker height matching */}
             <div ref={heroChartRef} className="space-y-4">
             {/* Hero */}
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand to-blue-500 p-6 text-white">
-              <div className="absolute top-0 right-0 w-72 h-72 opacity-20 -mr-20 -mt-20"><div className="w-full h-full rounded-full bg-white blur-3xl" /></div>
-              <div className="absolute bottom-0 left-1/2 w-64 h-64 opacity-10 -mb-32"><div className="w-full h-full rounded-full bg-yellow-200 blur-3xl" /></div>
+            <div className="relative overflow-hidden rounded-3xl bg-brand p-6 text-white">
               <div className="relative flex items-center justify-between gap-6">
                 <div>
                   <div className="text-[10px] uppercase tracking-[0.2em] text-white/70 font-semibold mb-2">Now viewing</div>
@@ -1176,7 +1174,7 @@ export default function FanDashboard() {
         <section className="mt-8">
           <div className="flex items-baseline justify-between mb-4">
             <div className="flex items-baseline gap-3">
-              <h2 className="text-3xl font-bold text-primary tracking-tight">Deep <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-blue-500 pr-1">Analytics</span></h2>
+              <h2 className="text-3xl font-bold text-primary tracking-tight">Deep <span className="text-brand">Analytics</span></h2>
             </div>
           </div>
 
@@ -1292,7 +1290,7 @@ export default function FanDashboard() {
         {false && <section className="mt-8">
           <div className="flex items-baseline justify-between mb-4">
             <div className="flex items-baseline gap-3">
-              <h2 className="text-3xl font-bold text-primary tracking-tight">Live <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-blue-500 pr-1">Feed</span></h2>
+              <h2 className="text-3xl font-bold text-primary tracking-tight">Live <span className="text-brand">Feed</span></h2>
             </div>
             <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-full">
               <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
