@@ -48,8 +48,8 @@ const PLAT_ORDER = ["Discord", "Reddit", "Instagram", "Instagram Channels", "X",
 const MEMBER_PLATFORMS = new Set(["Discord", "Reddit", "X Communities", "Instagram Channels"]);
 
 // ---- Reusable class tokens (single source of truth for repeated patterns) ----
-const CARD = "bg-white rounded-[20px] shadow-[0_2px_20px_rgba(0,0,0,0.07)]";
-const EYEBROW = "text-[10px] font-semibold uppercase tracking-[0.08em] text-muted";
+const CARD = "bg-white border border-line rounded-3xl shadow-sm";
+const EYEBROW = "text-[10px] font-semibold uppercase tracking-wider text-muted";
 
 // ---- Cloudflare Worker proxy ----
 const WORKER_URL = "https://fanintel.smudgy-mute2q.workers.dev";
@@ -364,13 +364,13 @@ function DeltaPill({ value, small = false }) {
 function KpiTile({ platform, value, delta }) {
   const cfg = PLATFORMS[platform];
   return (
-    <div className="relative rounded-[16px] p-5 bg-[#F5F5F7]">
-      <div className={`${EYEBROW} flex items-center gap-1.5 mb-3`}>
+    <div className="relative rounded-2xl p-4 bg-white border border-line">
+      <div className={`${EYEBROW} flex items-center gap-1.5 mb-2`}>
         {cfg && <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: cfg.color }} />}
         {platform}
       </div>
-      <div className="font-bold tabular-nums leading-none text-3xl text-primary tracking-tight">{fmtFull(value)}</div>
-      <div className="mt-3"><DeltaPill value={delta} /></div>
+      <div className="font-bold tabular-nums leading-none text-2xl text-primary">{fmtFull(value)}</div>
+      <div className="mt-2"><DeltaPill value={delta} /></div>
     </div>
   );
 }
@@ -854,13 +854,14 @@ export default function FanDashboard() {
     : "live";
 
   return (
-    <div className="min-h-screen w-full" style={{ background: "#F5F5F7", color: "#1D1D1F", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>
+    <div className="min-h-screen w-full text-slate-800" style={{ background: "#f1f5f9", fontFamily: "'Plus Jakarta Sans', 'Inter', system-ui, sans-serif" }}>
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
         .marquee-fade { mask-image: linear-gradient(90deg, transparent 0, black 3%, black 97%, transparent 100%); }
-        .recharts-cartesian-axis-tick text { fill: #86868B; font-size: 10px; font-weight: 500; }
-        .recharts-cartesian-grid line { stroke: #E5E5EA; }
-        .recharts-polar-grid-angle line { stroke: #E5E5EA; }
-        .recharts-polar-angle-axis-tick text { fill: #6E6E73; font-size: 10px; font-weight: 600; }
+        .recharts-cartesian-axis-tick text { fill: #94a3b8; font-size: 10px; font-weight: 500; }
+        .recharts-cartesian-grid line { stroke: #e2e8f0; }
+        .recharts-polar-grid-angle line { stroke: #e2e8f0; }
+        .recharts-polar-angle-axis-tick text { fill: #64748b; font-size: 10px; font-weight: 600; }
       `}</style>
 
       {/* Loading overlay — fades away once all sheets are fetched */}
@@ -875,35 +876,41 @@ export default function FanDashboard() {
 
       <div className="max-w-[1400px] mx-auto px-6 py-6">
         {/* Header */}
-        <header className="flex items-center justify-between mb-10">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-[12px] bg-brand flex items-center justify-center">
-              <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none">
-                <path d="M4 20 L4 4 L12 4 L12 11 L20 11 L20 20 Z" stroke="white" strokeWidth="1.8" strokeLinejoin="round" />
-                <circle cx="12" cy="11" r="1.5" fill="white" />
-              </svg>
-            </div>
-            <div>
-              <div className="text-[18px] font-bold tracking-[-0.02em]" style={{ color: "#1D1D1F" }}>
-                FAN<span className="text-brand">INTEL</span>
+        <header className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-5">
+            <div className="flex items-center gap-3">
+              <div className="relative w-11 h-11 rounded-2xl bg-brand flex items-center justify-center shadow-lg shadow-blue-300/50">
+                <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none">
+                  <path d="M4 20 L4 4 L12 4 L12 11 L20 11 L20 20 Z" stroke="white" strokeWidth="1.8" strokeLinejoin="round" />
+                  <circle cx="12" cy="11" r="1.5" fill="white" />
+                </svg>
+                <div className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full ring-2 ring-white animate-pulse" />
               </div>
-              <div className="text-[10px] tracking-[0.1em] uppercase font-medium mt-0.5" style={{ color: "#86868B" }}>Community Intelligence</div>
+              <div className="leading-none">
+                <div className="text-xl font-bold text-primary tracking-tight">
+                  FAN<span className="text-brand">INTEL</span>
+                </div>
+                <div className="text-[10px] uppercase tracking-[0.2em] text-muted font-semibold mt-1">Community Intelligence</div>
+              </div>
             </div>
-          </div>
-          <div className="flex items-center gap-2 bg-white px-3.5 py-1.5 rounded-full" style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.08)" }}>
-            <div className={`w-2 h-2 rounded-full ${sheetsLoading ? "bg-amber-400" : "bg-emerald-500 animate-pulse"}`} />
-            <span className="text-[11px] font-medium" style={{ color: "#6E6E73" }}>Live · {syncLabel}</span>
+            <div className="h-8 w-px bg-slate-200" />
+            <div className="flex items-center gap-2 bg-white border border-line px-3 py-1.5 rounded-full">
+              <div className={`w-2 h-2 rounded-full ${sheetsLoading ? "bg-amber-400" : "bg-emerald-500 animate-pulse"}`} />
+              <span className="text-[11px] font-semibold text-secondary">Live · {syncLabel}</span>
+            </div>
           </div>
         </header>
 
         {/* Roster */}
         <section className="mb-8">
-          <div className="flex items-baseline gap-2.5 mb-4">
-            <h2 className="text-[22px] font-bold tracking-[-0.02em]" style={{ color: "#1D1D1F" }}>Roster</h2>
-            <span className="text-[13px] font-normal" style={{ color: "#86868B" }}>{artists.length} artists tracked</span>
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-baseline gap-3">
+              <h2 className="text-xs uppercase tracking-[0.15em] text-muted font-semibold">Roster</h2>
+              <span className="text-xs text-muted font-medium">{artists.length} artists tracked</span>
+            </div>
           </div>
           <div className="relative">
-            <div className={`absolute left-0 -top-2 -bottom-2 w-20 pointer-events-none z-[5] transition-opacity duration-150 ${rosterAtStart ? "opacity-0" : "opacity-100"}`} style={{ background: "linear-gradient(to right, #F5F5F7, transparent)" }} />
+            <div className={`absolute left-0 -top-2 -bottom-2 w-20 pointer-events-none z-[5] transition-opacity duration-150 ${rosterAtStart ? "opacity-0" : "opacity-100"}`} style={{ background: "linear-gradient(to right, #f1f5f9, transparent)" }} />
             <button
               onClick={() => { setRosterAtStart(true); isScrollingToStart.current = true; rosterRef.current?.scrollTo({ left: 0, behavior: "smooth" }); }}
               className={`absolute left-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white border border-line rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition-opacity duration-150 ${rosterAtStart ? "opacity-0 pointer-events-none" : "opacity-100"}`}
@@ -932,7 +939,7 @@ export default function FanDashboard() {
             >
               {artists.map((a) => <ArtistPill key={a.slug} artist={a} active={a.slug === selectedSlug} onClick={() => setSelectedSlug(a.slug)} />)}
             </div>
-            <div className={`absolute right-0 -top-2 -bottom-2 w-20 pointer-events-none z-[5] transition-opacity duration-150 ${rosterAtEnd ? "opacity-0" : "opacity-100"}`} style={{ background: "linear-gradient(to left, #F5F5F7, transparent)" }} />
+            <div className={`absolute right-0 -top-2 -bottom-2 w-20 pointer-events-none z-[5] transition-opacity duration-150 ${rosterAtEnd ? "opacity-0" : "opacity-100"}`} style={{ background: "linear-gradient(to left, #f1f5f9, transparent)" }} />
             <button
               onClick={() => { const el = rosterRef.current; if (el) { setRosterAtEnd(true); isScrollingToEnd.current = true; el.scrollTo({ left: el.scrollWidth - el.clientWidth, behavior: "smooth" }); } }}
               className={`absolute right-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white border border-line rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition-opacity duration-150 ${rosterAtEnd ? "opacity-0 pointer-events-none" : "opacity-100"}`}
@@ -948,25 +955,20 @@ export default function FanDashboard() {
             {/* Hero + Growth Chart — measured for Fan Page Tracker height matching */}
             <div ref={heroChartRef} className="space-y-4">
             {/* Hero */}
-            <div className="relative overflow-hidden rounded-[24px] bg-brand p-7 text-white">
-              <div className="flex items-center justify-between gap-6 flex-wrap">
-                <div className="flex items-center gap-5 min-w-0">
-                  <div className="w-[68px] h-[68px] rounded-[16px] overflow-hidden shrink-0" style={{ background: "rgba(255,255,255,0.15)" }}>
-                    <img src={iconFor(artist.slug)} alt={artist.name} className="w-full h-full object-cover" onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }} />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="text-[11px] font-medium uppercase tracking-[0.1em] mb-1.5" style={{ color: "rgba(255,255,255,0.55)" }}>Now viewing</div>
-                    <h3 className="text-[44px] font-bold leading-none tracking-[-0.03em] truncate">{artist.name}</h3>
-                  </div>
+            <div className="relative overflow-hidden rounded-3xl bg-brand p-6 text-white">
+              <div className="relative flex items-center justify-between gap-6">
+                <div>
+                  <div className="text-[10px] uppercase tracking-[0.2em] text-white/70 font-semibold mb-2">Now viewing</div>
+                  <h3 className="text-5xl font-bold tracking-tight leading-none">{artist.name}</h3>
                 </div>
-                <div className="text-right shrink-0">
-                  <div className="text-[11px] font-medium uppercase tracking-[0.1em] mb-1.5" style={{ color: "rgba(255,255,255,0.55)" }}>Cumulative reach</div>
-                  <div className="font-bold text-[40px] tabular-nums leading-none tracking-[-0.03em]">{fmtFull(artist.totals.value)}</div>
-                  <div className="mt-2.5 flex items-center justify-end gap-2">
-                    <span className={`inline-flex items-center text-xs font-semibold px-2.5 py-1 rounded-full ${artist.totals.delta >= 0 ? "bg-emerald-50 text-pos" : "bg-rose-50 text-neg"}`}>
+                <div className="text-right">
+                  <div className="text-[10px] uppercase tracking-[0.2em] text-white/70 font-semibold mb-2">Cumulative reach</div>
+                  <div className="font-bold text-4xl tabular-nums leading-none">{fmtFull(artist.totals.value)}</div>
+                  <div className="mt-2 flex items-center justify-end gap-2">
+                    <span className={`inline-flex items-center gap-0.5 text-xs font-bold px-2 py-0.5 rounded-full ${artist.totals.delta >= 0 ? "bg-emerald-100 text-pos" : "bg-rose-100 text-neg"}`}>
                       {artist.totals.delta >= 0 ? "+" : ""}{fmt(artist.totals.delta)}
                     </span>
-                    <span className="text-[11px] font-medium" style={{ color: "rgba(255,255,255,0.5)" }}>last 28d</span>
+                    <span className="text-[10px] text-white/70 font-medium">last 28d</span>
                   </div>
                 </div>
               </div>
@@ -978,7 +980,7 @@ export default function FanDashboard() {
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                   <div>
                     <div className={EYEBROW}>Fan Network Growth</div>
-                    <div className="text-[15px] font-semibold mt-0.5 tracking-[-0.01em]">Followers across platforms</div>
+                    <div className="text-base font-semibold text-primary mt-0.5">Followers across platforms</div>
                   </div>
 
                   <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
@@ -1016,7 +1018,7 @@ export default function FanDashboard() {
               </div>
 
               {rangeStats && (
-                <div className="flex mb-4 p-4 bg-[#F5F5F7] rounded-[16px] divide-x divide-[#E5E5EA]">
+                <div className="flex mb-4 p-4 bg-blue-50 rounded-2xl border border-blue-100 divide-x divide-blue-200">
                   <div className="flex-1 pr-4">
                     <div className={`${EYEBROW} mb-1`}>Range start</div>
                     <div className="text-base font-bold tabular-nums text-primary">{fmt(rangeStats.startTotal)}</div>
@@ -1069,8 +1071,8 @@ export default function FanDashboard() {
             <div className={`${CARD} p-6`}>
               <div className="mb-5">
                 <div className={EYEBROW}>Current Reach</div>
-                <div className="text-[17px] font-semibold mt-0.5 tracking-[-0.01em]" style={{ color: "#1D1D1F" }}>Per-platform follower counts</div>
-                <div className="text-[13px] mt-0.5" style={{ color: "#86868B" }}>Change vs previous month</div>
+                <div className="text-base font-semibold text-primary mt-0.5">Per-platform follower counts</div>
+                <div className="text-xs text-muted">Change vs previous month</div>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {orderedPlats.map((p) => <KpiTile key={p} platform={p} value={artist.platforms[p].value} delta={artist.platforms[p].delta} />)}
@@ -1088,7 +1090,7 @@ export default function FanDashboard() {
                   <div className="px-5 py-4 border-b border-divider flex items-center justify-between">
                     <div>
                       <div className={EYEBROW}>Fan Page Tracker</div>
-                      <div className="text-[15px] font-semibold mt-0.5 tracking-[-0.01em]">Admin-run pages</div>
+                      <div className="text-sm font-semibold text-primary mt-0.5">Admin-run pages</div>
                     </div>
                     <div className="relative">
                       {pagesDropdownOpen && (
@@ -1170,9 +1172,10 @@ export default function FanDashboard() {
 
         {/* Deep Analytics */}
         <section className="mt-8">
-          <div className="flex items-baseline gap-2.5 mb-4">
-            <h2 className="text-[22px] font-bold tracking-[-0.02em]" style={{ color: "#1D1D1F" }}>Analytics</h2>
-            <span className="text-[13px] font-normal" style={{ color: "#86868B" }}>Platform mix · velocity · roster movers</span>
+          <div className="flex items-baseline justify-between mb-4">
+            <div className="flex items-baseline gap-3">
+              <h2 className="text-3xl font-bold text-primary tracking-tight">Deep <span className="text-brand">Analytics</span></h2>
+            </div>
           </div>
 
           <div className="grid grid-cols-12 gap-4">
@@ -1181,7 +1184,7 @@ export default function FanDashboard() {
                 <div className="w-6 h-6 rounded-xl bg-blue-100 flex items-center justify-center"><PieIcon size={12} className="text-blue-600" /></div>
                 <div className={EYEBROW}>Platform Share</div>
               </div>
-              <div className="text-[15px] font-semibold mb-3 tracking-[-0.01em]">Distribution of total reach</div>
+              <div className="text-sm font-semibold text-primary mb-3">Distribution of total reach</div>
               <div
                 className="relative h-[200px]"
                 onMouseMove={(e) => {
@@ -1239,7 +1242,7 @@ export default function FanDashboard() {
                 <div className="w-6 h-6 rounded-xl bg-amber-100 flex items-center justify-center"><Zap size={12} className="text-amber-600" /></div>
                 <div className={EYEBROW}>Growth Velocity · 12mo</div>
               </div>
-              <div className="text-[15px] font-semibold mb-3 tracking-[-0.01em]">Net added per month</div>
+              <div className="text-sm font-semibold text-primary mb-3">Net added per month</div>
               <div className="flex-1 min-h-[200px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={monthlyVelocity(history, orderedPlats)} margin={{ top: 8, right: 0, left: 0, bottom: 0 }}>
@@ -1265,7 +1268,7 @@ export default function FanDashboard() {
                 <div className="w-6 h-6 rounded-xl bg-emerald-100 flex items-center justify-center"><ArrowUpRight size={12} className="text-pos" /></div>
                 <div className={EYEBROW}>Fastest Movers · 28d</div>
               </div>
-              <div className="text-[15px] font-semibold mb-3 tracking-[-0.01em]">Biggest swings across the roster</div>
+              <div className="text-sm font-semibold text-primary mb-3">Biggest swings across the roster</div>
               <div className="-mx-2">
                 {artists.slice().sort((a, b) => Math.abs(b.totals.delta) - Math.abs(a.totals.delta)).slice(0, 5).map((a, i) => {
                   const up = a.totals.delta >= 0;
