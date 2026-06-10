@@ -358,7 +358,7 @@ function monthlyVelocity(history, plats) {
 function DeltaPill({ value, small = false }) {
   if (value === 0 || value === null || value === undefined) return <span className={`text-muted ${small ? "text-[10px]" : "text-xs"} font-medium`}>0</span>;
   const up = value > 0;
-  return <span className={`font-semibold ${small ? "text-[10px]" : "text-xs"} ${up ? "text-pos" : "text-neg"}`}>{up ? "+" : ""}{fmt(value)}</span>;
+  return <span className={`inline-flex items-center font-bold tabular-nums rounded-full ${small ? "text-[10px] px-1.5 py-px" : "text-xs px-2 py-0.5"} ${up ? "bg-emerald-50 text-pos" : "bg-rose-50 text-neg"}`}>{up ? "+" : ""}{fmt(value)}</span>;
 }
 
 function KpiTile({ platform, value, delta }) {
@@ -391,7 +391,7 @@ function ArtistPill({ artist, active, onClick }) {
           <div className={`text-sm font-semibold leading-tight ${active ? "text-white" : "text-primary"}`}>{artist.name}</div>
           <div className="flex items-center gap-1.5 mt-0.5">
             <span className={`text-xs font-semibold tabular-nums ${active ? "text-white" : "text-secondary"}`}>{fmt(artist.totals.value)}</span>
-            <span className={`text-[10px] font-semibold ${artist.totals.delta >= 0 ? (active ? "text-emerald-300" : "text-pos") : (active ? "text-rose-300" : "text-neg")}`}>{artist.totals.delta >= 0 ? "+" : ""}{fmt(artist.totals.delta)}</span>
+            <span className={`text-[10px] font-bold px-1.5 py-px rounded-full tabular-nums ${artist.totals.delta >= 0 ? (active ? "bg-white/20 text-white" : "bg-emerald-50 text-pos") : (active ? "bg-white/20 text-white" : "bg-rose-50 text-neg")}`}>{artist.totals.delta >= 0 ? "+" : ""}{fmt(artist.totals.delta)}</span>
           </div>
         </div>
       </div>
@@ -894,9 +894,9 @@ export default function FanDashboard() {
               </div>
             </div>
             <div className="h-8 w-px bg-slate-200" />
-            <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-full">
+            <div className="flex items-center gap-2 bg-white border border-line px-3 py-1.5 rounded-full">
               <div className={`w-2 h-2 rounded-full ${sheetsLoading ? "bg-amber-400" : "bg-emerald-500 animate-pulse"}`} />
-              <span className="text-[11px] font-semibold text-emerald-700">Live · {syncLabel}</span>
+              <span className="text-[11px] font-semibold text-secondary">Live · {syncLabel}</span>
             </div>
           </div>
         </header>
