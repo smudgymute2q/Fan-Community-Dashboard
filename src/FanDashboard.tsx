@@ -15,12 +15,7 @@ import {
 } from "recharts";
 import {
   ChevronDown,
-  ArrowUpRight,
   ArrowUp,
-  ArrowDownRight,
-  Minus,
-  PieChart as PieIcon,
-  Zap,
   MessageSquare,
   Heart,
   Repeat2,
@@ -358,7 +353,7 @@ function monthlyVelocity(history, plats) {
 function DeltaPill({ value, small = false }) {
   if (value === 0 || value === null || value === undefined) return <span className={`text-muted ${small ? "text-[10px]" : "text-xs"} font-medium`}>0</span>;
   const up = value > 0;
-  return <span className={`font-semibold ${small ? "text-[10px]" : "text-xs"} ${up ? "text-pos" : "text-neg"}`}>{up ? "+" : ""}{fmt(value)}</span>;
+  return <span className={`inline-flex items-center font-bold tabular-nums rounded-full ${small ? "text-[10px] px-1.5 py-px" : "text-xs px-2 py-0.5"} ${up ? "bg-emerald-50 text-pos" : "bg-rose-50 text-neg"}`}>{up ? "+" : ""}{fmt(value)}</span>;
 }
 
 function KpiTile({ platform, value, delta }) {
@@ -382,7 +377,7 @@ function ArtistPill({ artist, active, onClick }) {
   const initial = artist.name.charAt(0);
   const icon = iconFor(artist.slug);
   return (
-    <button onClick={onClick} className={`group relative shrink-0 text-left px-3.5 py-2.5 rounded-2xl border transition-all ${active ? "bg-brand text-white border-transparent" : "bg-white border-line"}`}>
+    <button onClick={onClick} className={`group relative shrink-0 text-left px-3.5 py-2.5 rounded-2xl border transition-all ${active ? "bg-slate-900 text-white border-transparent" : "bg-white border-line hover:border-slate-300"}`}>
       <div className="flex items-center gap-2.5">
         <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm overflow-hidden shrink-0 ${active ? "bg-white/20 text-white" : "bg-slate-100 text-secondary"}`}>
           {icon ? <img src={icon} alt={artist.name} className="w-full h-full object-cover" /> : initial}
@@ -391,7 +386,7 @@ function ArtistPill({ artist, active, onClick }) {
           <div className={`text-sm font-semibold leading-tight ${active ? "text-white" : "text-primary"}`}>{artist.name}</div>
           <div className="flex items-center gap-1.5 mt-0.5">
             <span className={`text-xs font-semibold tabular-nums ${active ? "text-white" : "text-secondary"}`}>{fmt(artist.totals.value)}</span>
-            <span className={`text-[10px] font-semibold ${artist.totals.delta >= 0 ? (active ? "text-emerald-300" : "text-pos") : (active ? "text-rose-300" : "text-neg")}`}>{artist.totals.delta >= 0 ? "+" : ""}{fmt(artist.totals.delta)}</span>
+            <span className={`text-[10px] font-bold tabular-nums px-1.5 py-px rounded-full ${artist.totals.delta >= 0 ? (active ? "bg-white/15 text-emerald-300" : "bg-emerald-50 text-pos") : (active ? "bg-white/15 text-rose-300" : "bg-rose-50 text-neg")}`}>{artist.totals.delta >= 0 ? "+" : ""}{fmt(artist.totals.delta)}</span>
           </div>
         </div>
       </div>
@@ -879,7 +874,7 @@ export default function FanDashboard() {
         <header className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-5">
             <div className="flex items-center gap-3">
-              <div className="relative w-11 h-11 rounded-2xl bg-brand flex items-center justify-center shadow-lg shadow-blue-300/50">
+              <div className="relative w-11 h-11 rounded-2xl bg-brand flex items-center justify-center">
                 <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none">
                   <path d="M4 20 L4 4 L12 4 L12 11 L20 11 L20 20 Z" stroke="white" strokeWidth="1.8" strokeLinejoin="round" />
                   <circle cx="12" cy="11" r="1.5" fill="white" />
@@ -894,9 +889,9 @@ export default function FanDashboard() {
               </div>
             </div>
             <div className="h-8 w-px bg-slate-200" />
-            <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-full">
+            <div className="flex items-center gap-2 bg-white border border-line px-3 py-1.5 rounded-full">
               <div className={`w-2 h-2 rounded-full ${sheetsLoading ? "bg-amber-400" : "bg-emerald-500 animate-pulse"}`} />
-              <span className="text-[11px] font-semibold text-emerald-700">Live · {syncLabel}</span>
+              <span className="text-[11px] font-semibold text-secondary">Live · {syncLabel}</span>
             </div>
           </div>
         </header>
@@ -955,7 +950,7 @@ export default function FanDashboard() {
             {/* Hero + Growth Chart — measured for Fan Page Tracker height matching */}
             <div ref={heroChartRef} className="space-y-4">
             {/* Hero */}
-            <div className="relative overflow-hidden rounded-3xl bg-brand p-6 text-white">
+            <div className="relative overflow-hidden rounded-3xl bg-slate-900 p-6 text-white">
               <div className="relative flex items-center justify-between gap-6">
                 <div>
                   <div className="text-[10px] uppercase tracking-[0.2em] text-white/70 font-semibold mb-2">Now viewing</div>
@@ -965,7 +960,7 @@ export default function FanDashboard() {
                   <div className="text-[10px] uppercase tracking-[0.2em] text-white/70 font-semibold mb-2">Cumulative reach</div>
                   <div className="font-bold text-4xl tabular-nums leading-none">{fmtFull(artist.totals.value)}</div>
                   <div className="mt-2 flex items-center justify-end gap-2">
-                    <span className={`inline-flex items-center gap-0.5 text-xs font-bold px-2 py-0.5 rounded-full ${artist.totals.delta >= 0 ? "bg-emerald-100 text-pos" : "bg-rose-100 text-neg"}`}>
+                    <span className={`inline-flex items-center gap-0.5 text-xs font-bold tabular-nums px-2 py-0.5 rounded-full ${artist.totals.delta >= 0 ? "bg-white/15 text-emerald-300" : "bg-white/15 text-rose-300"}`}>
                       {artist.totals.delta >= 0 ? "+" : ""}{fmt(artist.totals.delta)}
                     </span>
                     <span className="text-[10px] text-white/70 font-medium">last 28d</span>
@@ -1018,7 +1013,7 @@ export default function FanDashboard() {
               </div>
 
               {rangeStats && (
-                <div className="flex mb-4 p-4 bg-blue-50 rounded-2xl border border-blue-100 divide-x divide-blue-200">
+                <div className="flex mb-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 divide-x divide-slate-200">
                   <div className="flex-1 pr-4">
                     <div className={`${EYEBROW} mb-1`}>Range start</div>
                     <div className="text-base font-bold tabular-nums text-primary">{fmt(rangeStats.startTotal)}</div>
@@ -1114,7 +1109,7 @@ export default function FanDashboard() {
                             >
                               <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: PLATFORMS[plat]?.color ?? "#94a3b8" }} />
                               {plat}
-                              {plat === effectivePlatform && <span className="ml-auto text-brand">✓</span>}
+                              {plat === effectivePlatform && <span className="ml-auto text-primary">✓</span>}
                             </button>
                           ))}
                         </div>
@@ -1172,19 +1167,15 @@ export default function FanDashboard() {
 
         {/* Deep Analytics */}
         <section className="mt-8">
-          <div className="flex items-baseline justify-between mb-4">
-            <div className="flex items-baseline gap-3">
-              <h2 className="text-3xl font-bold text-primary tracking-tight">Deep <span className="text-brand">Analytics</span></h2>
-            </div>
+          <div className="flex items-baseline gap-3 mb-3">
+            <h2 className="text-xs uppercase tracking-[0.15em] text-muted font-semibold">Deep Analytics</h2>
+            <span className="text-xs text-muted font-medium">Platform mix · velocity · roster movers</span>
           </div>
 
           <div className="grid grid-cols-12 gap-4">
             <div className={`col-span-12 md:col-span-4 ${CARD} p-6`}>
-              <div className="flex items-center gap-2 mb-1">
-                <div className="w-6 h-6 rounded-xl bg-blue-100 flex items-center justify-center"><PieIcon size={12} className="text-blue-600" /></div>
-                <div className={EYEBROW}>Platform Share</div>
-              </div>
-              <div className="text-sm font-semibold text-primary mb-3">Distribution of total reach</div>
+              <div className={EYEBROW}>Platform Share</div>
+              <div className="text-sm font-semibold text-primary mt-0.5 mb-3">Distribution of total reach</div>
               <div
                 className="relative h-[200px]"
                 onMouseMove={(e) => {
@@ -1238,11 +1229,8 @@ export default function FanDashboard() {
             </div>
 
 <div className={`col-span-12 md:col-span-4 flex flex-col ${CARD} p-6`}>
-              <div className="flex items-center gap-2 mb-1">
-                <div className="w-6 h-6 rounded-xl bg-amber-100 flex items-center justify-center"><Zap size={12} className="text-amber-600" /></div>
-                <div className={EYEBROW}>Growth Velocity · 12mo</div>
-              </div>
-              <div className="text-sm font-semibold text-primary mb-3">Net added per month</div>
+              <div className={EYEBROW}>Growth Velocity · 12mo</div>
+              <div className="text-sm font-semibold text-primary mt-0.5 mb-3">Net added per month</div>
               <div className="flex-1 min-h-[200px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={monthlyVelocity(history, orderedPlats)} margin={{ top: 8, right: 0, left: 0, bottom: 0 }}>
@@ -1264,19 +1252,15 @@ export default function FanDashboard() {
             </div>
 
             <div className={`col-span-12 md:col-span-4 ${CARD} pt-6 px-6 pb-3`}>
-              <div className="flex items-center gap-2 mb-1">
-                <div className="w-6 h-6 rounded-xl bg-emerald-100 flex items-center justify-center"><ArrowUpRight size={12} className="text-pos" /></div>
-                <div className={EYEBROW}>Fastest Movers · 28d</div>
-              </div>
-              <div className="text-sm font-semibold text-primary mb-3">Biggest swings across the roster</div>
+              <div className={EYEBROW}>Fastest Movers · 28d</div>
+              <div className="text-sm font-semibold text-primary mt-0.5 mb-3">Biggest swings across the roster</div>
               <div className="-mx-2">
                 {artists.slice().sort((a, b) => Math.abs(b.totals.delta) - Math.abs(a.totals.delta)).slice(0, 5).map((a, i) => {
-                  const up = a.totals.delta >= 0;
                   return (
                     <div key={a.slug} className="w-full p-3 flex items-center gap-3 rounded-xl">
                       <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold ${i === 0 ? "bg-amber-100 text-amber-700" : i === 1 ? "bg-slate-100 text-secondary" : i === 2 ? "bg-orange-100 text-orange-700" : "bg-slate-50 text-muted"}`}>{i + 1}</div>
                       <span className="flex-1 text-sm font-semibold text-primary truncate">{a.name}</span>
-                      <span className={`text-xs font-bold tabular-nums px-2 py-0.5 rounded-full ${up ? "bg-emerald-100 text-pos" : "bg-rose-100 text-neg"}`}>{up ? "+" : ""}{fmt(a.totals.delta)}</span>
+                      <DeltaPill value={a.totals.delta} />
                     </div>
                   );
                 })}
@@ -1290,11 +1274,11 @@ export default function FanDashboard() {
         {false && <section className="mt-8">
           <div className="flex items-baseline justify-between mb-4">
             <div className="flex items-baseline gap-3">
-              <h2 className="text-3xl font-bold text-primary tracking-tight">Live <span className="text-brand">Feed</span></h2>
+              <h2 className="text-xs uppercase tracking-[0.15em] text-muted font-semibold">Live Feed</h2>
             </div>
-            <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-full">
+            <div className="flex items-center gap-2 bg-white border border-line px-3 py-1.5 rounded-full">
               <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-[11px] font-semibold text-emerald-700">polling · 2m</span>
+              <span className="text-[11px] font-semibold text-secondary">polling · 2m</span>
             </div>
           </div>
 
