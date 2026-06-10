@@ -391,7 +391,7 @@ function ArtistPill({ artist, active, onClick }) {
           <div className={`text-sm font-semibold leading-tight ${active ? "text-white" : "text-primary"}`}>{artist.name}</div>
           <div className="flex items-center gap-1.5 mt-0.5">
             <span className={`text-xs font-semibold tabular-nums ${active ? "text-white" : "text-secondary"}`}>{fmt(artist.totals.value)}</span>
-            <span className={`text-[10px] font-bold px-1.5 py-px rounded-full tabular-nums ${artist.totals.delta >= 0 ? (active ? "bg-white/20 text-white" : "bg-emerald-50 text-pos") : (active ? "bg-white/20 text-white" : "bg-rose-50 text-neg")}`}>{artist.totals.delta >= 0 ? "+" : ""}{fmt(artist.totals.delta)}</span>
+            <span className={`text-[10px] font-bold px-1.5 py-px rounded-full tabular-nums ${artist.totals.delta >= 0 ? "bg-emerald-50 text-pos" : "bg-rose-50 text-neg"}`}>{artist.totals.delta >= 0 ? "+" : ""}{fmt(artist.totals.delta)}</span>
           </div>
         </div>
       </div>
