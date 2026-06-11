@@ -1,12 +1,5 @@
 @import "tailwindcss";
 
-html, body, #root {
-  height: 100%;
-  overflow: hidden;
-  margin: 0;
-  padding: 0;
-}
-
 @theme {
   --color-primary: #0f172a;   /* primary text */
   --color-secondary: #475569; /* secondary text */
