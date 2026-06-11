@@ -40,30 +40,26 @@ const PLATFORMS = {
   "Instagram Channels": { color: "#7638FA", soft: "#EDE6FE" },
   X: { color: "#000000", soft: "#E5E7EB" },
   "X Communities": { color: "#808080", soft: "#F3F4F6" },
-  TikTok: { color: "#00F2EA", soft: "#E0FDFB" },
+  TikTok: { color: "#00C2B2", soft: "#E0FDFB" },
 };
 
 // ---- Platform display order + classification ----
 const PLAT_ORDER = ["Discord", "Reddit", "Instagram", "Instagram Channels", "X", "X Communities", "TikTok"];
 const MEMBER_PLATFORMS = new Set(["Discord", "Reddit", "X Communities", "Instagram Channels"]);
 
-// ---- Reusable class tokens (single source of truth for repeated patterns) ----
-const CARD = "bg-white border border-line rounded-3xl shadow-sm";
+// ---- Design tokens ----
+const CARD = "bg-white border border-line rounded-2xl shadow-sm";
 const EYEBROW = "text-[10px] font-semibold uppercase tracking-wider text-muted";
 
 // ---- Cloudflare Worker proxy ----
 const WORKER_URL = "https://fanintel.smudgy-mute2q.workers.dev";
 
 // ---- Google Sheets config ----
-// Published ID from File → Share → Publish to the web
 const SHEET_ID = "2PACX-1vRX8lP3Nb-LWMmUoTtHDHihOX-SkhFMUXoQJIuinbUhctXSjgJ1CCI9NvO1MQZKdgy9jtG33DgrOtre";
-
-// Sheet tab names are derived from each artist's name:
-// "{name} (Fan Network)" / "{name} (Fan Pages)" — see ARTISTS / loadFallback.
 const sheetTabs = (name: string) => ({ network: `${name} (Fan Network)`, pages: `${name} (Fan Pages)` });
 
 // ---- LocalStorage cache utilities ----
-const CACHE_MS = { sheets: 86_400_000, reddit: 900_000 }; // 24h / 15m
+const CACHE_MS = { sheets: 86_400_000, reddit: 900_000 };
 
 function getCached<T>(key: string, ttl: number): { data: T; ts: number } | null {
   try {
@@ -129,7 +125,6 @@ function decodeJsString(str: string): string {
     .replace(/\\\\/g, "\\");
 }
 
-// Fetch the published HTML index page and extract tab name → GID mapping.
 async function fetchGidMap(pubId: string): Promise<Record<string, string>> {
   const url = `${WORKER_URL}/sheets?pubId=${pubId}`;
   const res = await fetch(url);
@@ -137,7 +132,6 @@ async function fetchGidMap(pubId: string): Promise<Record<string, string>> {
   const html = await res.text();
   const gids: Record<string, string> = {};
 
-  // Pattern 1: navigation anchor tags — href="...?gid=N&...">Sheet Name</a>
   const anchorRe = /href="[^"]*[?&]gid=(\d+)[^"]*"[^>]*>\s*([^<]+?)\s*<\/a>/gi;
   let m: RegExpExecArray | null;
   while ((m = anchorRe.exec(html)) !== null) {
@@ -146,18 +140,14 @@ async function fetchGidMap(pubId: string): Promise<Record<string, string>> {
   }
   if (Object.keys(gids).length > 0) return gids;
 
-  // Pattern 2: JavaScript items.push({name:'...', pageUrl:'...gid=N...'})
-  // Names are JS string literals — decode \x27 etc. before storing
   const jsRe = /name:\s*["']([^"']+)["'][^}]*gid=(\d+)/g;
   while ((m = jsRe.exec(html)) !== null) gids[decodeJsString(m[1].trim())] = m[2];
   if (Object.keys(gids).length > 0) return gids;
 
-  // Pattern 3: JSON "name":"..." "gid":N
   const jsonRe = /"name":\s*"([^"]+)"[^}]*"gid":\s*(\d+)/g;
   while ((m = jsonRe.exec(html)) !== null) gids[decodeJsString(decodeHtmlEntities(m[1].trim()))] = m[2];
   if (Object.keys(gids).length > 0) return gids;
 
-  // All patterns failed — log a sample so the format can be debugged
   console.warn("[sheets] GID extraction failed. HTML sample:", html.substring(0, 2000));
   return gids;
 }
@@ -190,7 +180,6 @@ function parseDateToYearMonth(raw: string): string | null {
   return null;
 }
 
-// Rows where "platform" is actually a computed summary — skip these
 const SKIP_PLATFORMS = new Set(["Total", "total", "TOTAL", "Grand Total"]);
 
 function parseNetworkTab(rows: string[][]) {
@@ -238,7 +227,7 @@ function parsePagesTab(rows: string[][]) {
     .filter((p) => !isNaN(p.followers));
 }
 
-// ---- Static fallback artist data (used while sheets are loading or on fetch error) ----
+// ---- Static fallback artist data ----
 const STATIC_ARTISTS = [
   { slug: "opium", name: "Opium", subreddit: "opium", totals: { value: 168074, delta: 808 }, platforms: { Discord: { value: 8809, delta: 1 }, Reddit: { value: 19795, delta: 425 }, Instagram: { value: 95339, delta: 415 }, "Instagram Channels": { value: 9400, delta: -200 }, X: { value: 1775, delta: 154 }, TikTok: { value: 32956, delta: 13 } }, pages: [{ name: "/opium00", followers: 8809, latest: "Apr 1, 2026", platform: "Discord" }] },
   { slug: "playboi-carti", name: "Playboi Carti", subreddit: "playboicarti", totals: { value: 1495905, delta: 4537 }, platforms: { Discord: { value: 182148, delta: 338 }, Reddit: { value: 1029516, delta: 8064 }, Instagram: { value: 253236, delta: -3425 }, "Instagram Channels": { value: 23900, delta: -400 }, X: { value: 6995, delta: -38 }, "X Communities": { value: 110, delta: -2 } }, pages: [{ name: "/playboicarti", followers: 182148, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/pbc00", followers: 13193, latest: "Apr 1, 2026", platform: "Discord" }] },
@@ -256,57 +245,36 @@ const STATIC_ARTISTS = [
 
 const MOCK_FEED = {
   "playboi-carti": [
-    { platform: "Reddit", page: "/r/playboicarti", author: "u/tearsofravage", time: "12m ago", title: "New snippet from the Antagonist sessions leaked on Discord", body: "Production credits line up with what Wheezy hinted at last week. Quality is rough but the hook is unreal.", engagement: { upvotes: 2847, comments: 412 }, media: "image", sentiment: "hype" },
-    { platform: "Discord", page: "/playboicarti", author: "opium_insider", time: "38m ago", title: "#announcements", body: "Mod verified: the account that posted in #leaks last night was not affiliated with management. All links have been removed.", engagement: { reactions: 1893, replies: 67 }, sentiment: "neutral" },
+    { platform: "Reddit", page: "/r/playboicarti", author: "u/tearsofravage", time: "12m ago", title: "New snippet from the Antagonist sessions leaked on Discord", body: "Production credits line up with what Wheezy hinted at last week.", engagement: { upvotes: 2847, comments: 412 }, media: "image", sentiment: "hype" },
     { platform: "Instagram", page: "@playboicarti", author: "playboicarti", time: "2h ago", title: null, body: "Antagonist. 06.13.", engagement: { likes: 847293, comments: 23847 }, media: "image", sentiment: "hype" },
-    { platform: "Reddit", page: "/r/playboicarti", author: "u/narcissist_2020", time: "4h ago", title: "Ranking every Carti feature since Whole Lotta Red", body: "Been working on this list for a while. Guest verses, hook appearances, and the unreleased leaks.", engagement: { upvotes: 1204, comments: 287 }, sentiment: "neutral" },
     { platform: "X", page: "@playboicarti", author: "playboicarti", time: "6h ago", title: null, body: "soon.", engagement: { likes: 67482, reposts: 12847, replies: 8394 }, sentiment: "hype" },
-    { platform: "Reddit", page: "/r/playboicarti", author: "u/vamp_anthem", time: "8h ago", title: "Is anyone else tired of the constant 'where is the album' posts?", body: "The sub has become unusable. Every other thread is doom-posting about delays.", engagement: { upvotes: 3421, comments: 892 }, sentiment: "negative" },
   ],
   "ken-carson": [
-    { platform: "Instagram", page: "@kencarson", author: "kencarson", time: "23m ago", title: null, body: "A CHAIN FOR THE TEEN X. 💎", engagement: { likes: 234827, comments: 4829 }, media: "image", sentiment: "hype" },
-    { platform: "Reddit", page: "/r/kencarson", author: "u/projectx_fan", time: "1h ago", title: "A Great Chaos deluxe confirmed by insider", body: "Saw it in a Discord leak channel — management is apparently shopping 4 extra tracks.", engagement: { upvotes: 1847, comments: 243 }, sentiment: "hype" },
-    { platform: "Discord", page: "/kencarson", author: "teenx_mod", time: "2h ago", title: "#general", body: "Tour presale codes dropping tomorrow at 10am EST. Check the pinned message.", engagement: { reactions: 847, replies: 124 }, sentiment: "neutral" },
-    { platform: "TikTok", page: "@kencarson", author: "kencarson", time: "3h ago", title: null, body: "studio vlog 03 — Atlanta", engagement: { likes: 184273, comments: 8273, shares: 12847 }, media: "video", sentiment: "hype" },
-    { platform: "Reddit", page: "/r/kencarson", author: "u/chaos_chaos", time: "5h ago", title: "Unpopular opinion: his vocals have actually improved since AGC", body: "Been relistening to the rollout singles and the mixing is noticeably tighter.", engagement: { upvotes: 892, comments: 347 }, sentiment: "neutral" },
+    { platform: "Instagram", page: "@kencarson", author: "kencarson", time: "23m ago", title: null, body: "A CHAIN FOR THE TEEN X.", engagement: { likes: 234827, comments: 4829 }, media: "image", sentiment: "hype" },
   ],
   "destroy-lonely": [
     { platform: "X", page: "@destroylonely", author: "destroylonely", time: "15m ago", title: null, body: "LOVE LASTS 4EVER DELUXE. 14 NEW TRACKS. MAY 22.", engagement: { likes: 28490, reposts: 8471, replies: 2847 }, sentiment: "hype" },
-    { platform: "Reddit", page: "/r/destroylonely", author: "u/NS_nation", time: "1h ago", title: "The deluxe announcement just dropped — thread everything here", body: "Mod pinning this. Consolidating all deluxe speculation, leaked tracklists, and reaction videos.", engagement: { upvotes: 4823, comments: 1247 }, sentiment: "hype" },
-    { platform: "Instagram", page: "@destroylonely", author: "destroylonely", time: "2h ago", title: null, body: "🏝️🏝️🏝️", engagement: { likes: 48273, comments: 1824 }, media: "image", sentiment: "neutral" },
-    { platform: "Discord", page: "/destroylonely", author: "lonely_admin", time: "3h ago", title: "#leaks-discussion", body: "Reminder: linking to leak archives is a permanent ban. The deluxe drops in 5 weeks.", engagement: { reactions: 482, replies: 89 }, sentiment: "neutral" },
   ],
   "rema": [
-    { platform: "TikTok", page: "@heisrema", author: "heisrema", time: "18m ago", title: null, body: "HEIS. world tour. Lagos kickoff 🇳🇬", engagement: { likes: 1284273, comments: 48273, shares: 184273 }, media: "video", sentiment: "hype" },
-    { platform: "Instagram", page: "@heisrema", author: "heisrema", time: "2h ago", title: null, body: "Mavin x AfroRave — new era", engagement: { likes: 284721, comments: 8472 }, media: "image", sentiment: "hype" },
-    { platform: "X", page: "@heisrema", author: "heisrema", time: "5h ago", title: null, body: "one of the best years of my life. thank you.", engagement: { likes: 47281, reposts: 3847, replies: 1482 }, sentiment: "positive" },
+    { platform: "TikTok", page: "@heisrema", author: "heisrema", time: "18m ago", title: null, body: "HEIS. world tour. Lagos kickoff", engagement: { likes: 1284273, comments: 48273, shares: 184273 }, media: "video", sentiment: "hype" },
   ],
   "hxg": [
-    { platform: "Reddit", page: "/r/homixidegang", author: "u/hxg_forever", time: "2h ago", title: "Snot x Beno collab album rumors", body: "Someone in the Carti Discord dropped a snippet with both of them on a track.", engagement: { upvotes: 847, comments: 184 }, sentiment: "hype" },
-    { platform: "Discord", page: "/hxg", author: "hxg_mod", time: "4h ago", title: "#snot-vs-beno", body: "Keep the discourse in this channel. No individual stan wars in #general.", engagement: { reactions: 124, replies: 48 }, sentiment: "neutral" },
-    { platform: "Instagram", page: "@homixide_gang", author: "homixide_gang", time: "6h ago", title: null, body: "WE UP NEXT", engagement: { likes: 28471, comments: 1847 }, media: "image", sentiment: "hype" },
+    { platform: "Reddit", page: "/r/homixidegang", author: "u/hxg_forever", time: "2h ago", title: "Snot x Beno collab album rumors", body: "Someone in the Carti Discord dropped a snippet.", engagement: { upvotes: 847, comments: 184 }, sentiment: "hype" },
   ],
   "pierre-bourne": [
     { platform: "X", page: "@pierrebourne", author: "pierrebourne", time: "1h ago", title: null, body: "SossHouse Vol 3 mastering wrapped. release window q3.", engagement: { likes: 8473, reposts: 1247, replies: 384 }, sentiment: "hype" },
-    { platform: "Reddit", page: "/r/pierrebourne", author: "u/yo_pierre_up", time: "3h ago", title: "Production breakdown: how Pierre builds his signature bell melodies", body: "Did a deep-dive breakdown in FL. Reverse-engineered the chord progressions.", engagement: { upvotes: 1284, comments: 247 }, sentiment: "positive" },
   ],
   "opium": [
     { platform: "Instagram", page: "@opium", author: "opium", time: "45m ago", title: null, body: "OPIUM TOUR 2026. full lineup next week.", engagement: { likes: 184273, comments: 8472 }, media: "image", sentiment: "hype" },
-    { platform: "Reddit", page: "/r/opium", author: "u/label_watcher", time: "2h ago", title: "Who's joining Carti, Ken, and Destroy on the 2026 tour?", body: "The teaser shows 5 silhouettes not 3. Leaning toward Homixide + one new signee.", engagement: { upvotes: 2847, comments: 482 }, sentiment: "hype" },
-    { platform: "Discord", page: "/opium00", author: "opium_verified", time: "4h ago", title: "#tour-2026", body: "Channel opened for tour discussion. All presale info will be posted here.", engagement: { reactions: 847, replies: 128 }, sentiment: "neutral" },
   ],
   "untiljapan": [
-    { platform: "Discord", page: "/untiljapan", author: "untiljapan_mod", time: "1h ago", title: "#new-release", body: "EP drops Friday. 6 tracks, all produced with 808 Mafia. Thanks for sticking with us at 2K members.", engagement: { reactions: 247, replies: 84 }, sentiment: "positive" },
-    { platform: "Reddit", page: "/r/untiljapan", author: "u/underground_digger", time: "5h ago", title: "This artist is about to pop — called it 6 months ago", body: "Been saying it since the Spotify algorithm started pushing them.", engagement: { upvotes: 482, comments: 89 }, sentiment: "hype" },
+    { platform: "Discord", page: "/untiljapan", author: "untiljapan_mod", time: "1h ago", title: "#new-release", body: "EP drops Friday. 6 tracks, all produced with 808 Mafia.", engagement: { reactions: 247, replies: 84 }, sentiment: "positive" },
   ],
   "apollored1": [
     { platform: "Instagram", page: "@apollo", author: "apollored1", time: "3h ago", title: null, body: "BACK FROM HIATUS. new music soon.", engagement: { likes: 8471, comments: 847 }, media: "image", sentiment: "hype" },
-    { platform: "Discord", page: "/apollohub", author: "apollo_staff", time: "6h ago", title: "#general", body: "Welcome to the new members. Pinned message has the FAQ and release schedule.", engagement: { reactions: 84, replies: 24 }, sentiment: "neutral" },
   ],
   "jim-legxacy": [
     { platform: "TikTok", page: "@pfeproject", author: "pfeproject", time: "22m ago", title: null, body: "unreleased snippet → full track on friday", engagement: { likes: 18472, comments: 847, shares: 2847 }, media: "video", sentiment: "hype" },
-    { platform: "Discord", page: "/PfeRaWF4bG", author: "pfe_mod", time: "2h ago", title: "#snippets", body: "New one tomorrow at 8pm EST. First listen will be live in the voice channel.", engagement: { reactions: 847, replies: 184 }, sentiment: "hype" },
-    { platform: "X", page: "@pfeproject", author: "pfeproject", time: "4h ago", title: null, body: "the wait is almost over", engagement: { likes: 1284, reposts: 247, replies: 84 }, sentiment: "hype" },
   ],
 };
 
@@ -355,55 +323,82 @@ function monthlyVelocity(history, plats) {
   });
 }
 
-function DeltaPill({ value, small = false }) {
-  if (value === 0 || value === null || value === undefined) return <span className={`text-muted ${small ? "text-[10px]" : "text-xs"} font-medium`}>0</span>;
+// ---- Components ----
+
+function DeltaPill({ value, small = false }: { value: number | null | undefined; small?: boolean }) {
+  if (value === 0 || value === null || value === undefined)
+    return <span className={`text-muted ${small ? "text-[10px]" : "text-xs"} font-medium`}>—</span>;
   const up = value > 0;
-  return <span className={`inline-flex items-center font-bold tabular-nums rounded-full ${small ? "text-[10px] px-1.5 py-px" : "text-xs px-2 py-0.5"} ${up ? "bg-emerald-50 text-pos" : "bg-rose-50 text-neg"}`}>{up ? "+" : ""}{fmt(value)}</span>;
+  return (
+    <span className={`inline-flex items-center font-bold tabular-nums rounded-full ${
+      small ? "text-[10px] px-1.5 py-px" : "text-xs px-2 py-0.5"
+    } ${up ? "bg-emerald-50 text-pos" : "bg-rose-50 text-neg"}`}>
+      {up ? "+" : ""}{fmt(value)}
+    </span>
+  );
 }
 
-function KpiTile({ platform, value, delta }) {
+function KpiTile({ platform, value, delta }: { platform: string; value: number; delta: number }) {
   const cfg = PLATFORMS[platform];
   return (
-    <div className="relative rounded-2xl p-4 bg-white border border-line">
-      <div className={`${EYEBROW} flex items-center gap-1.5 mb-2`}>
+    <div className="rounded-xl p-3 bg-white border border-line shadow-sm">
+      <div className="flex items-center gap-1.5 mb-2">
         {cfg && <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: cfg.color }} />}
-        {platform}
+        <span className="text-[10px] font-semibold uppercase tracking-wider text-muted truncate">{platform}</span>
       </div>
-      <div className="font-bold tabular-nums leading-none text-2xl text-primary">{fmtFull(value)}</div>
-      <div className="mt-2"><DeltaPill value={delta} /></div>
+      <div className="font-bold tabular-nums text-lg text-primary leading-none">{fmtFull(value)}</div>
+      <div className="mt-1.5"><DeltaPill value={delta} /></div>
     </div>
   );
 }
 
-// Icon path is derived from slug: {BASE_URL}icons/{slug}.png
 const iconFor = (slug: string) => `${import.meta.env.BASE_URL}icons/${slug}.png`;
 
-function ArtistPill({ artist, active, onClick }) {
-  const initial = artist.name.charAt(0);
+function SidebarArtistRow({ artist, active, onClick }: { artist: any; active: boolean; onClick: () => void }) {
   const icon = iconFor(artist.slug);
+  const initial = artist.name.charAt(0);
   return (
-    <button onClick={onClick} className={`group relative shrink-0 text-left px-3.5 py-2.5 rounded-2xl border transition-all ${active ? "bg-brand text-white border-transparent" : "bg-white border-line"}`}>
-      <div className="flex items-center gap-2.5">
-        <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm overflow-hidden shrink-0 ${active ? "bg-white/20 text-white" : "bg-slate-100 text-secondary"}`}>
-          {icon ? <img src={icon} alt={artist.name} className="w-full h-full object-cover" /> : initial}
+    <button
+      onClick={onClick}
+      className={`w-full flex items-center gap-2.5 py-2 rounded-xl transition-all text-left border-l-2 pl-2.5 pr-3 ${
+        active ? "border-l-brand bg-[#eef0ff]" : "border-l-transparent hover:bg-slate-50"
+      }`}
+    >
+      <div
+        className="w-8 h-8 rounded-lg overflow-hidden shrink-0 flex items-center justify-center font-bold text-xs"
+        style={{ background: active ? "rgba(0,13,255,0.12)" : "#f1f5f9" }}
+      >
+        <img
+          src={icon}
+          alt={artist.name}
+          className="w-full h-full object-cover"
+          onError={(e) => {
+            const el = e.target as HTMLImageElement;
+            el.style.display = "none";
+            if (el.parentElement) el.parentElement.textContent = initial;
+          }}
+        />
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className={`text-sm font-semibold truncate leading-tight ${active ? "text-brand" : "text-primary"}`}>
+          {artist.name}
         </div>
-        <div>
-          <div className={`text-sm font-semibold leading-tight ${active ? "text-white" : "text-primary"}`}>{artist.name}</div>
-          <div className="flex items-center gap-1.5 mt-0.5">
-            <span className={`text-xs font-semibold tabular-nums ${active ? "text-white" : "text-secondary"}`}>{fmt(artist.totals.value)}</span>
-            <span className={`text-[10px] font-bold px-1.5 py-px rounded-full tabular-nums ${artist.totals.delta >= 0 ? "bg-emerald-50 text-pos" : "bg-rose-50 text-neg"}`}>{artist.totals.delta >= 0 ? "+" : ""}{fmt(artist.totals.delta)}</span>
-          </div>
+        <div className="flex items-center gap-1.5 mt-0.5">
+          <span className="text-[11px] tabular-nums font-medium text-muted">{fmt(artist.totals.value)}</span>
+          <DeltaPill value={artist.totals.delta} small />
         </div>
       </div>
     </button>
   );
 }
 
-function ChartTooltip({ active, payload, label }) {
+function ChartTooltip({ active, payload, label }: any) {
   if (!active || !payload || !payload.length) return null;
   return (
     <div className="bg-white border border-line rounded-xl shadow-lg p-3 text-xs">
-      <div className={`${EYEBROW} mb-2`}>{label && typeof label === "string" && label.includes("-") ? monthLabel(label) : label}</div>
+      <div className={`${EYEBROW} mb-2`}>
+        {label && typeof label === "string" && label.includes("-") ? monthLabel(label) : label}
+      </div>
       <div className="space-y-1.5">
         {payload.slice().sort((a, b) => b.value - a.value).map((p) => (
           <div key={p.dataKey || p.name} className="flex items-center gap-2">
@@ -433,7 +428,7 @@ const SENTIMENT_STYLE = {
   negative: { bg: "bg-rose-100", text: "text-rose-700", label: "WATCH" },
 };
 
-function FeedCard({ post }) {
+function FeedCard({ post }: { post: any }) {
   const cfg = PLATFORMS[post.platform];
   const sent = SENTIMENT_STYLE[post.sentiment];
   return (
@@ -441,8 +436,8 @@ function FeedCard({ post }) {
       <div className="p-4">
         <div className="flex items-center justify-between gap-2 mb-3">
           <div className="flex items-center gap-2 min-w-0">
-            <div className="w-7 h-7 rounded-xl flex items-center justify-center shrink-0" style={{ background: cfg.soft }}>
-              <span className="w-2 h-2 rounded-full" style={{ background: cfg.color }} />
+            <div className="w-7 h-7 rounded-xl flex items-center justify-center shrink-0" style={{ background: cfg?.soft || "#f1f5f9" }}>
+              <span className="w-2 h-2 rounded-full" style={{ background: cfg?.color || "#94a3b8" }} />
             </div>
             <div className="min-w-0">
               <div className="text-xs font-semibold text-primary truncate">{post.page}</div>
@@ -471,12 +466,17 @@ function FeedCard({ post }) {
               );
             })}
           </div>
-          {post.link ? <a href={post.link} target="_blank" rel="noopener noreferrer" className="opacity-0 group-hover:opacity-100 transition text-[10px] text-muted hover:text-primary flex items-center gap-1 font-medium">open <ExternalLink size={10} /></a> : <span className="opacity-0 group-hover:opacity-100 transition text-[10px] text-muted flex items-center gap-1 font-medium">open <ExternalLink size={10} /></span>}
+          {post.link
+            ? <a href={post.link} target="_blank" rel="noopener noreferrer" className="opacity-0 group-hover:opacity-100 transition text-[10px] text-muted hover:text-primary flex items-center gap-1 font-medium">open <ExternalLink size={10} /></a>
+            : <span className="opacity-0 group-hover:opacity-100 transition text-[10px] text-muted flex items-center gap-1 font-medium">open <ExternalLink size={10} /></span>
+          }
         </div>
       </div>
     </div>
   );
 }
+
+// ---- Main dashboard ----
 
 export default function FanDashboard() {
   const [selectedSlug, setSelectedSlug] = useState("opium");
@@ -486,48 +486,24 @@ export default function FanDashboard() {
   const [feedFilter, setFeedFilter] = useState("All");
   const [yearRange, setYearRange] = useState("all");
   const [pagesPlatform, setPagesPlatform] = useState("Discord");
-  const heroChartRef = React.useRef<HTMLDivElement>(null);
-  const [heroChartHeight, setHeroChartHeight] = useState<number | null>(null);
-  const [entryGap, setEntryGap] = useState(0);
-  const rosterRef = React.useRef<HTMLDivElement>(null);
-  const [rosterAtStart, setRosterAtStart] = useState(true);
-  const [rosterAtEnd, setRosterAtEnd] = useState(false);
-  const isScrollingToEnd = React.useRef(false);
-  const isScrollingToStart = React.useRef(false);
   const [pagesDropdownOpen, setPagesDropdownOpen] = useState(false);
   const pagesListRef = React.useRef<HTMLDivElement>(null);
-  const fpCardRef = React.useRef<HTMLDivElement>(null);
   const [pagesAtBottom, setPagesAtBottom] = useState(false);
   const [redditPosts, setRedditPosts] = useState<any[]>([]);
   const [redditLoading, setRedditLoading] = useState(false);
-
-  // ---- Sheets data loading ----
   const [sheetsData, setSheetsData] = useState<Record<string, any>>({});
   const [sheetsLoading, setSheetsLoading] = useState(true);
   const [syncedAt, setSyncedAt] = useState<Date | null>(null);
   const [, setNowTick] = useState(0);
 
-  // Tick once a minute so the "synced Xm ago" label stays current
   useEffect(() => {
     const id = setInterval(() => setNowTick((t) => t + 1), 60000);
     return () => clearInterval(id);
   }, []);
 
-  // Measure hero + growth chart combined height
-  useEffect(() => {
-    const el = heroChartRef.current;
-    if (!el) return;
-    const obs = new ResizeObserver(() => setHeroChartHeight(el.offsetHeight));
-    obs.observe(el);
-    setHeroChartHeight(el.offsetHeight);
-    return () => obs.disconnect();
-  }, []);
-
   useEffect(() => {
     let cancelled = false;
 
-    // Primary: shared snapshot (public/data.json) produced by the daily
-    // GitHub Action — same data and the same sync time for every visitor.
     async function loadSnapshot(): Promise<boolean> {
       try {
         const res = await fetch(`${import.meta.env.BASE_URL}data.json`, { cache: "no-store" });
@@ -544,8 +520,6 @@ export default function FanDashboard() {
       }
     }
 
-    // Fallback (only if the snapshot is missing): localStorage cache, then a
-    // live fetch via the Worker proxy.
     async function loadFallback() {
       const cached = getCached<Record<string, any>>("fanIntel_sheets", CACHE_MS.sheets);
       if (cached) {
@@ -556,7 +530,6 @@ export default function FanDashboard() {
         return;
       }
 
-      // Phase 1: fetch published HTML page to extract tab name → GID map
       let gidMap: Record<string, string> = {};
       try {
         gidMap = await fetchGidMap(SHEET_ID);
@@ -567,7 +540,6 @@ export default function FanDashboard() {
       }
       if (cancelled) return;
 
-      // Phase 2: fetch all artists in parallel, collect into one object
       const results: Record<string, any> = {};
       await Promise.all(
         STATIC_ARTISTS.map(async (a) => {
@@ -593,7 +565,6 @@ export default function FanDashboard() {
       );
 
       if (cancelled) return;
-
       if (Object.keys(results).length > 0) {
         setSheetsData(results);
         setSyncedAt(new Date());
@@ -614,7 +585,6 @@ export default function FanDashboard() {
     return () => { cancelled = true; };
   }, []);
 
-  // Merge static fallback with live sheets data
   const artists = useMemo(
     () => STATIC_ARTISTS.map((a) => ({ ...a, ...(sheetsData[a.slug] || {}) })),
     [sheetsData]
@@ -622,7 +592,7 @@ export default function FanDashboard() {
 
   const artist = artists.find((a) => a.slug === selectedSlug)!;
 
-  React.useEffect(() => {
+  useEffect(() => {
     setFeedFilter("All");
     setPagesPlatform("Discord");
     setPieHover(null);
@@ -643,10 +613,7 @@ export default function FanDashboard() {
         const mins = Math.floor((Date.now() - p.created_utc * 1000) / 60000);
         const time = mins < 60 ? `${mins}m ago` : mins < 1440 ? `${Math.floor(mins / 60)}h ago` : `${Math.floor(mins / 1440)}d ago`;
         return {
-          platform: "Reddit",
-          page: `/r/${p.subreddit}`,
-          author: `u/${p.author}`,
-          time,
+          platform: "Reddit", page: `/r/${p.subreddit}`, author: `u/${p.author}`, time,
           title: p.title,
           body: p.selftext ? (p.selftext.length > 200 ? p.selftext.slice(0, 200) + "…" : p.selftext) : null,
           engagement: { upvotes: p.score, comments: p.num_comments },
@@ -664,40 +631,25 @@ export default function FanDashboard() {
     };
 
     async function loadReddit() {
-      // Serve from cache instantly if fresh
       const cacheKey = `fanIntel_reddit_${selectedSlug}`;
       const cached = getCached<any[]>(cacheKey, CACHE_MS.reddit);
       if (cached) {
-        if (!cancelled) {
-          setRedditPosts(cached.data);
-          setRedditLoading(false);
-        }
+        if (!cancelled) { setRedditPosts(cached.data); setRedditLoading(false); }
         return;
       }
-
       const attempts = [
         `${WORKER_URL}/reddit?subreddit=${subreddit}`,
         redditUrl,
         `https://api.allorigins.win/raw?url=${encodeURIComponent(redditUrl)}`,
       ];
-
       for (const url of attempts) {
         try {
           const data = await tryFetch(url);
           if (cancelled) return;
           const posts = parseRedditData(data);
-          if (posts.length > 0) {
-            setRedditPosts(posts);
-            setRedditLoading(false);
-            setCached(cacheKey, posts);
-            return;
-          }
-        } catch {
-          // try next
-        }
+          if (posts.length > 0) { setRedditPosts(posts); setRedditLoading(false); setCached(cacheKey, posts); return; }
+        } catch { /* try next */ }
       }
-
-      // All attempts failed — fall back to mock Reddit posts
       if (!cancelled) {
         const mockReddit = (MOCK_FEED[selectedSlug] || []).filter((p: any) => p.platform === "Reddit");
         setRedditPosts(mockReddit);
@@ -709,36 +661,19 @@ export default function FanDashboard() {
     return () => { cancelled = true; };
   }, [selectedSlug]);
 
-  // Use sheets history if loaded, otherwise fall back to generated curve
   const fullHistory = useMemo(
-    () =>
-      sheetsData[selectedSlug]?.history?.length
-        ? sheetsData[selectedSlug].history
-        : buildHistory(artist),
+    () => sheetsData[selectedSlug]?.history?.length ? sheetsData[selectedSlug].history : buildHistory(artist),
     [sheetsData, selectedSlug, artist]
   );
 
   const history = useMemo(() => {
     if (yearRange === "all") return fullHistory;
-    // Use the latest date in the dataset so ranges are always relative to
-    // the most recent data point, not today (data may lag by weeks/months).
-    const latestDate = fullHistory.length > 0
-      ? new Date(fullHistory[fullHistory.length - 1].date + "-01")
-      : new Date();
+    const latestDate = fullHistory.length > 0 ? new Date(fullHistory[fullHistory.length - 1].date + "-01") : new Date();
     const latestYear = latestDate.getFullYear();
     if (yearRange === "ytd") return fullHistory.filter((r) => r.date >= `${latestYear}-01`);
-    if (yearRange === "12m") {
-      const cutoff = new Date(latestDate); cutoff.setMonth(cutoff.getMonth() - 12);
-      return fullHistory.filter((r) => new Date(r.date + "-01") >= cutoff);
-    }
-    if (yearRange === "6m") {
-      const cutoff = new Date(latestDate); cutoff.setMonth(cutoff.getMonth() - 6);
-      return fullHistory.filter((r) => new Date(r.date + "-01") >= cutoff);
-    }
-    if (yearRange === "3m") {
-      const cutoff = new Date(latestDate); cutoff.setMonth(cutoff.getMonth() - 3);
-      return fullHistory.filter((r) => new Date(r.date + "-01") >= cutoff);
-    }
+    if (yearRange === "12m") { const c = new Date(latestDate); c.setMonth(c.getMonth() - 12); return fullHistory.filter((r) => new Date(r.date + "-01") >= c); }
+    if (yearRange === "6m") { const c = new Date(latestDate); c.setMonth(c.getMonth() - 6); return fullHistory.filter((r) => new Date(r.date + "-01") >= c); }
+    if (yearRange === "3m") { const c = new Date(latestDate); c.setMonth(c.getMonth() - 3); return fullHistory.filter((r) => new Date(r.date + "-01") >= c); }
     return fullHistory.filter((r) => r.date.startsWith(yearRange));
   }, [fullHistory, yearRange]);
 
@@ -764,7 +699,6 @@ export default function FanDashboard() {
 
   const orderedPlats = PLAT_ORDER.filter((p) => artist.platforms[p] !== undefined);
 
-  // Y-axis tick scale — computed once, used for both ticks and domain
   const yScale = useMemo(() => {
     const active = orderedPlats.filter((p) => !hiddenPlats.has(p));
     const cur = Math.max(...active.map((p) => artist.platforms[p]?.value || 0), 1);
@@ -777,63 +711,26 @@ export default function FanDashboard() {
     return { ticks: [0, step, step * 2, step * 3, step * 4], max: step * 4 };
   }, [orderedPlats, hiddenPlats, artist, history]);
 
-  // Feed mock posts (non-Reddit) — shared by the filter tabs and the feed grid
-  const mockNonReddit = useMemo(
-    () => (MOCK_FEED[artist.slug] || []).filter((p) => p.platform !== "Reddit"),
-    [artist.slug]
-  );
-
-  // Fan Page Tracker — computed here so they're available to the gap layout effect
   const fpAvailablePlatforms = useMemo(() => {
     const set = new Set(artist.pages.map((p) => p.platform).filter(Boolean));
     return PLAT_ORDER.filter((p) => set.has(p));
   }, [artist.pages]);
+
   const fpEffectivePlatform = fpAvailablePlatforms.includes(pagesPlatform)
     ? pagesPlatform
     : fpAvailablePlatforms.includes("Discord")
     ? "Discord"
     : fpAvailablePlatforms[0] || "Discord";
+
   const filteredPages = useMemo(
     () => artist.pages.filter((p) => p.platform === fpEffectivePlatform).sort((a, b) => b.followers - a.followers),
     [artist.pages, fpEffectivePlatform]
   );
 
-  // Dynamic entry gap — only when card is expanded (9+ entries)
-  React.useLayoutEffect(() => {
-    const isExpanded = heroChartHeight !== null;
-    if (!isExpanded) { setEntryGap(0); return; }
-    const container = pagesListRef.current;
-    if (!container) return;
-    const compute = () => {
-      const firstEntry = container.firstElementChild?.firstElementChild as HTMLElement | null;
-      if (!firstEntry) { setEntryGap(0); return; }
-      const entryH = firstEntry.getBoundingClientRect().height;
-      if (entryH === 0) { setEntryGap(0); return; }
-      const style = window.getComputedStyle(container);
-      // List is py-0. Wrapper padding equals entryGap (top + bottom), so we don't subtract
-      // it from availH — instead we use (n+1) as the divisor, which allocates n-1 inter-entry
-      // slots plus 1 slot above the first entry and 1 below the last. Every slot is identical.
-      const padH = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
-      const chrome = Math.max(0, (fpCardRef.current?.clientHeight ?? 0) - container.clientHeight);
-      const availH = (heroChartHeight ?? 0) - chrome - padH;
-      if (availH <= 0) { setEntryGap(0); return; }
-      const nFit = Math.floor(availH / entryH);
-      const n = filteredPages.length >= 9 ? Math.min(filteredPages.length, nFit) : nFit;
-      if (n < 1) { setEntryGap(0); return; }
-      setEntryGap(Math.max(0, (availH - n * entryH) / (n - 1)));
-    };
-    compute();
-    const obs = new ResizeObserver(compute);
-    obs.observe(container);
-    return () => obs.disconnect();
-  }, [filteredPages.length, heroChartHeight, selectedSlug, pagesPlatform]);
-
   const togglePlat = (p) => {
     const next = new Set(hiddenPlats);
-    if (next.has(p)) {
-      next.delete(p);
-    } else {
-      // Keep at least one platform active — block hiding the last visible one
+    if (next.has(p)) { next.delete(p); }
+    else {
       const visibleCount = orderedPlats.filter((x) => !next.has(x)).length;
       if (visibleCount <= 1) return;
       next.add(p);
@@ -841,32 +738,30 @@ export default function FanDashboard() {
     setHiddenPlats(next);
   };
 
-  // Sync indicator label
   const syncLabel = sheetsLoading
     ? "syncing…"
     : syncedAt
     ? (() => {
         const mins = Math.floor((Date.now() - syncedAt.getTime()) / 60000);
         if (mins < 60) return `synced ${mins || "<1"}m ago`;
-        const hrs = Math.floor(mins / 60);
-        return `synced ${hrs}h ago`;
+        return `synced ${Math.floor(mins / 60)}h ago`;
       })()
     : "live";
 
+  // ---- Render ----
   return (
-    <div className="min-h-screen w-full text-slate-800" style={{ background: "#f1f5f9", fontFamily: "'Plus Jakarta Sans', 'Inter', system-ui, sans-serif" }}>
+    <div
+      className="flex h-screen overflow-hidden text-primary"
+      style={{ background: "#f1f5f9", fontFamily: "'Plus Jakarta Sans', 'Inter', system-ui, sans-serif" }}
+    >
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
-        .marquee-fade { mask-image: linear-gradient(90deg, transparent 0, black 3%, black 97%, transparent 100%); }
         .recharts-cartesian-axis-tick text { fill: #94a3b8; font-size: 10px; font-weight: 500; }
         .recharts-cartesian-grid line { stroke: #e2e8f0; }
-        .recharts-polar-grid-angle line { stroke: #e2e8f0; }
-        .recharts-polar-angle-axis-tick text { fill: #64748b; font-size: 10px; font-weight: 600; }
       `}</style>
 
-      {/* Loading overlay — fades away once all sheets are fetched */}
       {sheetsLoading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm pointer-events-none bg-white/60">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/70 backdrop-blur-sm pointer-events-none">
           <div className="flex flex-col items-center gap-3">
             <div className="w-8 h-8 rounded-full border-2 border-brand border-t-transparent animate-spin" />
             <span className="text-xs font-semibold text-secondary">Loading data…</span>
@@ -874,116 +769,129 @@ export default function FanDashboard() {
         </div>
       )}
 
-      <div className="max-w-[1400px] mx-auto px-6 py-6">
-        {/* Header */}
-        <header className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-5">
-            <div className="flex items-center gap-3">
-              <div className="relative w-11 h-11 rounded-2xl bg-brand flex items-center justify-center shadow-lg shadow-blue-300/50">
-                <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none">
-                  <path d="M4 20 L4 4 L12 4 L12 11 L20 11 L20 20 Z" stroke="white" strokeWidth="1.8" strokeLinejoin="round" />
-                  <circle cx="12" cy="11" r="1.5" fill="white" />
-                </svg>
-                <div className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full ring-2 ring-white animate-pulse" />
-              </div>
-              <div className="leading-none">
-                <div className="text-xl font-bold text-primary tracking-tight">
-                  FAN<span className="text-brand">INTEL</span>
-                </div>
-                <div className="text-[10px] uppercase tracking-[0.2em] text-muted font-semibold mt-1">Community Intelligence</div>
-              </div>
+      {/* ---- Sidebar ---- */}
+      <aside className="w-56 flex-shrink-0 flex flex-col border-r border-line overflow-hidden bg-white">
+        {/* Logo */}
+        <div className="px-4 py-4 border-b border-line flex items-center gap-3 shrink-0">
+          <div className="relative w-8 h-8 rounded-xl bg-brand flex items-center justify-center shadow-lg shadow-blue-300/40">
+            <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none">
+              <path d="M4 20 L4 4 L12 4 L12 11 L20 11 L20 20 Z" stroke="white" strokeWidth="1.8" strokeLinejoin="round" />
+              <circle cx="12" cy="11" r="1.5" fill="white" />
+            </svg>
+            <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-400 rounded-full ring-2 ring-white animate-pulse" />
+          </div>
+          <div className="leading-none">
+            <div className="text-sm font-bold text-primary tracking-tight">
+              FAN<span className="text-brand">INTEL</span>
             </div>
-            <div className="h-8 w-px bg-slate-200" />
-            <div className="flex items-center gap-2 bg-white border border-line px-3 py-1.5 rounded-full">
-              <div className={`w-2 h-2 rounded-full ${sheetsLoading ? "bg-amber-400" : "bg-emerald-500 animate-pulse"}`} />
-              <span className="text-[11px] font-semibold text-secondary">Live · {syncLabel}</span>
+          </div>
+        </div>
+
+        {/* Roster header */}
+        <div className="px-4 pt-4 pb-2 shrink-0 flex items-center justify-between">
+          <span className={EYEBROW}>Roster</span>
+          <span className="text-[10px] text-muted font-medium bg-slate-100 px-1.5 py-px rounded-md">{artists.length}</span>
+        </div>
+
+        {/* Artist list */}
+        <div className="flex-1 overflow-y-auto px-2 pb-2 space-y-px" style={{ scrollbarWidth: "thin" }}>
+          {artists.map((a) => (
+            <SidebarArtistRow key={a.slug} artist={a} active={a.slug === selectedSlug} onClick={() => setSelectedSlug(a.slug)} />
+          ))}
+        </div>
+
+        {/* Sync status */}
+        <div className="px-4 py-3 border-t border-divider shrink-0 flex items-center gap-2">
+          <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${sheetsLoading ? "bg-amber-400" : "bg-emerald-500 animate-pulse"}`} />
+          <span className="text-[10px] font-semibold text-muted truncate">{syncLabel}</span>
+        </div>
+      </aside>
+
+      {/* ---- Main ---- */}
+      <main className="flex-1 min-w-0 flex flex-col overflow-hidden">
+
+        {/* Header bar */}
+        <header className="shrink-0 px-6 py-4 border-b border-line bg-white flex items-center justify-between gap-6">
+          <div className="flex items-center gap-4 min-w-0">
+            <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0 flex items-center justify-center font-bold text-lg bg-slate-100">
+              <img
+                src={iconFor(artist.slug)}
+                alt={artist.name}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  const el = e.target as HTMLImageElement;
+                  el.style.display = "none";
+                  if (el.parentElement) el.parentElement.textContent = artist.name.charAt(0);
+                }}
+              />
+            </div>
+            <div className="min-w-0">
+              <h1 className="text-lg font-bold text-primary leading-none truncate">{artist.name}</h1>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-6 shrink-0">
+            <div className="text-right">
+              <div className={`${EYEBROW} mb-1`}>Cumulative Reach</div>
+              <div className="text-2xl font-bold tabular-nums text-primary leading-none">{fmtFull(artist.totals.value)}</div>
+            </div>
+            <div className="flex flex-col items-end gap-1">
+              <DeltaPill value={artist.totals.delta} />
+              <span className="text-[10px] text-muted font-medium">last 28d</span>
             </div>
           </div>
         </header>
 
-        {/* Roster */}
-        <section className="mb-8">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-baseline gap-3">
-              <h2 className="text-xs uppercase tracking-[0.15em] text-muted font-semibold">Roster</h2>
-              <span className="text-xs text-muted font-medium">{artists.length} artists tracked</span>
-            </div>
-          </div>
-          <div className="relative">
-            <div className={`absolute left-0 -top-2 -bottom-2 w-20 pointer-events-none z-[5] transition-opacity duration-150 ${rosterAtStart ? "opacity-0" : "opacity-100"}`} style={{ background: "linear-gradient(to right, #f1f5f9, transparent)" }} />
-            <button
-              onClick={() => { setRosterAtStart(true); isScrollingToStart.current = true; rosterRef.current?.scrollTo({ left: 0, behavior: "smooth" }); }}
-              className={`absolute left-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white border border-line rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition-opacity duration-150 ${rosterAtStart ? "opacity-0 pointer-events-none" : "opacity-100"}`}
-            >
-              <ChevronDown size={13} className="rotate-90 text-muted" />
-            </button>
-            <div
-              ref={rosterRef}
-              className="flex gap-2 overflow-x-auto scroll-smooth py-2 -my-2"
-              style={{ scrollbarWidth: "none" }}
-              onScroll={(e) => {
-                const el = e.currentTarget;
-                const atStart = el.scrollLeft <= 0;
-                const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 1;
-                if (isScrollingToEnd.current) {
-                  if (atEnd) isScrollingToEnd.current = false;
-                  setRosterAtStart(atStart);
-                } else if (isScrollingToStart.current) {
-                  if (atStart) isScrollingToStart.current = false;
-                  setRosterAtEnd(atEnd);
-                } else {
-                  setRosterAtStart(atStart);
-                  setRosterAtEnd(atEnd);
-                }
-              }}
-            >
-              {artists.map((a) => <ArtistPill key={a.slug} artist={a} active={a.slug === selectedSlug} onClick={() => setSelectedSlug(a.slug)} />)}
-            </div>
-            <div className={`absolute right-0 -top-2 -bottom-2 w-20 pointer-events-none z-[5] transition-opacity duration-150 ${rosterAtEnd ? "opacity-0" : "opacity-100"}`} style={{ background: "linear-gradient(to left, #f1f5f9, transparent)" }} />
-            <button
-              onClick={() => { const el = rosterRef.current; if (el) { setRosterAtEnd(true); isScrollingToEnd.current = true; el.scrollTo({ left: el.scrollWidth - el.clientWidth, behavior: "smooth" }); } }}
-              className={`absolute right-2 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white border border-line rounded-full shadow-sm flex items-center justify-center hover:shadow-md transition-opacity duration-150 ${rosterAtEnd ? "opacity-0 pointer-events-none" : "opacity-100"}`}
-            >
-              <ChevronDown size={13} className="-rotate-90 text-muted" />
-            </button>
-          </div>
-        </section>
+        {/* Content */}
+        <div className="flex-1 min-h-0 p-4 flex flex-col gap-3 overflow-hidden">
 
-        {/* Main */}
-        <div className="grid grid-cols-12 gap-4">
-          <section className="col-span-12 lg:col-span-8 space-y-4">
-            {/* Hero + Growth Chart — measured for Fan Page Tracker height matching */}
-            <div ref={heroChartRef} className="space-y-4">
-            {/* Hero */}
-            <div className="relative overflow-hidden rounded-3xl bg-brand p-6 text-white">
-              <div className="relative flex items-center justify-between gap-6">
-                <div>
-                  <div className="text-[10px] uppercase tracking-[0.2em] text-white/70 font-semibold mb-2">Now viewing</div>
-                  <h3 className="text-5xl font-bold tracking-tight leading-none">{artist.name}</h3>
-                </div>
-                <div className="text-right">
-                  <div className="text-[10px] uppercase tracking-[0.2em] text-white/70 font-semibold mb-2">Cumulative reach</div>
-                  <div className="font-bold text-4xl tabular-nums leading-none">{fmtFull(artist.totals.value)}</div>
-                  <div className="mt-2 flex items-center justify-end gap-2">
-                    <span className={`inline-flex items-center gap-0.5 text-xs font-bold px-2 py-0.5 rounded-full ${artist.totals.delta >= 0 ? "bg-emerald-100 text-pos" : "bg-rose-100 text-neg"}`}>
-                      {artist.totals.delta >= 0 ? "+" : ""}{fmt(artist.totals.delta)}
-                    </span>
-                    <span className="text-[10px] text-white/70 font-medium">last 28d</span>
-                  </div>
-                </div>
-              </div>
+          {/* KPI strip */}
+          {orderedPlats.length > 0 && (
+            <div
+              className="shrink-0 grid gap-3"
+              style={{ gridTemplateColumns: `repeat(${orderedPlats.length}, 1fr)` }}
+            >
+              {orderedPlats.map((p) => (
+                <KpiTile key={p} platform={p} value={artist.platforms[p].value} delta={artist.platforms[p].delta} />
+              ))}
             </div>
+          )}
+
+          {/* Middle row: growth chart + fan page tracker */}
+          <div className="flex-1 min-h-0 grid grid-cols-12 gap-3">
 
             {/* Growth chart */}
-            <div className={`${CARD} p-6`}>
-              <div className="flex flex-col gap-4 mb-5">
-                <div className="flex items-start justify-between gap-4 flex-wrap">
-                  <div>
-                    <div className={EYEBROW}>Fan Network Growth</div>
-                    <div className="text-base font-semibold text-primary mt-0.5">Followers across platforms</div>
+            <div className={`col-span-8 ${CARD} flex flex-col overflow-hidden`}>
+              <div className="px-5 py-3 border-b border-line flex items-center justify-between gap-4 shrink-0 flex-wrap">
+                <div>
+                  <div className={EYEBROW}>Fan Network Growth</div>
+                  <div className="text-sm font-semibold text-primary mt-0.5">Followers across platforms</div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  {/* Platform toggles */}
+                  <div className="flex items-center gap-1 flex-wrap">
+                    {orderedPlats.map((p) => {
+                      const off = hiddenPlats.has(p);
+                      return (
+                        <button
+                          key={p}
+                          onClick={() => togglePlat(p)}
+                          className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold transition border ${
+                            off
+                              ? "border-line text-muted bg-slate-50"
+                              : "border-line text-secondary bg-white hover:border-slate-300"
+                          }`}
+                        >
+                          <span className="w-1.5 h-1.5 rounded-full" style={{ background: off ? "#cbd5e1" : PLATFORMS[p].color }} />
+                          {p}
+                        </button>
+                      );
+                    })}
                   </div>
 
-                  <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
+                  {/* Range selector */}
+                  <div className="flex items-center gap-0.5 bg-slate-100 p-1 rounded-xl shrink-0">
                     {[
                       { key: "3m", label: "3M" },
                       { key: "6m", label: "6M" },
@@ -994,8 +902,10 @@ export default function FanDashboard() {
                       <button
                         key={opt.key}
                         onClick={() => setYearRange(opt.key)}
-                        className={`text-xs font-semibold px-3 py-1.5 rounded-xl transition ${
-                          yearRange === opt.key ? "bg-white text-primary shadow-sm" : "text-secondary hover:text-primary"
+                        className={`text-[11px] font-semibold px-2.5 py-1 rounded-lg transition ${
+                          yearRange === opt.key
+                            ? "bg-white text-primary shadow-sm"
+                            : "text-secondary hover:text-primary"
                         }`}
                       >
                         {opt.label}
@@ -1003,349 +913,352 @@ export default function FanDashboard() {
                     ))}
                   </div>
                 </div>
-
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  {orderedPlats.map((p) => {
-                    const off = hiddenPlats.has(p);
-                    return (
-                      <button key={p} onClick={() => togglePlat(p)} className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[10px] font-semibold transition ${off ? "border-line text-muted bg-slate-50" : "border-line text-secondary bg-white hover:border-slate-300"}`}>
-                        <span className="w-1.5 h-1.5 rounded-full" style={{ background: off ? "#cbd5e1" : PLATFORMS[p].color }} />
-                        {p}
-                      </button>
-                    );
-                  })}
-                </div>
               </div>
 
+              {/* Range stats strip */}
               {rangeStats && (
-                <div className="flex mb-4 p-4 bg-blue-50 rounded-2xl border border-blue-100 divide-x divide-blue-200">
-                  <div className="flex-1 pr-4">
-                    <div className={`${EYEBROW} mb-1`}>Range start</div>
+                <div className="mx-5 mb-3 flex shrink-0 rounded-2xl bg-blue-50 border border-blue-100 divide-x divide-blue-200">
+                  <div className="flex-1 px-4 py-3">
+                    <div className={`${EYEBROW} mb-1`}>Range Start</div>
                     <div className="text-base font-bold tabular-nums text-primary">{fmt(rangeStats.startTotal)}</div>
                   </div>
-                  <div className="flex-1 px-4">
-                    <div className={`${EYEBROW} mb-1`}>Range end</div>
+                  <div className="flex-1 px-4 py-3">
+                    <div className={`${EYEBROW} mb-1`}>Range End</div>
                     <div className="text-base font-bold tabular-nums text-primary">{fmt(rangeStats.endTotal)}</div>
                   </div>
-                  <div className="flex-1 px-4">
-                    <div className={`${EYEBROW} mb-1`}>Net growth</div>
+                  <div className="flex-1 px-4 py-3">
+                    <div className={`${EYEBROW} mb-1`}>Net Growth</div>
                     <div className={`text-base font-bold tabular-nums flex items-center gap-1 ${rangeStats.net >= 0 ? "text-pos" : "text-neg"}`}>
                       {rangeStats.net >= 0 ? "+" : ""}{fmt(rangeStats.net)}
                       <span className="text-[10px] font-semibold">({rangeStats.pct >= 0 ? "+" : ""}{rangeStats.pct.toFixed(1).replace(/\.0$/, "")}%)</span>
                     </div>
                   </div>
-                  <div className="flex-1 pl-4">
-                    <div className={`${EYEBROW} mb-1`}>Best month</div>
-                    <div className="text-base font-bold text-primary">
+                  <div className="flex-1 px-4 py-3">
+                    <div className={`${EYEBROW} mb-1`}>Best Month</div>
+                    <div className="text-base font-bold text-primary flex items-center gap-1.5">
                       {rangeStats.bestMonth ? monthLabel(rangeStats.bestMonth) : "—"}
-                      {rangeStats.bestGain > 0 && <span className="text-xs text-pos ml-1.5 font-semibold">+{fmt(rangeStats.bestGain)}</span>}
+                      {rangeStats.bestGain > 0 && <span className="text-xs text-pos font-semibold">+{fmt(rangeStats.bestGain)}</span>}
                     </div>
                   </div>
                 </div>
               )}
 
-              <div className="h-[320px] -mx-2">
+              {/* Chart area */}
+              <div className="flex-1 min-h-0 p-4">
                 {history.length === 0 ? (
                   <div className="h-full flex items-center justify-center text-muted text-sm">No data in the selected range</div>
                 ) : (
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={history} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
-                      <CartesianGrid strokeDasharray="3 4" vertical={false} />
-                      <XAxis dataKey="date" tickFormatter={monthLabel} interval={Math.max(0, Math.floor(history.length / 8))} axisLine={{ stroke: "#e2e8f0" }} tickLine={false} />
-                      <YAxis tickFormatter={fmt} axisLine={false} tickLine={false} width={48} ticks={yScale.ticks} domain={[0, yScale.max]} />
-                      <Tooltip content={<ChartTooltip />} cursor={{ stroke: "#cbd5e1", strokeDasharray: "3 3" }} wrapperStyle={{ transition: "none" }} />
-                      {(() => {
-                        return orderedPlats.map((p) => {
-                          if (hiddenPlats.has(p)) return null;
-                          return <Line key={p} type="monotone" dataKey={p} stroke={PLATFORMS[p].color} strokeWidth={2} dot={false} activeDot={{ r: 4, strokeWidth: 2, stroke: "white" }} isAnimationActive={false} />;
-                        });
-                      })()}
+                      <CartesianGrid strokeDasharray="3 4" vertical={false} stroke="#e2e8f0" />
+                      <XAxis
+                        dataKey="date"
+                        tickFormatter={monthLabel}
+                        interval={Math.max(0, Math.floor(history.length / 8))}
+                        axisLine={{ stroke: "#e2e8f0" }}
+                        tickLine={false}
+                        tick={{ fill: "#94a3b8", fontSize: 10, fontWeight: 500 }}
+                      />
+                      <YAxis
+                        tickFormatter={fmt}
+                        axisLine={false}
+                        tickLine={false}
+                        width={48}
+                        ticks={yScale.ticks}
+                        domain={[0, yScale.max]}
+                        tick={{ fill: "#94a3b8", fontSize: 10, fontWeight: 500 }}
+                      />
+                      <Tooltip
+                        content={<ChartTooltip />}
+                        cursor={{ stroke: "#cbd5e1", strokeDasharray: "3 3" }}
+                        wrapperStyle={{ transition: "none" }}
+                      />
+                      {orderedPlats.map((p) => {
+                        if (hiddenPlats.has(p)) return null;
+                        return (
+                          <Line
+                            key={p}
+                            type="monotone"
+                            dataKey={p}
+                            stroke={PLATFORMS[p].color}
+                            strokeWidth={2}
+                            dot={false}
+                            activeDot={{ r: 4, strokeWidth: 2, stroke: "white" }}
+                            isAnimationActive={false}
+                          />
+                        );
+                      })}
                     </LineChart>
                   </ResponsiveContainer>
                 )}
               </div>
             </div>
-            </div>{/* end heroChartRef wrapper */}
 
-            {/* Current reach */}
-            <div className={`${CARD} p-6`}>
-              <div className="mb-5">
-                <div className={EYEBROW}>Current Reach</div>
-                <div className="text-base font-semibold text-primary mt-0.5">Per-platform follower counts</div>
-                <div className="text-xs text-muted">Change vs previous month</div>
-              </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {orderedPlats.map((p) => <KpiTile key={p} platform={p} value={artist.platforms[p].value} delta={artist.platforms[p].delta} />)}
-              </div>
-            </div>
-          </section>
-
-          <aside className="col-span-12 lg:col-span-4 space-y-4">
-            {(() => {
-              const availablePlatforms = fpAvailablePlatforms;
-              const effectivePlatform = fpEffectivePlatform;
-              const shouldExpand = filteredPages.length >= 9 && heroChartHeight !== null;
-              return (
-                <div ref={fpCardRef} className={`${CARD} flex flex-col`} style={shouldExpand ? { maxHeight: heroChartHeight } : undefined}>
-                  <div className="px-5 py-4 border-b border-divider flex items-center justify-between">
-                    <div>
-                      <div className={EYEBROW}>Fan Page Tracker</div>
-                      <div className="text-sm font-semibold text-primary mt-0.5">Admin-run pages</div>
-                    </div>
-                    <div className="relative">
-                      {pagesDropdownOpen && (
-                        <div className="fixed inset-0 z-10" onClick={() => setPagesDropdownOpen(false)} />
-                      )}
-                      <button
-                        onClick={() => setPagesDropdownOpen((o) => !o)}
-                        className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-line text-[10px] font-semibold text-secondary bg-white hover:border-slate-300 transition"
-                      >
-                        <span className="w-1.5 h-1.5 rounded-full" style={{ background: PLATFORMS[effectivePlatform]?.color ?? "#94a3b8" }} />
-                        {effectivePlatform}
-                        <ChevronDown size={10} className="text-muted" />
-                      </button>
-                      {pagesDropdownOpen && (
-                        <div className="absolute right-0 top-full mt-1.5 z-20 bg-white border border-line rounded-2xl shadow-lg py-1.5 min-w-[200px]">
-                          {availablePlatforms.map((plat) => (
-                            <button
-                              key={plat}
-                              onClick={() => { setPagesPlatform(plat); setPagesDropdownOpen(false); setPagesAtBottom(false); if (pagesListRef.current) pagesListRef.current.scrollTop = 0; }}
-                              className={`w-full flex items-center gap-2 px-3 py-1.5 text-[11px] font-semibold transition hover:bg-slate-50 ${plat === effectivePlatform ? "text-primary" : "text-muted"}`}
-                            >
-                              <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: PLATFORMS[plat]?.color ?? "#94a3b8" }} />
-                              {plat}
-                              {plat === effectivePlatform && <span className="ml-auto text-brand">✓</span>}
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  <div className={`relative ${shouldExpand ? "flex-1 flex flex-col min-h-0" : ""}`}>
-                  <div
-                    ref={pagesListRef}
-                    className={`px-2 py-2 overflow-y-auto [overscroll-behavior:contain] ${shouldExpand ? "flex-1 min-h-0" : "max-h-[594px]"}`}
-                    onScroll={(e) => { const el = e.currentTarget; setPagesAtBottom(el.scrollTop + el.clientHeight >= el.scrollHeight - 8); }}
+            {/* Fan Page Tracker */}
+            <div className={`col-span-4 ${CARD} flex flex-col overflow-hidden`}>
+              <div className="px-5 py-3 border-b border-line flex items-center justify-between shrink-0">
+                <div>
+                  <div className={EYEBROW}>Fan Page Tracker</div>
+                  <div className="text-sm font-semibold text-primary mt-0.5">Admin-run pages</div>
+                </div>
+                <div className="relative">
+                  {pagesDropdownOpen && (
+                    <div className="fixed inset-0 z-10" onClick={() => setPagesDropdownOpen(false)} />
+                  )}
+                  <button
+                    onClick={() => setPagesDropdownOpen((o) => !o)}
+                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-line text-[10px] font-semibold text-secondary bg-white hover:border-slate-300 transition"
                   >
-                    {filteredPages.length === 0 ? (
-                      <div className="px-3 py-6 text-center text-xs text-muted">No {effectivePlatform} pages tracked yet</div>
-                    ) : (
-                      <div style={{ display: "flex", flexDirection: "column", gap: entryGap }}>
-                      {filteredPages.map((p, i) => {
-                        const platCfg = PLATFORMS[effectivePlatform] || { soft: "#f1f5f9", color: "#64748b" };
-                        const Tag = p.link ? "a" : "div";
-                        return (
-                          <Tag key={p.link || `${p.platform}-${p.name}-${i}`} {...(p.link ? { href: p.link, target: "_blank", rel: "noopener noreferrer" } : {})} className="p-3 flex items-center gap-3 hover:bg-slate-50 transition cursor-pointer group rounded-xl no-underline" >
-                            <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: platCfg.soft }}>
-                              <span className="text-sm font-bold" style={{ color: platCfg.color }}>{String(i + 1).padStart(2, "0")}</span>
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-1">
-                                <div className="text-sm font-semibold text-primary group-hover:text-brand transition truncate">{p.name}</div>
-                                {p.managed && <Star size={11} className="shrink-0 text-amber-400 fill-amber-400" />}
-                              </div>
-                              <div className="text-[10px] text-muted mt-0.5">{p.latest ? `Last post ${fmtPageDate(p.latest)}` : p.platform}</div>
-                            </div>
-                            <div className="text-right">
-                              <div className="text-sm font-bold tabular-nums text-primary">{fmtFull(p.followers)}</div>
-                              <div className="text-[10px] text-muted">{MEMBER_PLATFORMS.has(effectivePlatform) ? "members" : "followers"}</div>
-                            </div>
-                          </Tag>
-                        );
-                      })}
-                      </div>
-                    )}
-                  </div>
-                  </div>
-                  {filteredPages.length > 0 && (
-                    <div className="px-5 py-2.5 border-t border-divider flex items-center justify-between shrink-0">
-                      <span className="text-[10px] text-muted font-medium">{filteredPages.length} {(() => { const n = filteredPages.length; if (effectivePlatform === "Discord") return n === 1 ? "server" : "servers"; if (effectivePlatform === "Reddit") return n === 1 ? "subreddit" : "subreddits"; if (effectivePlatform === "Instagram Channels") return n === 1 ? "channel" : "channels"; if (effectivePlatform === "X Communities") return n === 1 ? "community" : "communities"; return n === 1 ? "page" : "pages"; })()} tracked</span>
-                      {!pagesAtBottom && filteredPages.length > 9 && <span className="text-[10px] text-muted font-medium flex items-center gap-1">scroll for more <ChevronDown size={10} /></span>}
+                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: PLATFORMS[fpEffectivePlatform]?.color ?? "#94a3b8" }} />
+                    {fpEffectivePlatform}
+                    <ChevronDown size={10} className="text-muted" />
+                  </button>
+                  {pagesDropdownOpen && (
+                    <div className="absolute right-0 top-full mt-1.5 z-20 bg-white border border-line rounded-2xl shadow-lg py-1.5 min-w-[190px]">
+                      {fpAvailablePlatforms.map((plat) => (
+                        <button
+                          key={plat}
+                          onClick={() => {
+                            setPagesPlatform(plat);
+                            setPagesDropdownOpen(false);
+                            setPagesAtBottom(false);
+                            if (pagesListRef.current) pagesListRef.current.scrollTop = 0;
+                          }}
+                          className={`w-full flex items-center gap-2 px-3 py-1.5 text-[11px] font-semibold transition hover:bg-slate-50 ${plat === fpEffectivePlatform ? "text-primary" : "text-muted"}`}
+                        >
+                          <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: PLATFORMS[plat]?.color ?? "#94a3b8" }} />
+                          {plat}
+                          {plat === fpEffectivePlatform && <span className="ml-auto text-brand">✓</span>}
+                        </button>
+                      ))}
                     </div>
                   )}
                 </div>
-              );
-            })()}
-
-          </aside>
-        </div>
-
-        {/* Deep Analytics */}
-        <section className="mt-8">
-          <div className="flex items-baseline justify-between mb-4">
-            <div className="flex items-baseline gap-3">
-              <h2 className="text-3xl font-bold text-primary tracking-tight">Deep <span className="text-brand">Analytics</span></h2>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-12 gap-4">
-            <div className={`col-span-12 md:col-span-4 ${CARD} p-6`}>
-              <div className="flex items-center gap-2 mb-1">
-                <div className="w-6 h-6 rounded-xl bg-blue-100 flex items-center justify-center"><PieIcon size={12} className="text-blue-600" /></div>
-                <div className={EYEBROW}>Platform Share</div>
               </div>
-              <div className="text-sm font-semibold text-primary mb-3">Distribution of total reach</div>
+
               <div
-                className="relative h-[200px]"
-                onMouseMove={(e) => {
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  setPiePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+                ref={pagesListRef}
+                className="flex-1 min-h-0 overflow-y-auto px-2 py-2"
+                onScroll={(e) => {
+                  const el = e.currentTarget;
+                  setPagesAtBottom(el.scrollTop + el.clientHeight >= el.scrollHeight - 8);
                 }}
-                onMouseLeave={() => { setPieHover(null); setPiePos(null); }}
               >
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={platformShareData(artist)}
-                      innerRadius={55} outerRadius={85}
-                      dataKey="value" stroke="white" strokeWidth={2}
-                      startAngle={90} endAngle={-270}
-                      isAnimationActive={false}
-                      onMouseEnter={(d) => setPieHover({ name: d.name, value: d.value, fill: d.payload?.fill || d.fill })}
-                      onMouseLeave={() => setPieHover(null)}
-                    >
-                      {platformShareData(artist).map((d, i) => <Cell key={i} fill={d.fill} />)}
-                    </Pie>
-                  </PieChart>
-                </ResponsiveContainer>
-                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                  <div className="text-[10px] font-semibold uppercase tracking-widest text-muted">Total</div>
-                  <div className="font-bold text-lg text-primary tabular-nums">{fmt(artist.totals.value)}</div>
-                </div>
-                {pieHover && piePos && (
-                  <div
-                    className="absolute pointer-events-none z-10 flex items-center gap-2 text-xs bg-white border border-line rounded-xl px-3 py-1.5 shadow-lg"
-                    style={{ left: piePos.x + 14, top: piePos.y - 16, transform: "translateY(-50%)" }}
-                  >
-                    <span className="w-2 h-2 rounded-full shrink-0" style={{ background: pieHover.fill }} />
-                    <span className="text-secondary font-medium">{pieHover.name}</span>
-                    <span className="font-bold tabular-nums text-primary">{fmtFull(pieHover.value)}</span>
+                {filteredPages.length === 0 ? (
+                  <div className="px-3 py-8 text-center text-xs text-muted">No {fpEffectivePlatform} pages tracked yet</div>
+                ) : (
+                  <div className="space-y-px">
+                    {filteredPages.map((p, i) => {
+                      const platCfg = PLATFORMS[fpEffectivePlatform] || { soft: "#f1f5f9", color: "#94a3b8" };
+                      const Tag = p.link ? "a" : "div";
+                      return (
+                        <Tag
+                          key={p.link || `${p.platform}-${p.name}-${i}`}
+                          {...(p.link ? { href: p.link, target: "_blank", rel: "noopener noreferrer" } : {})}
+                          className="p-2.5 flex items-center gap-3 hover:bg-slate-50 transition cursor-pointer group rounded-xl no-underline"
+                        >
+                          <div
+                            className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
+                            style={{ background: platCfg.soft }}
+                          >
+                            <span className="text-xs font-bold" style={{ color: platCfg.color }}>{String(i + 1).padStart(2, "0")}</span>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-1">
+                              <div className="text-sm font-semibold text-primary group-hover:text-brand transition truncate">{p.name}</div>
+                              {p.managed && <Star size={10} className="shrink-0 text-amber-400 fill-amber-400" />}
+                            </div>
+                            <div className="text-[10px] text-muted mt-0.5 truncate">
+                              {p.latest ? `Last post ${fmtPageDate(p.latest)}` : p.platform}
+                            </div>
+                          </div>
+                          <div className="text-right shrink-0">
+                            <div className="text-sm font-bold tabular-nums text-primary">{fmtFull(p.followers)}</div>
+                            <div className="text-[10px] text-muted">{MEMBER_PLATFORMS.has(fpEffectivePlatform) ? "members" : "followers"}</div>
+                          </div>
+                        </Tag>
+                      );
+                    })}
                   </div>
                 )}
               </div>
-              <div className="mt-4 space-y-1.5 text-xs">
-                {platformShareData(artist).sort((a, b) => b.value - a.value).slice(0, 3).map((d) => {
-                  const pct = ((d.value / artist.totals.value) * 100).toFixed(1);
-                  return (
-                    <div key={d.name} className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full" style={{ background: d.fill }} />
-                      <span className="text-secondary flex-1 font-medium">{d.name}</span>
-                      <span className="font-bold text-primary tabular-nums">{pct}%</span>
+
+              {filteredPages.length > 0 && (
+                <div className="px-5 py-2 border-t border-divider flex items-center justify-between shrink-0">
+                  <span className="text-[10px] text-muted font-medium">
+                    {filteredPages.length} {(() => {
+                      const n = filteredPages.length;
+                      if (fpEffectivePlatform === "Discord") return n === 1 ? "server" : "servers";
+                      if (fpEffectivePlatform === "Reddit") return n === 1 ? "subreddit" : "subreddits";
+                      if (fpEffectivePlatform === "Instagram Channels") return n === 1 ? "channel" : "channels";
+                      if (fpEffectivePlatform === "X Communities") return n === 1 ? "community" : "communities";
+                      return n === 1 ? "page" : "pages";
+                    })()} tracked
+                  </span>
+                  {!pagesAtBottom && filteredPages.length > 6 && (
+                    <span className="text-[10px] text-muted font-medium flex items-center gap-1">scroll <ChevronDown size={10} /></span>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Analytics row */}
+          <div className="shrink-0 grid grid-cols-3 gap-3" style={{ height: "230px" }}>
+
+            {/* Platform Share */}
+            <div className={`${CARD} p-4 flex flex-col overflow-hidden`}>
+              <div className="flex items-center gap-2 shrink-0 mb-1">
+                <div className="w-5 h-5 rounded-lg bg-blue-100 flex items-center justify-center">
+                  <PieIcon size={11} className="text-blue-600" />
+                </div>
+                <div className={EYEBROW}>Platform Share</div>
+              </div>
+              <div className="text-xs font-semibold text-primary mb-2 shrink-0">Distribution of reach</div>
+              <div className="flex-1 min-h-0 flex items-center gap-3">
+                <div
+                  className="relative h-full aspect-square shrink-0"
+                  onMouseMove={(e) => {
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    setPiePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+                  }}
+                  onMouseLeave={() => { setPieHover(null); setPiePos(null); }}
+                >
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={platformShareData(artist)}
+                        innerRadius="42%" outerRadius="72%"
+                        dataKey="value" stroke="white" strokeWidth={2}
+                        startAngle={90} endAngle={-270}
+                        isAnimationActive={false}
+                        onMouseEnter={(d) => setPieHover({ name: d.name, value: d.value, fill: d.payload?.fill || d.fill })}
+                        onMouseLeave={() => setPieHover(null)}
+                      >
+                        {platformShareData(artist).map((d, i) => <Cell key={i} fill={d.fill} />)}
+                      </Pie>
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                    <div className="text-[9px] font-semibold uppercase tracking-widest text-muted">Total</div>
+                    <div className="font-bold text-sm text-primary tabular-nums">{fmt(artist.totals.value)}</div>
+                  </div>
+                  {pieHover && piePos && (
+                    <div
+                      className="absolute pointer-events-none z-10 flex items-center gap-2 text-xs bg-white border border-line rounded-xl px-3 py-1.5 shadow-lg whitespace-nowrap"
+                      style={{ left: piePos.x + 14, top: piePos.y - 16, transform: "translateY(-50%)" }}
+                    >
+                      <span className="w-2 h-2 rounded-full shrink-0" style={{ background: pieHover.fill }} />
+                      <span className="text-secondary font-medium">{pieHover.name}</span>
+                      <span className="font-bold tabular-nums text-primary">{fmtFull(pieHover.value)}</span>
                     </div>
-                  );
-                })}
+                  )}
+                </div>
+                <div className="flex-1 space-y-1.5 overflow-hidden">
+                  {platformShareData(artist).slice(0, 4).map((d) => {
+                    const pct = artist.totals.value > 0 ? ((d.value / artist.totals.value) * 100).toFixed(1) : "0.0";
+                    return (
+                      <div key={d.name} className="flex items-center gap-2 text-xs">
+                        <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: d.fill }} />
+                        <span className="text-secondary flex-1 font-medium truncate">{d.name}</span>
+                        <span className="font-bold text-primary tabular-nums shrink-0">{pct}%</span>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
 
-<div className={`col-span-12 md:col-span-4 flex flex-col ${CARD} p-6`}>
-              <div className="flex items-center gap-2 mb-1">
-                <div className="w-6 h-6 rounded-xl bg-amber-100 flex items-center justify-center"><Zap size={12} className="text-amber-600" /></div>
+            {/* Growth Velocity */}
+            <div className={`${CARD} p-4 flex flex-col overflow-hidden`}>
+              <div className="flex items-center gap-2 shrink-0 mb-1">
+                <div className="w-5 h-5 rounded-lg bg-amber-100 flex items-center justify-center">
+                  <Zap size={11} className="text-amber-600" />
+                </div>
                 <div className={EYEBROW}>Growth Velocity · 12mo</div>
               </div>
-              <div className="text-sm font-semibold text-primary mb-3">Net added per month</div>
-              <div className="flex-1 min-h-[200px]">
+              <div className="text-xs font-semibold text-primary mb-2 shrink-0">Net added per month</div>
+              <div className="flex-1 min-h-0">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={monthlyVelocity(history, orderedPlats)} margin={{ top: 8, right: 0, left: 0, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 4" vertical={false} />
-                    <XAxis dataKey="date" tickFormatter={(ym) => monthLabel(ym).split(" ")[0]} axisLine={false} tickLine={false} interval={1} />
-                    <YAxis tickFormatter={fmt} axisLine={false} tickLine={false} width={40} />
-                    <Tooltip content={({ active, payload, label }) => active && payload?.length ? (
-                      <div className="bg-white border border-line rounded-xl shadow-lg p-3 text-xs">
-                        <div className={EYEBROW}>{monthLabel(label)}</div>
-                        <div className="font-bold tabular-nums text-primary text-sm mt-1">{payload[0].value >= 0 ? "+" : ""}{fmtFull(payload[0].value)}</div>
-                      </div>
-                    ) : null} cursor={{ fill: "#f1f5f9" }} wrapperStyle={{ transition: "none" }} />
-                    <Bar dataKey="net" radius={[6, 6, 0, 0]} isAnimationActive={false}>
-                      {monthlyVelocity(history, orderedPlats).map((d, i) => <Cell key={i} fill={d.net >= 0 ? "#10b981" : "#f43f5e"} />)}
+                  <BarChart data={monthlyVelocity(history, orderedPlats)} margin={{ top: 4, right: 0, left: 0, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 4" vertical={false} stroke="#e2e8f0" />
+                    <XAxis
+                      dataKey="date"
+                      tickFormatter={(ym) => monthLabel(ym).split(" ")[0]}
+                      axisLine={false} tickLine={false} interval={1}
+                      tick={{ fill: "#94a3b8", fontSize: 9, fontWeight: 500 }}
+                    />
+                    <YAxis
+                      tickFormatter={fmt} axisLine={false} tickLine={false} width={36}
+                      tick={{ fill: "#94a3b8", fontSize: 9, fontWeight: 500 }}
+                    />
+                    <Tooltip
+                      content={({ active, payload, label }) =>
+                        active && payload?.length ? (
+                          <div className="bg-white border border-line rounded-xl shadow-lg p-3 text-xs">
+                            <div className={EYEBROW}>{monthLabel(label)}</div>
+                            <div className="font-bold tabular-nums text-primary text-sm mt-1">
+                              {payload[0].value >= 0 ? "+" : ""}{fmtFull(payload[0].value)}
+                            </div>
+                          </div>
+                        ) : null
+                      }
+                      cursor={{ fill: "#f1f5f9" }}
+                      wrapperStyle={{ transition: "none" }}
+                    />
+                    <Bar dataKey="net" radius={[4, 4, 0, 0]} isAnimationActive={false}>
+                      {monthlyVelocity(history, orderedPlats).map((d, i) => (
+                        <Cell key={i} fill={d.net >= 0 ? "#059669" : "#f43f5e"} />
+                      ))}
                     </Bar>
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             </div>
 
-            <div className={`col-span-12 md:col-span-4 ${CARD} pt-6 px-6 pb-3`}>
-              <div className="flex items-center gap-2 mb-1">
-                <div className="w-6 h-6 rounded-xl bg-emerald-100 flex items-center justify-center"><ArrowUpRight size={12} className="text-pos" /></div>
+            {/* Fastest Movers */}
+            <div className={`${CARD} p-4 flex flex-col overflow-hidden`}>
+              <div className="flex items-center gap-2 shrink-0 mb-1">
+                <div className="w-5 h-5 rounded-lg bg-emerald-100 flex items-center justify-center">
+                  <ArrowUpRight size={11} className="text-pos" />
+                </div>
                 <div className={EYEBROW}>Fastest Movers · 28d</div>
               </div>
-              <div className="text-sm font-semibold text-primary mb-3">Biggest swings across the roster</div>
-              <div className="-mx-2">
-                {artists.slice().sort((a, b) => Math.abs(b.totals.delta) - Math.abs(a.totals.delta)).slice(0, 5).map((a, i) => {
-                  const up = a.totals.delta >= 0;
-                  return (
-                    <div key={a.slug} className="w-full p-3 flex items-center gap-3 rounded-xl">
-                      <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold ${i === 0 ? "bg-amber-100 text-amber-700" : i === 1 ? "bg-slate-100 text-secondary" : i === 2 ? "bg-orange-100 text-orange-700" : "bg-slate-50 text-muted"}`}>{i + 1}</div>
-                      <span className="flex-1 text-sm font-semibold text-primary truncate">{a.name}</span>
-                      <span className={`text-xs font-bold tabular-nums px-2 py-0.5 rounded-full ${up ? "bg-emerald-100 text-pos" : "bg-rose-100 text-neg"}`}>{up ? "+" : ""}{fmt(a.totals.delta)}</span>
-                    </div>
-                  );
-                })}
+              <div className="text-xs font-semibold text-primary mb-2 shrink-0">Biggest swings on the roster</div>
+              <div className="flex-1 min-h-0 overflow-y-auto -mx-1" style={{ scrollbarWidth: "none" }}>
+                {artists
+                  .slice()
+                  .sort((a, b) => Math.abs(b.totals.delta) - Math.abs(a.totals.delta))
+                  .slice(0, 5)
+                  .map((a, i) => {
+                    const up = a.totals.delta >= 0;
+                    return (
+                      <button
+                        key={a.slug}
+                        onClick={() => setSelectedSlug(a.slug)}
+                        className="w-full flex items-center gap-2.5 px-2 py-2 rounded-xl hover:bg-slate-50 transition text-left"
+                      >
+                        <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold shrink-0 ${
+                          i === 0 ? "bg-amber-100 text-amber-700"
+                          : i === 1 ? "bg-slate-100 text-secondary"
+                          : i === 2 ? "bg-orange-100 text-orange-700"
+                          : "bg-slate-50 text-muted"
+                        }`}>
+                          {i + 1}
+                        </div>
+                        <span className="flex-1 text-sm font-semibold text-primary truncate">{a.name}</span>
+                        <span className={`text-xs font-bold tabular-nums px-2 py-0.5 rounded-full shrink-0 ${up ? "bg-emerald-50 text-pos" : "bg-rose-50 text-neg"}`}>
+                          {up ? "+" : ""}{fmt(a.totals.delta)}
+                        </span>
+                      </button>
+                    );
+                  })}
               </div>
             </div>
 
           </div>
-        </section>
-
-        {/* Live Feed — hidden for now */}
-        {false && <section className="mt-8">
-          <div className="flex items-baseline justify-between mb-4">
-            <div className="flex items-baseline gap-3">
-              <h2 className="text-3xl font-bold text-primary tracking-tight">Live <span className="text-brand">Feed</span></h2>
-            </div>
-            <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-full">
-              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-[11px] font-semibold text-emerald-700">polling · 2m</span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 mb-4 flex-wrap">
-            <Filter size={14} className="text-muted" />
-            {(() => {
-              const posts = [...redditPosts, ...mockNonReddit];
-              const platsInFeed = Array.from(new Set(posts.map((p) => p.platform)));
-              const filters = ["All", ...platsInFeed];
-              return filters.map((f) => {
-                const active = feedFilter === f;
-                const cfg = f !== "All" ? PLATFORMS[f] : null;
-                const count = f === "All" ? posts.length : posts.filter((p) => p.platform === f).length;
-                return (
-                  <button key={f} onClick={() => setFeedFilter(f)} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition ${active ? "bg-slate-900 dark:bg-brand text-white" : "bg-white border border-line text-secondary hover:border-slate-300"}`}>
-                    {cfg && <span className="w-1.5 h-1.5 rounded-full" style={{ background: cfg.color }} />}
-                    {f}
-                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${active ? "bg-white/20" : "bg-slate-100"}`}>{count}</span>
-                  </button>
-                );
-              });
-            })()}
-          </div>
-
-          {(() => {
-            const posts = [...redditPosts, ...mockNonReddit];
-            const filtered = feedFilter === "All" ? posts : posts.filter((p) => p.platform === feedFilter);
-            if (redditLoading && posts.length === 0) {
-              return <div className="flex items-center justify-center py-12 text-sm text-muted">Loading Reddit posts…</div>;
-            }
-            if (posts.length === 0) {
-              return (
-                <div className="border-2 border-dashed border-line rounded-3xl bg-white p-10 text-center">
-                  <AlertCircle size={20} className="text-muted mx-auto mb-2" />
-                  <div className="text-sm text-secondary font-medium">No feed data for this artist yet</div>
-                  <div className="text-xs text-muted mt-1">Connect a Reddit or Discord page to start tracking</div>
-                </div>
-              );
-            }
-            return <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{filtered.map((post, i) => <FeedCard key={i} post={post} />)}</div>;
-          })()}
-
-          <div className="mt-4 px-4 py-3 bg-amber-50 border border-amber-200 rounded-2xl flex items-start gap-2">
-            <AlertCircle size={14} className="text-amber-600 mt-0.5 shrink-0" />
-            <div className="text-xs text-amber-800 leading-relaxed">
-              <span className="font-semibold">Partially live.</span> Reddit posts are fetched live where available, otherwise showing recent highlights · Discord, X, Instagram &amp; TikTok are mock data.
-            </div>
-          </div>
-        </section>}
-
-      </div>
+        </div>
+      </main>
     </div>
   );
 }
