@@ -811,7 +811,7 @@ export default function FanDashboard() {
       <main className="flex-1 min-w-0 flex flex-col overflow-hidden">
 
         {/* Header bar */}
-        <header className="shrink-0 px-6 py-3 border-b border-line bg-white flex items-center justify-between gap-6">
+        <header className="shrink-0 px-6 py-4 border-b border-line bg-white flex items-center justify-between gap-6">
           <div className="flex items-center gap-4 min-w-0">
             <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0 flex items-center justify-center font-bold text-lg bg-slate-100">
               <img
@@ -843,7 +843,7 @@ export default function FanDashboard() {
         </header>
 
         {/* Content */}
-        <div className="flex-1 min-h-0 p-3 flex flex-col gap-2 overflow-hidden">
+        <div className="flex-1 min-h-0 p-4 flex flex-col gap-3 overflow-hidden">
 
           {/* KPI strip */}
           {orderedPlats.length > 0 && (
@@ -858,7 +858,7 @@ export default function FanDashboard() {
           )}
 
           {/* Middle row: growth chart + fan page tracker */}
-          <div className="flex-1 min-h-0 grid grid-cols-12 gap-2">
+          <div className="flex-1 min-h-0 grid grid-cols-12 gap-3">
 
             {/* Growth chart */}
             <div className={`col-span-8 ${CARD} flex flex-col overflow-hidden`}>
@@ -1104,7 +1104,7 @@ export default function FanDashboard() {
           </div>
 
           {/* Analytics row */}
-          <div className="shrink-0 grid grid-cols-3 gap-2" style={{ height: "175px" }}>
+          <div className="shrink-0 grid grid-cols-3 gap-3" style={{ height: "230px" }}>
 
             {/* Platform Share */}
             <div className={`${CARD} p-4 flex flex-col overflow-hidden`}>
