@@ -1,15 +1,13 @@
 @import "tailwindcss";
 
-/* ---- Design tokens (single source of truth) ----
-   Change a value here and it updates everywhere it's used.
-   Each maps to the Tailwind utility it replaced, so the look is unchanged. */
 @theme {
-  --color-primary: #0f172a;   /* was slate-900 — primary text */
-  --color-secondary: #475569; /* was slate-600 — secondary text */
-  --color-muted: #94a3b8;     /* was slate-400 — muted / label text */
-  --color-pos: #059669;       /* was emerald-600 — positive delta */
-  --color-neg: #f43f5e;       /* was rose-500 — negative delta */
-  --color-brand: #000dff;     /* brand accent */
-  --color-line: #e2e8f0;      /* was slate-200 — card / control borders */
-  --color-divider: #f1f5f9;   /* was slate-100 — internal dividers */
+  --color-primary: #f1f5f9;      /* primary text */
+  --color-secondary: #8892a4;    /* secondary text */
+  --color-muted: #4a5568;        /* muted / label text */
+  --color-pos: #10b981;          /* positive delta */
+  --color-neg: #f43f5e;          /* negative delta */
+  --color-brand: #000dff;        /* brand accent */
+  --color-line: #1e2a3a;         /* borders */
+  --color-divider: #151d2d;      /* subtle dividers */
+  --color-surface: #111827;      /* card surface */
 }
