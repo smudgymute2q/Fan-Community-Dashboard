@@ -34,13 +34,13 @@ import {
 
 // ---- Platform tokens ----
 const PLATFORMS = {
-  Discord: { color: "#4285F4", soft: "#1a2a4a" },
-  Reddit: { color: "#FF4500", soft: "#2a1a0e" },
-  Instagram: { color: "#FF0069", soft: "#2a0a1a" },
-  "Instagram Channels": { color: "#7638FA", soft: "#1e1040" },
-  X: { color: "#c9d1d9", soft: "#1e2a3a" },
-  "X Communities": { color: "#8b949e", soft: "#1a2030" },
-  TikTok: { color: "#00F2EA", soft: "#003a38" },
+  Discord: { color: "#4285F4", soft: "#E8F0FE" },
+  Reddit: { color: "#FF4500", soft: "#FFECE3" },
+  Instagram: { color: "#FF0069", soft: "#FFE0EE" },
+  "Instagram Channels": { color: "#7638FA", soft: "#EDE6FE" },
+  X: { color: "#000000", soft: "#E5E7EB" },
+  "X Communities": { color: "#808080", soft: "#F3F4F6" },
+  TikTok: { color: "#00C2B2", soft: "#E0FDFB" },
 };
 
 // ---- Platform display order + classification ----
@@ -48,7 +48,7 @@ const PLAT_ORDER = ["Discord", "Reddit", "Instagram", "Instagram Channels", "X",
 const MEMBER_PLATFORMS = new Set(["Discord", "Reddit", "X Communities", "Instagram Channels"]);
 
 // ---- Design tokens ----
-const CARD = "bg-[#111827] border border-[#1e2a3a] rounded-2xl";
+const CARD = "bg-white border border-line rounded-2xl shadow-sm";
 const EYEBROW = "text-[10px] font-semibold uppercase tracking-wider text-muted";
 
 // ---- Cloudflare Worker proxy ----
@@ -245,28 +245,21 @@ const STATIC_ARTISTS = [
 
 const MOCK_FEED = {
   "playboi-carti": [
-    { platform: "Reddit", page: "/r/playboicarti", author: "u/tearsofravage", time: "12m ago", title: "New snippet from the Antagonist sessions leaked on Discord", body: "Production credits line up with what Wheezy hinted at last week. Quality is rough but the hook is unreal.", engagement: { upvotes: 2847, comments: 412 }, media: "image", sentiment: "hype" },
-    { platform: "Discord", page: "/playboicarti", author: "opium_insider", time: "38m ago", title: "#announcements", body: "Mod verified: the account that posted in #leaks last night was not affiliated with management. All links have been removed.", engagement: { reactions: 1893, replies: 67 }, sentiment: "neutral" },
+    { platform: "Reddit", page: "/r/playboicarti", author: "u/tearsofravage", time: "12m ago", title: "New snippet from the Antagonist sessions leaked on Discord", body: "Production credits line up with what Wheezy hinted at last week.", engagement: { upvotes: 2847, comments: 412 }, media: "image", sentiment: "hype" },
     { platform: "Instagram", page: "@playboicarti", author: "playboicarti", time: "2h ago", title: null, body: "Antagonist. 06.13.", engagement: { likes: 847293, comments: 23847 }, media: "image", sentiment: "hype" },
-    { platform: "Reddit", page: "/r/playboicarti", author: "u/narcissist_2020", time: "4h ago", title: "Ranking every Carti feature since Whole Lotta Red", body: "Been working on this list for a while. Guest verses, hook appearances, and the unreleased leaks.", engagement: { upvotes: 1204, comments: 287 }, sentiment: "neutral" },
     { platform: "X", page: "@playboicarti", author: "playboicarti", time: "6h ago", title: null, body: "soon.", engagement: { likes: 67482, reposts: 12847, replies: 8394 }, sentiment: "hype" },
-    { platform: "Reddit", page: "/r/playboicarti", author: "u/vamp_anthem", time: "8h ago", title: "Is anyone else tired of the constant 'where is the album' posts?", body: "The sub has become unusable. Every other thread is doom-posting about delays.", engagement: { upvotes: 3421, comments: 892 }, sentiment: "negative" },
   ],
   "ken-carson": [
     { platform: "Instagram", page: "@kencarson", author: "kencarson", time: "23m ago", title: null, body: "A CHAIN FOR THE TEEN X.", engagement: { likes: 234827, comments: 4829 }, media: "image", sentiment: "hype" },
-    { platform: "Reddit", page: "/r/kencarson", author: "u/projectx_fan", time: "1h ago", title: "A Great Chaos deluxe confirmed by insider", body: "Saw it in a Discord leak channel — management is apparently shopping 4 extra tracks.", engagement: { upvotes: 1847, comments: 243 }, sentiment: "hype" },
-    { platform: "Discord", page: "/kencarson", author: "teenx_mod", time: "2h ago", title: "#general", body: "Tour presale codes dropping tomorrow at 10am EST. Check the pinned message.", engagement: { reactions: 847, replies: 124 }, sentiment: "neutral" },
-    { platform: "TikTok", page: "@kencarson", author: "kencarson", time: "3h ago", title: null, body: "studio vlog 03 — Atlanta", engagement: { likes: 184273, comments: 8273, shares: 12847 }, media: "video", sentiment: "hype" },
   ],
   "destroy-lonely": [
     { platform: "X", page: "@destroylonely", author: "destroylonely", time: "15m ago", title: null, body: "LOVE LASTS 4EVER DELUXE. 14 NEW TRACKS. MAY 22.", engagement: { likes: 28490, reposts: 8471, replies: 2847 }, sentiment: "hype" },
-    { platform: "Reddit", page: "/r/destroylonely", author: "u/NS_nation", time: "1h ago", title: "The deluxe announcement just dropped — thread everything here", body: "Mod pinning this. Consolidating all deluxe speculation, leaked tracklists, and reaction videos.", engagement: { upvotes: 4823, comments: 1247 }, sentiment: "hype" },
   ],
   "rema": [
     { platform: "TikTok", page: "@heisrema", author: "heisrema", time: "18m ago", title: null, body: "HEIS. world tour. Lagos kickoff", engagement: { likes: 1284273, comments: 48273, shares: 184273 }, media: "video", sentiment: "hype" },
   ],
   "hxg": [
-    { platform: "Reddit", page: "/r/homixidegang", author: "u/hxg_forever", time: "2h ago", title: "Snot x Beno collab album rumors", body: "Someone in the Carti Discord dropped a snippet with both of them on a track.", engagement: { upvotes: 847, comments: 184 }, sentiment: "hype" },
+    { platform: "Reddit", page: "/r/homixidegang", author: "u/hxg_forever", time: "2h ago", title: "Snot x Beno collab album rumors", body: "Someone in the Carti Discord dropped a snippet.", engagement: { upvotes: 847, comments: 184 }, sentiment: "hype" },
   ],
   "pierre-bourne": [
     { platform: "X", page: "@pierrebourne", author: "pierrebourne", time: "1h ago", title: null, body: "SossHouse Vol 3 mastering wrapped. release window q3.", engagement: { likes: 8473, reposts: 1247, replies: 384 }, sentiment: "hype" },
@@ -339,7 +332,7 @@ function DeltaPill({ value, small = false }: { value: number | null | undefined;
   return (
     <span className={`inline-flex items-center font-bold tabular-nums rounded-full ${
       small ? "text-[10px] px-1.5 py-px" : "text-xs px-2 py-0.5"
-    } ${up ? "bg-emerald-950 text-pos" : "bg-rose-950 text-neg"}`}>
+    } ${up ? "bg-emerald-50 text-pos" : "bg-rose-50 text-neg"}`}>
       {up ? "+" : ""}{fmt(value)}
     </span>
   );
@@ -348,7 +341,7 @@ function DeltaPill({ value, small = false }: { value: number | null | undefined;
 function KpiTile({ platform, value, delta }: { platform: string; value: number; delta: number }) {
   const cfg = PLATFORMS[platform];
   return (
-    <div className="rounded-xl p-3 bg-[#0e1420] border border-[#1e2a3a]">
+    <div className="rounded-xl p-3 bg-white border border-line shadow-sm">
       <div className="flex items-center gap-1.5 mb-2">
         {cfg && <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: cfg.color }} />}
         <span className="text-[10px] font-semibold uppercase tracking-wider text-muted truncate">{platform}</span>
@@ -368,13 +361,12 @@ function SidebarArtistRow({ artist, active, onClick }: { artist: any; active: bo
     <button
       onClick={onClick}
       className={`w-full flex items-center gap-2.5 py-2 rounded-xl transition-all text-left border-l-2 pl-2.5 pr-3 ${
-        active ? "border-l-brand" : "border-l-transparent"
+        active ? "border-l-brand bg-[#eef0ff]" : "border-l-transparent hover:bg-slate-50"
       }`}
-      style={active ? { background: "rgba(0,13,255,0.1)" } : undefined}
     >
       <div
         className="w-8 h-8 rounded-lg overflow-hidden shrink-0 flex items-center justify-center font-bold text-xs"
-        style={{ background: active ? "rgba(0,13,255,0.25)" : "#1e2a3a" }}
+        style={{ background: active ? "rgba(0,13,255,0.12)" : "#f1f5f9" }}
       >
         <img
           src={icon}
@@ -388,13 +380,11 @@ function SidebarArtistRow({ artist, active, onClick }: { artist: any; active: bo
         />
       </div>
       <div className="flex-1 min-w-0">
-        <div className={`text-sm font-semibold truncate leading-tight ${active ? "text-white" : "text-primary"}`}>
+        <div className={`text-sm font-semibold truncate leading-tight ${active ? "text-brand" : "text-primary"}`}>
           {artist.name}
         </div>
         <div className="flex items-center gap-1.5 mt-0.5">
-          <span className={`text-[11px] tabular-nums font-medium ${active ? "text-white/60" : "text-muted"}`}>
-            {fmt(artist.totals.value)}
-          </span>
+          <span className="text-[11px] tabular-nums font-medium text-muted">{fmt(artist.totals.value)}</span>
           <DeltaPill value={artist.totals.delta} small />
         </div>
       </div>
@@ -405,7 +395,7 @@ function SidebarArtistRow({ artist, active, onClick }: { artist: any; active: bo
 function ChartTooltip({ active, payload, label }: any) {
   if (!active || !payload || !payload.length) return null;
   return (
-    <div className="bg-[#1a2030] border border-[#1e2a3a] rounded-xl shadow-xl p-3 text-xs">
+    <div className="bg-white border border-line rounded-xl shadow-lg p-3 text-xs">
       <div className={`${EYEBROW} mb-2`}>
         {label && typeof label === "string" && label.includes("-") ? monthLabel(label) : label}
       </div>
@@ -432,22 +422,22 @@ function engagementSummary(post) {
 }
 
 const SENTIMENT_STYLE = {
-  hype: { bg: "bg-amber-950", text: "text-amber-400", label: "HYPE" },
-  positive: { bg: "bg-emerald-950", text: "text-emerald-400", label: "POSITIVE" },
-  neutral: { bg: "bg-[#1e2a3a]", text: "text-secondary", label: "NEUTRAL" },
-  negative: { bg: "bg-rose-950", text: "text-rose-400", label: "WATCH" },
+  hype: { bg: "bg-amber-100", text: "text-amber-700", label: "HYPE" },
+  positive: { bg: "bg-emerald-100", text: "text-emerald-700", label: "POSITIVE" },
+  neutral: { bg: "bg-slate-100", text: "text-secondary", label: "NEUTRAL" },
+  negative: { bg: "bg-rose-100", text: "text-rose-700", label: "WATCH" },
 };
 
 function FeedCard({ post }: { post: any }) {
   const cfg = PLATFORMS[post.platform];
   const sent = SENTIMENT_STYLE[post.sentiment];
   return (
-    <div className="group relative bg-[#111827] border border-[#1e2a3a] rounded-2xl hover:border-[#2a3a4a] hover:shadow-lg hover:-translate-y-0.5 transition-all overflow-hidden">
+    <div className="group relative bg-white border border-line rounded-2xl hover:border-slate-300 hover:shadow-lg hover:-translate-y-0.5 transition-all overflow-hidden">
       <div className="p-4">
         <div className="flex items-center justify-between gap-2 mb-3">
           <div className="flex items-center gap-2 min-w-0">
-            <div className="w-7 h-7 rounded-xl flex items-center justify-center shrink-0" style={{ background: cfg?.soft || "#1e2a3a" }}>
-              <span className="w-2 h-2 rounded-full" style={{ background: cfg?.color || "#4a5568" }} />
+            <div className="w-7 h-7 rounded-xl flex items-center justify-center shrink-0" style={{ background: cfg?.soft || "#f1f5f9" }}>
+              <span className="w-2 h-2 rounded-full" style={{ background: cfg?.color || "#94a3b8" }} />
             </div>
             <div className="min-w-0">
               <div className="text-xs font-semibold text-primary truncate">{post.page}</div>
@@ -459,12 +449,12 @@ function FeedCard({ post }: { post: any }) {
         {post.title && <div className="text-[13px] text-primary font-semibold leading-snug mb-1 line-clamp-2">{post.title}</div>}
         <div className="text-xs text-secondary leading-relaxed line-clamp-3">{post.body}</div>
         {post.media && (
-          <div className="mt-3 flex items-center gap-1.5 text-[10px] text-muted bg-[#1a2030] px-2 py-1 rounded-xl w-fit">
+          <div className="mt-3 flex items-center gap-1.5 text-[10px] text-muted bg-slate-50 px-2 py-1 rounded-xl w-fit">
             {post.media === "video" ? <Play size={10} /> : <ImageIcon size={10} />}
             <span className="uppercase tracking-wider font-semibold">{post.media}</span>
           </div>
         )}
-        <div className="flex items-center justify-between mt-3 pt-3 border-t border-[#1e2a3a]">
+        <div className="flex items-center justify-between mt-3 pt-3 border-t border-divider">
           <div className="flex items-center gap-3.5">
             {engagementSummary(post).map((e, i) => {
               const Icon = e.icon;
@@ -623,10 +613,7 @@ export default function FanDashboard() {
         const mins = Math.floor((Date.now() - p.created_utc * 1000) / 60000);
         const time = mins < 60 ? `${mins}m ago` : mins < 1440 ? `${Math.floor(mins / 60)}h ago` : `${Math.floor(mins / 1440)}d ago`;
         return {
-          platform: "Reddit",
-          page: `/r/${p.subreddit}`,
-          author: `u/${p.author}`,
-          time,
+          platform: "Reddit", page: `/r/${p.subreddit}`, author: `u/${p.author}`, time,
           title: p.title,
           body: p.selftext ? (p.selftext.length > 200 ? p.selftext.slice(0, 200) + "…" : p.selftext) : null,
           engagement: { upvotes: p.score, comments: p.num_comments },
@@ -660,12 +647,7 @@ export default function FanDashboard() {
           const data = await tryFetch(url);
           if (cancelled) return;
           const posts = parseRedditData(data);
-          if (posts.length > 0) {
-            setRedditPosts(posts);
-            setRedditLoading(false);
-            setCached(cacheKey, posts);
-            return;
-          }
+          if (posts.length > 0) { setRedditPosts(posts); setRedditLoading(false); setCached(cacheKey, posts); return; }
         } catch { /* try next */ }
       }
       if (!cancelled) {
@@ -680,32 +662,18 @@ export default function FanDashboard() {
   }, [selectedSlug]);
 
   const fullHistory = useMemo(
-    () =>
-      sheetsData[selectedSlug]?.history?.length
-        ? sheetsData[selectedSlug].history
-        : buildHistory(artist),
+    () => sheetsData[selectedSlug]?.history?.length ? sheetsData[selectedSlug].history : buildHistory(artist),
     [sheetsData, selectedSlug, artist]
   );
 
   const history = useMemo(() => {
     if (yearRange === "all") return fullHistory;
-    const latestDate = fullHistory.length > 0
-      ? new Date(fullHistory[fullHistory.length - 1].date + "-01")
-      : new Date();
+    const latestDate = fullHistory.length > 0 ? new Date(fullHistory[fullHistory.length - 1].date + "-01") : new Date();
     const latestYear = latestDate.getFullYear();
     if (yearRange === "ytd") return fullHistory.filter((r) => r.date >= `${latestYear}-01`);
-    if (yearRange === "12m") {
-      const cutoff = new Date(latestDate); cutoff.setMonth(cutoff.getMonth() - 12);
-      return fullHistory.filter((r) => new Date(r.date + "-01") >= cutoff);
-    }
-    if (yearRange === "6m") {
-      const cutoff = new Date(latestDate); cutoff.setMonth(cutoff.getMonth() - 6);
-      return fullHistory.filter((r) => new Date(r.date + "-01") >= cutoff);
-    }
-    if (yearRange === "3m") {
-      const cutoff = new Date(latestDate); cutoff.setMonth(cutoff.getMonth() - 3);
-      return fullHistory.filter((r) => new Date(r.date + "-01") >= cutoff);
-    }
+    if (yearRange === "12m") { const c = new Date(latestDate); c.setMonth(c.getMonth() - 12); return fullHistory.filter((r) => new Date(r.date + "-01") >= c); }
+    if (yearRange === "6m") { const c = new Date(latestDate); c.setMonth(c.getMonth() - 6); return fullHistory.filter((r) => new Date(r.date + "-01") >= c); }
+    if (yearRange === "3m") { const c = new Date(latestDate); c.setMonth(c.getMonth() - 3); return fullHistory.filter((r) => new Date(r.date + "-01") >= c); }
     return fullHistory.filter((r) => r.date.startsWith(yearRange));
   }, [fullHistory, yearRange]);
 
@@ -761,9 +729,8 @@ export default function FanDashboard() {
 
   const togglePlat = (p) => {
     const next = new Set(hiddenPlats);
-    if (next.has(p)) {
-      next.delete(p);
-    } else {
+    if (next.has(p)) { next.delete(p); }
+    else {
       const visibleCount = orderedPlats.filter((x) => !next.has(x)).length;
       if (visibleCount <= 1) return;
       next.add(p);
@@ -785,17 +752,16 @@ export default function FanDashboard() {
   return (
     <div
       className="flex h-screen overflow-hidden text-primary"
-      style={{ background: "#0b0f1a", fontFamily: "'Plus Jakarta Sans', 'Inter', system-ui, sans-serif" }}
+      style={{ background: "#f1f5f9", fontFamily: "'Plus Jakarta Sans', 'Inter', system-ui, sans-serif" }}
     >
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
-        ::-webkit-scrollbar { width: 4px; height: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #1e2a3a; border-radius: 2px; }
+        .recharts-cartesian-axis-tick text { fill: #94a3b8; font-size: 10px; font-weight: 500; }
+        .recharts-cartesian-grid line { stroke: #e2e8f0; }
       `}</style>
 
       {sheetsLoading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0b0f1a]/80 backdrop-blur-sm pointer-events-none">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/70 backdrop-blur-sm pointer-events-none">
           <div className="flex flex-col items-center gap-3">
             <div className="w-8 h-8 rounded-full border-2 border-brand border-t-transparent animate-spin" />
             <span className="text-xs font-semibold text-secondary">Loading data…</span>
@@ -804,18 +770,15 @@ export default function FanDashboard() {
       )}
 
       {/* ---- Sidebar ---- */}
-      <aside
-        className="w-56 flex-shrink-0 flex flex-col border-r border-[#1e2a3a] overflow-hidden"
-        style={{ background: "#070a12" }}
-      >
+      <aside className="w-56 flex-shrink-0 flex flex-col border-r border-line overflow-hidden bg-white">
         {/* Logo */}
-        <div className="px-4 py-4 border-b border-[#1e2a3a] flex items-center gap-3 shrink-0">
-          <div className="relative w-8 h-8 rounded-xl bg-brand flex items-center justify-center shadow-lg" style={{ boxShadow: "0 0 20px rgba(0,13,255,0.4)" }}>
+        <div className="px-4 py-4 border-b border-line flex items-center gap-3 shrink-0">
+          <div className="relative w-8 h-8 rounded-xl bg-brand flex items-center justify-center shadow-lg shadow-blue-300/40">
             <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none">
               <path d="M4 20 L4 4 L12 4 L12 11 L20 11 L20 20 Z" stroke="white" strokeWidth="1.8" strokeLinejoin="round" />
               <circle cx="12" cy="11" r="1.5" fill="white" />
             </svg>
-            <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-400 rounded-full ring-2 ring-[#070a12] animate-pulse" />
+            <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-400 rounded-full ring-2 ring-white animate-pulse" />
           </div>
           <div className="leading-none">
             <div className="text-sm font-bold text-primary tracking-tight">
@@ -828,23 +791,18 @@ export default function FanDashboard() {
         {/* Roster header */}
         <div className="px-4 pt-4 pb-2 shrink-0 flex items-center justify-between">
           <span className={EYEBROW}>Roster</span>
-          <span className="text-[10px] text-muted font-medium bg-[#1e2a3a] px-1.5 py-px rounded-md">{artists.length}</span>
+          <span className="text-[10px] text-muted font-medium bg-slate-100 px-1.5 py-px rounded-md">{artists.length}</span>
         </div>
 
         {/* Artist list */}
         <div className="flex-1 overflow-y-auto px-2 pb-2 space-y-px" style={{ scrollbarWidth: "thin" }}>
           {artists.map((a) => (
-            <SidebarArtistRow
-              key={a.slug}
-              artist={a}
-              active={a.slug === selectedSlug}
-              onClick={() => setSelectedSlug(a.slug)}
-            />
+            <SidebarArtistRow key={a.slug} artist={a} active={a.slug === selectedSlug} onClick={() => setSelectedSlug(a.slug)} />
           ))}
         </div>
 
         {/* Sync status */}
-        <div className="px-4 py-3 border-t border-[#1e2a3a] shrink-0 flex items-center gap-2">
+        <div className="px-4 py-3 border-t border-divider shrink-0 flex items-center gap-2">
           <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${sheetsLoading ? "bg-amber-400" : "bg-emerald-500 animate-pulse"}`} />
           <span className="text-[10px] font-semibold text-muted truncate">{syncLabel}</span>
         </div>
@@ -854,15 +812,9 @@ export default function FanDashboard() {
       <main className="flex-1 min-w-0 flex flex-col overflow-hidden">
 
         {/* Header bar */}
-        <header
-          className="shrink-0 px-6 py-3 border-b border-[#1e2a3a] flex items-center justify-between gap-6"
-          style={{ background: "#070a12" }}
-        >
+        <header className="shrink-0 px-6 py-3 border-b border-line bg-white flex items-center justify-between gap-6">
           <div className="flex items-center gap-4 min-w-0">
-            <div
-              className="w-10 h-10 rounded-xl overflow-hidden shrink-0 flex items-center justify-center font-bold text-lg"
-              style={{ background: "#1e2a3a" }}
-            >
+            <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0 flex items-center justify-center font-bold text-lg bg-slate-100">
               <img
                 src={iconFor(artist.slug)}
                 alt={artist.name}
@@ -912,8 +864,7 @@ export default function FanDashboard() {
 
             {/* Growth chart */}
             <div className={`col-span-8 ${CARD} flex flex-col overflow-hidden`}>
-              {/* Chart header */}
-              <div className="px-5 py-3 border-b border-[#1e2a3a] flex items-center justify-between gap-4 shrink-0 flex-wrap">
+              <div className="px-5 py-3 border-b border-line flex items-center justify-between gap-4 shrink-0 flex-wrap">
                 <div>
                   <div className={EYEBROW}>Fan Network Growth</div>
                   <div className="text-sm font-semibold text-primary mt-0.5 flex items-center gap-3">
@@ -941,11 +892,11 @@ export default function FanDashboard() {
                           onClick={() => togglePlat(p)}
                           className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold transition border ${
                             off
-                              ? "border-[#1e2a3a] text-muted"
-                              : "border-[#1e2a3a] text-secondary hover:border-[#2a3a4a] bg-[#1a2030]"
+                              ? "border-line text-muted bg-slate-50"
+                              : "border-line text-secondary bg-white hover:border-slate-300"
                           }`}
                         >
-                          <span className="w-1.5 h-1.5 rounded-full" style={{ background: off ? "#2a3a4a" : PLATFORMS[p].color }} />
+                          <span className="w-1.5 h-1.5 rounded-full" style={{ background: off ? "#cbd5e1" : PLATFORMS[p].color }} />
                           {p}
                         </button>
                       );
@@ -953,7 +904,7 @@ export default function FanDashboard() {
                   </div>
 
                   {/* Range selector */}
-                  <div className="flex items-center gap-0.5 bg-[#0b0f1a] p-1 rounded-xl shrink-0">
+                  <div className="flex items-center gap-0.5 bg-slate-100 p-1 rounded-xl shrink-0">
                     {[
                       { key: "3m", label: "3M" },
                       { key: "6m", label: "6M" },
@@ -966,8 +917,8 @@ export default function FanDashboard() {
                         onClick={() => setYearRange(opt.key)}
                         className={`text-[11px] font-semibold px-2.5 py-1 rounded-lg transition ${
                           yearRange === opt.key
-                            ? "bg-[#1e2a3a] text-primary shadow-sm"
-                            : "text-muted hover:text-secondary"
+                            ? "bg-white text-primary shadow-sm"
+                            : "text-secondary hover:text-primary"
                         }`}
                       >
                         {opt.label}
@@ -984,14 +935,14 @@ export default function FanDashboard() {
                 ) : (
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={history} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
-                      <CartesianGrid strokeDasharray="3 4" vertical={false} stroke="#1e2a3a" />
+                      <CartesianGrid strokeDasharray="3 4" vertical={false} stroke="#e2e8f0" />
                       <XAxis
                         dataKey="date"
                         tickFormatter={monthLabel}
                         interval={Math.max(0, Math.floor(history.length / 8))}
-                        axisLine={{ stroke: "#1e2a3a" }}
+                        axisLine={{ stroke: "#e2e8f0" }}
                         tickLine={false}
-                        tick={{ fill: "#4a5568", fontSize: 10, fontWeight: 500 }}
+                        tick={{ fill: "#94a3b8", fontSize: 10, fontWeight: 500 }}
                       />
                       <YAxis
                         tickFormatter={fmt}
@@ -1000,11 +951,11 @@ export default function FanDashboard() {
                         width={48}
                         ticks={yScale.ticks}
                         domain={[0, yScale.max]}
-                        tick={{ fill: "#4a5568", fontSize: 10, fontWeight: 500 }}
+                        tick={{ fill: "#94a3b8", fontSize: 10, fontWeight: 500 }}
                       />
                       <Tooltip
                         content={<ChartTooltip />}
-                        cursor={{ stroke: "#2a3a4a", strokeDasharray: "3 3" }}
+                        cursor={{ stroke: "#cbd5e1", strokeDasharray: "3 3" }}
                         wrapperStyle={{ transition: "none" }}
                       />
                       {orderedPlats.map((p) => {
@@ -1017,7 +968,7 @@ export default function FanDashboard() {
                             stroke={PLATFORMS[p].color}
                             strokeWidth={2}
                             dot={false}
-                            activeDot={{ r: 4, strokeWidth: 2, stroke: "#111827" }}
+                            activeDot={{ r: 4, strokeWidth: 2, stroke: "white" }}
                             isAnimationActive={false}
                           />
                         );
@@ -1030,26 +981,25 @@ export default function FanDashboard() {
 
             {/* Fan Page Tracker */}
             <div className={`col-span-4 ${CARD} flex flex-col overflow-hidden`}>
-              <div className="px-5 py-3 border-b border-[#1e2a3a] flex items-center justify-between shrink-0">
+              <div className="px-5 py-3 border-b border-line flex items-center justify-between shrink-0">
                 <div>
                   <div className={EYEBROW}>Fan Page Tracker</div>
                   <div className="text-sm font-semibold text-primary mt-0.5">Admin-run pages</div>
                 </div>
-                {/* Platform dropdown */}
                 <div className="relative">
                   {pagesDropdownOpen && (
                     <div className="fixed inset-0 z-10" onClick={() => setPagesDropdownOpen(false)} />
                   )}
                   <button
                     onClick={() => setPagesDropdownOpen((o) => !o)}
-                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-[#1e2a3a] text-[10px] font-semibold text-secondary bg-[#0b0f1a] hover:border-[#2a3a4a] transition"
+                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-line text-[10px] font-semibold text-secondary bg-white hover:border-slate-300 transition"
                   >
-                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: PLATFORMS[fpEffectivePlatform]?.color ?? "#4a5568" }} />
+                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: PLATFORMS[fpEffectivePlatform]?.color ?? "#94a3b8" }} />
                     {fpEffectivePlatform}
                     <ChevronDown size={10} className="text-muted" />
                   </button>
                   {pagesDropdownOpen && (
-                    <div className="absolute right-0 top-full mt-1.5 z-20 bg-[#111827] border border-[#1e2a3a] rounded-2xl shadow-xl py-1.5 min-w-[190px]">
+                    <div className="absolute right-0 top-full mt-1.5 z-20 bg-white border border-line rounded-2xl shadow-lg py-1.5 min-w-[190px]">
                       {fpAvailablePlatforms.map((plat) => (
                         <button
                           key={plat}
@@ -1059,9 +1009,9 @@ export default function FanDashboard() {
                             setPagesAtBottom(false);
                             if (pagesListRef.current) pagesListRef.current.scrollTop = 0;
                           }}
-                          className={`w-full flex items-center gap-2 px-3 py-1.5 text-[11px] font-semibold transition hover:bg-[#1a2030] ${plat === fpEffectivePlatform ? "text-primary" : "text-muted"}`}
+                          className={`w-full flex items-center gap-2 px-3 py-1.5 text-[11px] font-semibold transition hover:bg-slate-50 ${plat === fpEffectivePlatform ? "text-primary" : "text-muted"}`}
                         >
-                          <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: PLATFORMS[plat]?.color ?? "#4a5568" }} />
+                          <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: PLATFORMS[plat]?.color ?? "#94a3b8" }} />
                           {plat}
                           {plat === fpEffectivePlatform && <span className="ml-auto text-brand">✓</span>}
                         </button>
@@ -1071,7 +1021,6 @@ export default function FanDashboard() {
                 </div>
               </div>
 
-              {/* Pages list */}
               <div
                 ref={pagesListRef}
                 className="flex-1 min-h-0 overflow-y-auto px-2 py-2"
@@ -1085,17 +1034,17 @@ export default function FanDashboard() {
                 ) : (
                   <div className="space-y-px">
                     {filteredPages.map((p, i) => {
-                      const platCfg = PLATFORMS[fpEffectivePlatform] || { soft: "#1e2a3a", color: "#4a5568" };
+                      const platCfg = PLATFORMS[fpEffectivePlatform] || { soft: "#f1f5f9", color: "#94a3b8" };
                       const Tag = p.link ? "a" : "div";
                       return (
                         <Tag
                           key={p.link || `${p.platform}-${p.name}-${i}`}
                           {...(p.link ? { href: p.link, target: "_blank", rel: "noopener noreferrer" } : {})}
-                          className="p-2.5 flex items-center gap-3 hover:bg-[#1a2030] transition cursor-pointer group rounded-xl no-underline"
+                          className="p-2.5 flex items-center gap-3 hover:bg-slate-50 transition cursor-pointer group rounded-xl no-underline"
                         >
                           <div
-                            className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-                            style={{ background: `${platCfg.color}18` }}
+                            className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
+                            style={{ background: platCfg.soft }}
                           >
                             <span className="text-xs font-bold" style={{ color: platCfg.color }}>{String(i + 1).padStart(2, "0")}</span>
                           </div>
@@ -1120,7 +1069,7 @@ export default function FanDashboard() {
               </div>
 
               {filteredPages.length > 0 && (
-                <div className="px-5 py-2 border-t border-[#1e2a3a] flex items-center justify-between shrink-0">
+                <div className="px-5 py-2 border-t border-divider flex items-center justify-between shrink-0">
                   <span className="text-[10px] text-muted font-medium">
                     {filteredPages.length} {(() => {
                       const n = filteredPages.length;
@@ -1132,9 +1081,7 @@ export default function FanDashboard() {
                     })()} tracked
                   </span>
                   {!pagesAtBottom && filteredPages.length > 6 && (
-                    <span className="text-[10px] text-muted font-medium flex items-center gap-1">
-                      scroll <ChevronDown size={10} />
-                    </span>
+                    <span className="text-[10px] text-muted font-medium flex items-center gap-1">scroll <ChevronDown size={10} /></span>
                   )}
                 </div>
               )}
@@ -1147,8 +1094,8 @@ export default function FanDashboard() {
             {/* Platform Share */}
             <div className={`${CARD} p-4 flex flex-col overflow-hidden`}>
               <div className="flex items-center gap-2 shrink-0 mb-1">
-                <div className="w-5 h-5 rounded-lg flex items-center justify-center" style={{ background: "rgba(66,133,244,0.15)" }}>
-                  <PieIcon size={11} className="text-blue-400" />
+                <div className="w-5 h-5 rounded-lg bg-blue-100 flex items-center justify-center">
+                  <PieIcon size={11} className="text-blue-600" />
                 </div>
                 <div className={EYEBROW}>Platform Share</div>
               </div>
@@ -1166,13 +1113,9 @@ export default function FanDashboard() {
                     <PieChart>
                       <Pie
                         data={platformShareData(artist)}
-                        innerRadius="42%"
-                        outerRadius="72%"
-                        dataKey="value"
-                        stroke="#111827"
-                        strokeWidth={2}
-                        startAngle={90}
-                        endAngle={-270}
+                        innerRadius="42%" outerRadius="72%"
+                        dataKey="value" stroke="white" strokeWidth={2}
+                        startAngle={90} endAngle={-270}
                         isAnimationActive={false}
                         onMouseEnter={(d) => setPieHover({ name: d.name, value: d.value, fill: d.payload?.fill || d.fill })}
                         onMouseLeave={() => setPieHover(null)}
@@ -1187,7 +1130,7 @@ export default function FanDashboard() {
                   </div>
                   {pieHover && piePos && (
                     <div
-                      className="absolute pointer-events-none z-10 flex items-center gap-2 text-xs bg-[#1a2030] border border-[#1e2a3a] rounded-xl px-3 py-1.5 shadow-xl whitespace-nowrap"
+                      className="absolute pointer-events-none z-10 flex items-center gap-2 text-xs bg-white border border-line rounded-xl px-3 py-1.5 shadow-lg whitespace-nowrap"
                       style={{ left: piePos.x + 14, top: piePos.y - 16, transform: "translateY(-50%)" }}
                     >
                       <span className="w-2 h-2 rounded-full shrink-0" style={{ background: pieHover.fill }} />
@@ -1214,8 +1157,8 @@ export default function FanDashboard() {
             {/* Growth Velocity */}
             <div className={`${CARD} p-4 flex flex-col overflow-hidden`}>
               <div className="flex items-center gap-2 shrink-0 mb-1">
-                <div className="w-5 h-5 rounded-lg flex items-center justify-center" style={{ background: "rgba(251,191,36,0.12)" }}>
-                  <Zap size={11} className="text-amber-400" />
+                <div className="w-5 h-5 rounded-lg bg-amber-100 flex items-center justify-center">
+                  <Zap size={11} className="text-amber-600" />
                 </div>
                 <div className={EYEBROW}>Growth Velocity · 12mo</div>
               </div>
@@ -1223,26 +1166,21 @@ export default function FanDashboard() {
               <div className="flex-1 min-h-0">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={monthlyVelocity(history, orderedPlats)} margin={{ top: 4, right: 0, left: 0, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 4" vertical={false} stroke="#1e2a3a" />
+                    <CartesianGrid strokeDasharray="3 4" vertical={false} stroke="#e2e8f0" />
                     <XAxis
                       dataKey="date"
                       tickFormatter={(ym) => monthLabel(ym).split(" ")[0]}
-                      axisLine={false}
-                      tickLine={false}
-                      interval={1}
-                      tick={{ fill: "#4a5568", fontSize: 9, fontWeight: 500 }}
+                      axisLine={false} tickLine={false} interval={1}
+                      tick={{ fill: "#94a3b8", fontSize: 9, fontWeight: 500 }}
                     />
                     <YAxis
-                      tickFormatter={fmt}
-                      axisLine={false}
-                      tickLine={false}
-                      width={36}
-                      tick={{ fill: "#4a5568", fontSize: 9, fontWeight: 500 }}
+                      tickFormatter={fmt} axisLine={false} tickLine={false} width={36}
+                      tick={{ fill: "#94a3b8", fontSize: 9, fontWeight: 500 }}
                     />
                     <Tooltip
                       content={({ active, payload, label }) =>
                         active && payload?.length ? (
-                          <div className="bg-[#1a2030] border border-[#1e2a3a] rounded-xl shadow-xl p-3 text-xs">
+                          <div className="bg-white border border-line rounded-xl shadow-lg p-3 text-xs">
                             <div className={EYEBROW}>{monthLabel(label)}</div>
                             <div className="font-bold tabular-nums text-primary text-sm mt-1">
                               {payload[0].value >= 0 ? "+" : ""}{fmtFull(payload[0].value)}
@@ -1250,12 +1188,12 @@ export default function FanDashboard() {
                           </div>
                         ) : null
                       }
-                      cursor={{ fill: "#1a2030" }}
+                      cursor={{ fill: "#f1f5f9" }}
                       wrapperStyle={{ transition: "none" }}
                     />
                     <Bar dataKey="net" radius={[4, 4, 0, 0]} isAnimationActive={false}>
                       {monthlyVelocity(history, orderedPlats).map((d, i) => (
-                        <Cell key={i} fill={d.net >= 0 ? "#10b981" : "#f43f5e"} />
+                        <Cell key={i} fill={d.net >= 0 ? "#059669" : "#f43f5e"} />
                       ))}
                     </Bar>
                   </BarChart>
@@ -1266,7 +1204,7 @@ export default function FanDashboard() {
             {/* Fastest Movers */}
             <div className={`${CARD} p-4 flex flex-col overflow-hidden`}>
               <div className="flex items-center gap-2 shrink-0 mb-1">
-                <div className="w-5 h-5 rounded-lg flex items-center justify-center" style={{ background: "rgba(16,185,129,0.12)" }}>
+                <div className="w-5 h-5 rounded-lg bg-emerald-100 flex items-center justify-center">
                   <ArrowUpRight size={11} className="text-pos" />
                 </div>
                 <div className={EYEBROW}>Fastest Movers · 28d</div>
@@ -1283,19 +1221,18 @@ export default function FanDashboard() {
                       <button
                         key={a.slug}
                         onClick={() => setSelectedSlug(a.slug)}
-                        className="w-full flex items-center gap-2.5 px-2 py-2 rounded-xl hover:bg-[#1a2030] transition text-left"
+                        className="w-full flex items-center gap-2.5 px-2 py-2 rounded-xl hover:bg-slate-50 transition text-left"
                       >
-                        <div
-                          className="w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold shrink-0"
-                          style={{
-                            background: i === 0 ? "rgba(251,191,36,0.15)" : i === 1 ? "#1e2a3a" : i === 2 ? "rgba(251,146,60,0.15)" : "#141c28",
-                            color: i === 0 ? "#fbbf24" : i === 1 ? "#8892a4" : i === 2 ? "#fb923c" : "#4a5568",
-                          }}
-                        >
+                        <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold shrink-0 ${
+                          i === 0 ? "bg-amber-100 text-amber-700"
+                          : i === 1 ? "bg-slate-100 text-secondary"
+                          : i === 2 ? "bg-orange-100 text-orange-700"
+                          : "bg-slate-50 text-muted"
+                        }`}>
                           {i + 1}
                         </div>
                         <span className="flex-1 text-sm font-semibold text-primary truncate">{a.name}</span>
-                        <span className={`text-xs font-bold tabular-nums px-2 py-0.5 rounded-full shrink-0 ${up ? "bg-emerald-950 text-pos" : "bg-rose-950 text-neg"}`}>
+                        <span className={`text-xs font-bold tabular-nums px-2 py-0.5 rounded-full shrink-0 ${up ? "bg-emerald-50 text-pos" : "bg-rose-50 text-neg"}`}>
                           {up ? "+" : ""}{fmt(a.totals.delta)}
                         </span>
                       </button>
