@@ -784,7 +784,6 @@ export default function FanDashboard() {
             <div className="text-sm font-bold text-primary tracking-tight">
               FAN<span className="text-brand">INTEL</span>
             </div>
-            <div className="text-[9px] uppercase tracking-[0.18em] text-muted font-semibold mt-0.5">Intelligence</div>
           </div>
         </div>
 
@@ -828,7 +827,6 @@ export default function FanDashboard() {
             </div>
             <div className="min-w-0">
               <h1 className="text-lg font-bold text-primary leading-none truncate">{artist.name}</h1>
-              <div className="text-[10px] uppercase tracking-[0.18em] text-muted font-semibold mt-0.5">Community Intelligence</div>
             </div>
           </div>
 
