@@ -1091,7 +1091,7 @@ export default function FanDashboard() {
           <div className="shrink-0 grid grid-cols-3 gap-3">
 
             {/* Platform Share */}
-            <div className={`${CARD} p-4 flex flex-col overflow-hidden aspect-[3/2]`}>
+            <div className={`${CARD} p-4 flex flex-col overflow-hidden aspect-[2/1]`}>
               <div className="flex items-center gap-2 shrink-0 mb-1">
                 <div className="w-5 h-5 rounded-lg bg-blue-100 flex items-center justify-center">
                   <PieIcon size={11} className="text-blue-600" />
@@ -1153,7 +1153,7 @@ export default function FanDashboard() {
             </div>
 
             {/* Growth Velocity */}
-            <div className={`${CARD} p-4 flex flex-col overflow-hidden aspect-[3/2]`}>
+            <div className={`${CARD} p-4 flex flex-col overflow-hidden aspect-[2/1]`}>
               <div className="flex items-center gap-2 shrink-0 mb-1">
                 <div className="w-5 h-5 rounded-lg bg-amber-100 flex items-center justify-center">
                   <Zap size={11} className="text-amber-600" />
@@ -1199,7 +1199,7 @@ export default function FanDashboard() {
             </div>
 
             {/* Fastest Movers */}
-            <div className={`${CARD} p-4 flex flex-col overflow-hidden aspect-[3/2]`}>
+            <div className={`${CARD} p-4 flex flex-col overflow-hidden aspect-[2/1]`}>
               <div className="flex items-center gap-2 shrink-0 mb-1">
                 <div className="w-5 h-5 rounded-lg bg-emerald-100 flex items-center justify-center">
                   <ArrowUpRight size={11} className="text-pos" />
