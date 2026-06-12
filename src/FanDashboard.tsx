@@ -1138,7 +1138,7 @@ export default function FanDashboard() {
                   )}
                 </div>
                 <div className="flex-1 space-y-1.5 overflow-hidden">
-                  {platformShareData(artist).slice(0, 4).map((d) => {
+                  {platformShareData(artist).map((d) => {
                     const pct = artist.totals.value > 0 ? ((d.value / artist.totals.value) * 100).toFixed(1) : "0.0";
                     return (
                       <div key={d.name} className="flex items-center gap-2 text-xs">
