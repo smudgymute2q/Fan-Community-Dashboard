@@ -1206,7 +1206,7 @@ export default function FanDashboard() {
                 </div>
                 <div className={EYEBROW}>Fastest Movers · 28d</div>
               </div>
-              <div className="flex-1 min-h-0 overflow-hidden -mx-1">
+              <div className="flex-1 min-h-0 overflow-hidden -mx-1 flex flex-col justify-between">
                 {artists
                   .slice()
                   .sort((a, b) => Math.abs(b.totals.delta) - Math.abs(a.totals.delta))
