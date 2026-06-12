@@ -865,7 +865,6 @@ export default function FanDashboard() {
               <div className="px-5 py-3 border-b border-line flex items-center justify-between gap-4 shrink-0 flex-wrap">
                 <div>
                   <div className={EYEBROW}>Fan Network Growth</div>
-                  <div className="text-sm font-semibold text-primary mt-0.5">Followers across platforms</div>
                 </div>
 
                 <div className="flex items-center gap-3">
@@ -999,7 +998,6 @@ export default function FanDashboard() {
               <div className="px-5 py-3 border-b border-line flex items-center justify-between shrink-0">
                 <div>
                   <div className={EYEBROW}>Fan Page Tracker</div>
-                  <div className="text-sm font-semibold text-primary mt-0.5">Admin-run pages</div>
                 </div>
                 <div className="relative">
                   {pagesDropdownOpen && (
@@ -1114,7 +1112,6 @@ export default function FanDashboard() {
                 </div>
                 <div className={EYEBROW}>Platform Share</div>
               </div>
-              <div className="text-xs font-semibold text-primary mb-2 shrink-0">Distribution of reach</div>
               <div className="flex-1 min-h-0 flex items-center gap-3">
                 <div
                   className="relative h-full aspect-square shrink-0"
@@ -1177,7 +1174,6 @@ export default function FanDashboard() {
                 </div>
                 <div className={EYEBROW}>Growth Velocity · 12mo</div>
               </div>
-              <div className="text-xs font-semibold text-primary mb-2 shrink-0">Net added per month</div>
               <div className="flex-1 min-h-0">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={monthlyVelocity(history, orderedPlats)} margin={{ top: 4, right: 0, left: 0, bottom: 0 }}>
@@ -1224,7 +1220,6 @@ export default function FanDashboard() {
                 </div>
                 <div className={EYEBROW}>Fastest Movers · 28d</div>
               </div>
-              <div className="text-xs font-semibold text-primary mb-2 shrink-0">Biggest swings on the roster</div>
               <div className="flex-1 min-h-0 overflow-y-auto -mx-1" style={{ scrollbarWidth: "none" }}>
                 {artists
                   .slice()
