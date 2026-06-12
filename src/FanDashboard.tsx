@@ -40,7 +40,7 @@ const PLATFORMS = {
   "Instagram Channels": { color: "#7638FA", soft: "#EDE6FE" },
   X: { color: "#000000", soft: "#E5E7EB" },
   "X Communities": { color: "#808080", soft: "#F3F4F6" },
-  TikTok: { color: "#00C2B2", soft: "#E0FDFB" },
+  TikTok: { color: "#00f2ea", soft: "#E0FDFB" },
 };
 
 // ---- Platform display order + classification ----
