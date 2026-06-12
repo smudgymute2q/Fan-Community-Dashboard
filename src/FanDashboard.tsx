@@ -1206,7 +1206,7 @@ export default function FanDashboard() {
                 </div>
                 <div className={EYEBROW}>Fastest Movers · 28d</div>
               </div>
-              <div className="flex-1 min-h-0 overflow-y-auto -mx-1" style={{ scrollbarWidth: "none" }}>
+              <div className="flex-1 min-h-0 overflow-hidden -mx-1">
                 {artists
                   .slice()
                   .sort((a, b) => Math.abs(b.totals.delta) - Math.abs(a.totals.delta))
@@ -1214,10 +1214,9 @@ export default function FanDashboard() {
                   .map((a, i) => {
                     const up = a.totals.delta >= 0;
                     return (
-                      <button
+                      <div
                         key={a.slug}
-                        onClick={() => setSelectedSlug(a.slug)}
-                        className="w-full flex items-center gap-2.5 px-2 py-2 rounded-xl hover:bg-slate-50 transition text-left"
+                        className="w-full flex items-center gap-2.5 px-2 py-2 rounded-xl"
                       >
                         <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold shrink-0 ${
                           i === 0 ? "bg-amber-100 text-amber-700"
@@ -1231,7 +1230,7 @@ export default function FanDashboard() {
                         <span className={`text-xs font-bold tabular-nums px-2 py-0.5 rounded-full shrink-0 ${up ? "bg-emerald-50 text-pos" : "bg-rose-50 text-neg"}`}>
                           {up ? "+" : ""}{fmt(a.totals.delta)}
                         </span>
-                      </button>
+                      </div>
                     );
                   })}
               </div>
