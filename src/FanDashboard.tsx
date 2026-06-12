@@ -752,7 +752,7 @@ export default function FanDashboard() {
   return (
     <div
       className="flex h-screen overflow-hidden text-primary"
-      style={{ background: "#f1f5f9", fontFamily: "'Plus Jakarta Sans', 'Inter', system-ui, sans-serif" }}
+      style={{ background: "#e2e8f0", fontFamily: "'Plus Jakarta Sans', 'Inter', system-ui, sans-serif" }}
     >
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
