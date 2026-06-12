@@ -3,7 +3,7 @@
 @theme {
   --color-primary: #0f172a;   /* primary text */
   --color-secondary: #475569; /* secondary text */
-  --color-muted: #94a3b8;     /* muted / label text */
+  --color-muted: #64748b;     /* muted / label text */
   --color-pos: #059669;       /* positive delta */
   --color-neg: #f43f5e;       /* negative delta */
   --color-brand: #000dff;     /* brand accent */
