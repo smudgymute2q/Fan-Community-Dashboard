@@ -816,37 +816,6 @@ export default function FanDashboard() {
       {/* ---- Main ---- */}
       <main className="flex-1 min-w-0 flex flex-col overflow-hidden">
 
-        {/* Header bar */}
-        <header className="shrink-0 px-6 py-4 border-b border-line bg-white flex items-center justify-between gap-6">
-          <div className="flex items-center gap-4 min-w-0">
-            <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0 flex items-center justify-center font-bold text-lg bg-slate-100">
-              <img
-                src={iconFor(artist.slug)}
-                alt={artist.name}
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  const el = e.target as HTMLImageElement;
-                  el.style.display = "none";
-                  if (el.parentElement) el.parentElement.textContent = artist.name.charAt(0);
-                }}
-              />
-            </div>
-            <div className="min-w-0">
-              <h1 className="text-lg font-bold text-primary leading-none truncate">{artist.name}</h1>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-6 shrink-0">
-            <div className="text-right">
-              <div className={`${EYEBROW} mb-1`}>Cumulative Reach</div>
-              <div className="text-2xl font-bold tabular-nums text-primary leading-none">{fmtFull(artist.totals.value)}</div>
-            </div>
-            <div className="flex flex-col items-end gap-1">
-              <DeltaPill value={artist.totals.delta} />
-              <span className="text-[10px] text-muted font-medium">last 28d</span>
-            </div>
-          </div>
-        </header>
 
         {/* Content */}
         <div className="flex-1 min-h-0 p-4 flex flex-col gap-3 overflow-hidden">
