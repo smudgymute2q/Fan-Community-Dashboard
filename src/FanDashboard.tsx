@@ -342,12 +342,14 @@ function KpiTile({ platform, value, delta }: { platform: string; value: number; 
   const cfg = PLATFORMS[platform];
   return (
     <div className="rounded-xl p-3 bg-white border border-line shadow-sm">
-      <div className="flex items-center gap-1.5 mb-2">
-        {cfg && <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: cfg.color }} />}
-        <span className="text-[10px] font-semibold uppercase tracking-wider text-muted truncate">{platform}</span>
+      <div className="flex items-center justify-between gap-2 mb-2">
+        <div className="flex items-center gap-1.5 min-w-0">
+          {cfg && <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: cfg.color }} />}
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-muted truncate">{platform}</span>
+        </div>
+        <DeltaPill value={delta} small />
       </div>
-      <div className="font-bold tabular-nums text-lg text-primary leading-none">{fmtFull(value)}</div>
-      <div className="mt-1.5"><DeltaPill value={delta} /></div>
+      <div className="font-bold tabular-nums text-2xl text-primary leading-none">{fmtFull(value)}</div>
     </div>
   );
 }
