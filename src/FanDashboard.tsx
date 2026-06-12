@@ -1216,7 +1216,7 @@ export default function FanDashboard() {
                     return (
                       <div
                         key={a.slug}
-                        className="w-full flex items-center gap-3 px-2 py-3 rounded-xl"
+                        className="w-full flex items-center gap-3 px-2 rounded-xl"
                       >
                         <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 ${
                           i === 0 ? "bg-amber-100 text-amber-700"
