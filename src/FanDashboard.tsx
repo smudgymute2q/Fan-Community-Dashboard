@@ -1216,9 +1216,9 @@ export default function FanDashboard() {
                     return (
                       <div
                         key={a.slug}
-                        className="w-full flex items-center gap-2.5 px-2 py-2 rounded-xl"
+                        className="w-full flex items-center gap-3 px-2 py-3 rounded-xl"
                       >
-                        <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold shrink-0 ${
+                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 ${
                           i === 0 ? "bg-amber-100 text-amber-700"
                           : i === 1 ? "bg-slate-100 text-secondary"
                           : i === 2 ? "bg-orange-100 text-orange-700"
@@ -1226,8 +1226,8 @@ export default function FanDashboard() {
                         }`}>
                           {i + 1}
                         </div>
-                        <span className="flex-1 text-sm font-semibold text-primary truncate">{a.name}</span>
-                        <span className={`text-xs font-bold tabular-nums px-2 py-0.5 rounded-full shrink-0 ${up ? "bg-emerald-50 text-pos" : "bg-rose-50 text-neg"}`}>
+                        <span className="flex-1 text-base font-semibold text-primary truncate">{a.name}</span>
+                        <span className={`text-sm font-bold tabular-nums px-3 py-1 rounded-full shrink-0 ${up ? "bg-emerald-50 text-pos" : "bg-rose-50 text-neg"}`}>
                           {up ? "+" : ""}{fmt(a.totals.delta)}
                         </span>
                       </div>
