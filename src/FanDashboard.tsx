@@ -487,6 +487,7 @@ export default function FanDashboard() {
   const [yearRange, setYearRange] = useState("all");
   const [pagesPlatform, setPagesPlatform] = useState("Discord");
   const [pagesDropdownOpen, setPagesDropdownOpen] = useState(false);
+  const [showStarredOnly, setShowStarredOnly] = useState(false);
   const pagesListRef = React.useRef<HTMLDivElement>(null);
   const [pagesAtBottom, setPagesAtBottom] = useState(false);
   const [redditPosts, setRedditPosts] = useState<any[]>([]);
@@ -597,6 +598,7 @@ export default function FanDashboard() {
     setPagesPlatform("Discord");
     setPieHover(null);
     setHiddenPlats(new Set());
+    setShowStarredOnly(false);
   }, [selectedSlug]);
 
   useEffect(() => {
@@ -723,8 +725,10 @@ export default function FanDashboard() {
     : fpAvailablePlatforms[0] || "Discord";
 
   const filteredPages = useMemo(
-    () => artist.pages.filter((p) => p.platform === fpEffectivePlatform).sort((a, b) => b.followers - a.followers),
-    [artist.pages, fpEffectivePlatform]
+    () => artist.pages
+      .filter((p) => p.platform === fpEffectivePlatform && (!showStarredOnly || p.managed))
+      .sort((a, b) => b.followers - a.followers),
+    [artist.pages, fpEffectivePlatform, showStarredOnly]
   );
 
   const togglePlat = (p) => {
@@ -999,6 +1003,16 @@ export default function FanDashboard() {
                 <div>
                   <div className={EYEBROW}>Fan Page Tracker</div>
                 </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setShowStarredOnly((o) => !o)}
+                    className={`w-6 h-6 rounded-lg flex items-center justify-center transition border ${
+                      showStarredOnly ? "bg-amber-50 border-amber-200" : "bg-white border-line hover:border-slate-300"
+                    }`}
+                    title="Show starred only"
+                  >
+                    <Star size={11} className={showStarredOnly ? "fill-amber-400 text-amber-400" : "text-muted"} />
+                  </button>
                 <div className="relative">
                   {pagesDropdownOpen && (
                     <div className="fixed inset-0 z-10" onClick={() => setPagesDropdownOpen(false)} />
@@ -1031,6 +1045,7 @@ export default function FanDashboard() {
                       ))}
                     </div>
                   )}
+                </div>
                 </div>
               </div>
 
