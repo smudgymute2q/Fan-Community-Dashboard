@@ -341,13 +341,13 @@ function DeltaPill({ value, small = false }: { value: number | null | undefined;
 function KpiTile({ platform, value, delta }: { platform: string; value: number; delta: number }) {
   const cfg = PLATFORMS[platform];
   return (
-    <div className="rounded-xl px-3 py-2 bg-white border border-line shadow-sm">
-      <div className="flex items-center gap-1.5 mb-1">
+    <div className="rounded-xl p-3 bg-white border border-line shadow-sm">
+      <div className="flex items-center gap-1.5 mb-2">
         {cfg && <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: cfg.color }} />}
         <span className="text-[10px] font-semibold uppercase tracking-wider text-muted truncate">{platform}</span>
       </div>
       <div className="font-bold tabular-nums text-lg text-primary leading-none">{fmtFull(value)}</div>
-      <div className="mt-1"><DeltaPill value={delta} /></div>
+      <div className="mt-1.5"><DeltaPill value={delta} /></div>
     </div>
   );
 }
