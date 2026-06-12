@@ -787,7 +787,7 @@ export default function FanDashboard() {
             <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-400 rounded-full ring-2 ring-white animate-pulse" />
           </div>
           <div className="leading-none">
-            <div className="text-sm font-bold text-primary tracking-tight">
+            <div className="text-xl font-bold text-primary tracking-tight">
               FAN<span className="text-brand">INTEL</span>
             </div>
           </div>
