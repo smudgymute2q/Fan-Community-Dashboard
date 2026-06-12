@@ -891,7 +891,7 @@ export default function FanDashboard() {
 
               {/* Range stats strip */}
               {rangeStats && (
-                <div className="mx-5 mb-3 flex shrink-0 rounded-2xl bg-blue-50 border border-blue-100 divide-x divide-blue-200">
+                <div className="mx-5 mt-3 mb-3 flex shrink-0 rounded-2xl bg-blue-50 border border-blue-100 divide-x divide-blue-200">
                   <div className="flex-1 px-4 py-3">
                     <div className={`${EYEBROW} mb-1`}>Range Start</div>
                     <div className="text-base font-bold tabular-nums text-primary">{fmt(rangeStats.startTotal)}</div>
