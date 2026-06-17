@@ -12,6 +12,8 @@ import {
   Cell,
   PieChart,
   Pie,
+  AreaChart,
+  Area,
 } from "recharts";
 import {
   ChevronDown,
@@ -30,17 +32,23 @@ import {
   Play,
   AlertCircle,
   Star,
+  Users,
+  LayoutList,
+  Gauge,
+  TrendingUp,
+  Radar,
+  Trophy,
 } from "lucide-react";
 
 // ---- Platform tokens ----
 const PLATFORMS = {
-  Discord: { color: "#4285F4", soft: "#E8F0FE" },
+  Discord: { color: "#5865F2", soft: "#E8EAFD" },
   Reddit: { color: "#FF4500", soft: "#FFECE3" },
   Instagram: { color: "#FF0069", soft: "#FFE0EE" },
-  "Instagram Channels": { color: "#7638FA", soft: "#EDE6FE" },
+  "Instagram Channels": { color: "#D300C5", soft: "#FBE0F7" },
   X: { color: "#000000", soft: "#E5E7EB" },
   "X Communities": { color: "#808080", soft: "#F3F4F6" },
-  TikTok: { color: "#00f2ea", soft: "#E0FDFB" },
+  TikTok: { color: "#25F4EE", soft: "#E0FDFB" },
 };
 
 // ---- Platform display order + classification ----
@@ -48,8 +56,8 @@ const PLAT_ORDER = ["Discord", "Reddit", "Instagram", "Instagram Channels", "X",
 const MEMBER_PLATFORMS = new Set(["Discord", "Reddit", "X Communities", "Instagram Channels"]);
 
 // ---- Design tokens ----
-const CARD = "bg-white border border-line rounded-2xl shadow-sm";
-const EYEBROW = "text-[10px] font-semibold uppercase tracking-wider text-muted";
+const CARD = "bg-white rounded-[18px]";
+const EYEBROW = "text-[12px] font-medium text-muted whitespace-nowrap";
 
 // ---- Cloudflare Worker proxy ----
 const WORKER_URL = "https://fanintel.smudgy-mute2q.workers.dev";
@@ -299,13 +307,14 @@ function buildHistory(artist) {
       else if (plat === "X") curve = t < 0.4 ? 0 : (t - 0.4) / 0.6;
       else curve = Math.pow(t, 1.3);
       const noise = (rand(i * 7 + pIdx) - 0.5) * 0.03;
-      row[plat] = Math.max(0, Math.round(current * (curve + noise)));
+      row[plat] = curve === 0 ? 0 : Math.max(0, Math.round(current * (curve + noise)));
     });
     return row;
   });
 }
 
 const fmt = (n) => { if (n === undefined || n === null) return "—"; const abs = Math.abs(n); if (abs >= 1_000_000) return (n / 1_000_000).toFixed(n % 1_000_000 === 0 ? 0 : 2) + "M"; if (abs >= 10_000) return (n / 1_000).toFixed(0) + "K"; if (abs >= 1_000) return (n / 1_000).toFixed(1).replace(/\.0$/, "") + "K"; return n.toLocaleString(); };
+const fmtPill = (n) => { if (n === undefined || n === null) return "—"; const abs = Math.abs(n); if (abs >= 1_000_000) return (n / 1_000_000).toFixed(1) + "M"; if (abs >= 1_000) return (n / 1_000).toFixed(1) + "K"; return n.toLocaleString(); };
 const fmtFull = (n) => (n ?? 0).toLocaleString();
 const fmtPageDate = (s: string) => { const [m, d, y] = s.split("/").map(Number); const mon = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][m - 1]; return y === new Date().getFullYear() ? `${mon} ${d}` : `${mon} ${d}, ${y}`; };
 const monthLabel = (ym) => { const [y, m] = ym.split("-"); return new Date(parseInt(y), parseInt(m) - 1, 1).toLocaleString("en", { month: "short", year: "numeric" }); };
@@ -314,7 +323,11 @@ function platformShareData(artist) {
   return Object.entries(artist.platforms).map(([name, v]) => ({ name, value: v.value, fill: PLATFORMS[name]?.color || "#888" })).sort((a, b) => b.value - a.value);
 }
 function monthlyVelocity(history, plats) {
-  const recent = history.slice(-13);
+  // Year-to-date: months in the latest year, plus the prior month for delta calc
+  const latestYear = history[history.length - 1].date.slice(0, 4);
+  const firstIdx = history.findIndex((r) => r.date >= `${latestYear}-01`);
+  const startIdx = Math.max(0, (firstIdx === -1 ? history.length - 1 : firstIdx) - 1);
+  const recent = history.slice(startIdx);
   return recent.slice(1).map((row, i) => {
     const prev = recent[i];
     const total = plats.reduce((s, p) => s + (row[p] || 0), 0);
@@ -330,10 +343,11 @@ function DeltaPill({ value, small = false }: { value: number | null | undefined;
     return <span className={`text-muted ${small ? "text-[10px]" : "text-xs"} font-medium`}>—</span>;
   const up = value > 0;
   return (
-    <span className={`inline-flex items-center font-bold tabular-nums rounded-full ${
-      small ? "text-[10px] px-1.5 py-px" : "text-xs px-2 py-0.5"
-    } ${up ? "bg-emerald-50 text-pos" : "bg-rose-50 text-neg"}`}>
-      {up ? "+" : ""}{fmt(value)}
+    <span className={`inline-flex items-center gap-0.5 font-semibold tabular-nums rounded-full ${
+      small ? "text-[10px] px-1.5 py-0.5" : "text-xs px-2 py-0.5"
+    } ${up ? "bg-[#e8f5ea] text-pos" : "bg-[#fdecea] text-neg"}`}>
+      {up ? "+" : ""}{fmtPill(value)}
+      <span className={small ? "text-[8px] -mr-0.5" : "text-[10px] -mr-0.5"}>{up ? "\u2197" : "\u2198"}</span>
     </span>
   );
 }
@@ -341,20 +355,20 @@ function DeltaPill({ value, small = false }: { value: number | null | undefined;
 function KpiTile({ platform, value, delta }: { platform: string; value: number; delta: number }) {
   const cfg = PLATFORMS[platform];
   return (
-    <div className="rounded-xl p-3 bg-white border border-line shadow-sm">
-      <div className="flex items-center justify-between gap-2 mb-1">
-        <div className="flex items-center gap-1.5 min-w-0">
-          {cfg && <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: cfg.color }} />}
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-muted truncate">{platform}</span>
-        </div>
-        <DeltaPill value={delta} />
+    <div className="rounded-[18px] p-[22px] bg-white min-w-0">
+      <div className="flex items-center justify-between gap-2 mb-3">
+        <span className="text-[12px] font-medium text-secondary truncate">{platform}</span>
+        <span className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 bg-[#f0f0f3]">
+          <span className="w-2 h-2 rounded-full" style={{ background: cfg?.color || "#86868b" }} />
+        </span>
       </div>
-      <div className="font-bold tabular-nums text-2xl text-primary leading-none">{fmtFull(value)}</div>
+      <div className="font-extrabold tabular-nums text-[22px] text-primary leading-none mb-2.5 truncate">{fmtFull(value)}</div>
+      <DeltaPill value={delta} />
     </div>
   );
 }
 
-const iconFor = (slug: string) => `${import.meta.env.BASE_URL}icons/${slug}.png`;
+const iconFor = (slug: string) => `./icons/${slug}.png`;
 
 function SidebarArtistRow({ artist, active, onClick }: { artist: any; active: boolean; onClick: () => void }) {
   const icon = iconFor(artist.slug);
@@ -362,13 +376,13 @@ function SidebarArtistRow({ artist, active, onClick }: { artist: any; active: bo
   return (
     <button
       onClick={onClick}
-      className={`w-full flex items-center gap-2.5 py-2 rounded-xl transition-all text-left border-l-2 pl-2.5 pr-3 ${
-        active ? "border-l-brand bg-[#eef0ff]" : "border-l-transparent hover:bg-slate-50"
+      className={`w-full flex items-center gap-2.5 py-2 rounded-xl transition-all text-left pl-2.5 pr-3 ${
+        active ? "bg-[#ebebf0]" : "hover:bg-[#f5f5f7]"
       }`}
     >
       <div
-        className="w-8 h-8 rounded-lg overflow-hidden shrink-0 flex items-center justify-center font-bold text-xs"
-        style={{ background: active ? "rgba(0,13,255,0.12)" : "#f1f5f9" }}
+        className="w-9 h-9 rounded-xl overflow-hidden shrink-0 flex items-center justify-center font-bold text-xs"
+        style={{ background: active ? "#e3e3e8" : "#f0f0f3" }}
       >
         <img
           src={icon}
@@ -382,7 +396,7 @@ function SidebarArtistRow({ artist, active, onClick }: { artist: any; active: bo
         />
       </div>
       <div className="flex-1 min-w-0">
-        <div className={`text-sm font-semibold truncate leading-tight ${active ? "text-brand" : "text-primary"}`}>
+        <div className={`text-sm font-semibold truncate leading-tight ${active ? "text-primary" : "text-primary"}`}>
           {artist.name}
         </div>
         <div className="flex items-center gap-1.5 mt-0.5">
@@ -396,19 +410,31 @@ function SidebarArtistRow({ artist, active, onClick }: { artist: any; active: bo
 
 function ChartTooltip({ active, payload, label }: any) {
   if (!active || !payload || !payload.length) return null;
+  const rows = payload
+    .filter((p) => p.value !== null && p.value !== undefined)
+    .slice()
+    .sort((a, b) => b.value - a.value);
+  if (!rows.length) return null;
   return (
-    <div className="bg-white border border-line rounded-xl shadow-lg p-3 text-xs">
-      <div className={`${EYEBROW} mb-2`}>
+    <div className="bg-white rounded-[18px] p-3.5 min-w-[184px]" style={{ boxShadow: "0 0 0 0.5px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px -6px rgba(0,0,0,0.12), 0 24px 56px -16px rgba(0,0,0,0.16)" }}>
+      <div className="text-[11px] font-semibold uppercase tracking-wider text-muted mb-3">
         {label && typeof label === "string" && label.includes("-") ? monthLabel(label) : label}
       </div>
-      <div className="space-y-1.5">
-        {payload.slice().sort((a, b) => b.value - a.value).map((p) => (
-          <div key={p.dataKey || p.name} className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full shrink-0" style={{ background: p.color || p.fill }} />
-            <span className="text-secondary flex-1">{p.name}</span>
-            <span className="font-semibold tabular-nums text-primary ml-3">{fmtFull(p.value)}</span>
+      <div className="flex flex-col gap-2">
+        {rows.map((p) => (
+          <div key={p.dataKey || p.name} className="flex items-center gap-2.5">
+            <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: p.color || p.fill }} />
+            <span className="text-[14px] font-medium text-primary flex-1 whitespace-nowrap">{p.name}</span>
+            <span className="text-[14px] font-semibold tabular-nums text-primary ml-6">{fmtFull(p.value)}</span>
           </div>
         ))}
+        {rows.length > 1 && (
+          <div className="flex items-center gap-2.5 pt-2 mt-0.5">
+            <span className="w-2.5 h-2.5 shrink-0" />
+            <span className="text-[14px] font-semibold text-primary flex-1">Total</span>
+            <span className="text-[14px] font-bold tabular-nums text-primary ml-6">{fmtFull(rows.reduce((s, p) => s + (p.value || 0), 0))}</span>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -424,22 +450,22 @@ function engagementSummary(post) {
 }
 
 const SENTIMENT_STYLE = {
-  hype: { bg: "bg-amber-100", text: "text-amber-700", label: "HYPE" },
-  positive: { bg: "bg-emerald-100", text: "text-emerald-700", label: "POSITIVE" },
-  neutral: { bg: "bg-slate-100", text: "text-secondary", label: "NEUTRAL" },
-  negative: { bg: "bg-rose-100", text: "text-rose-700", label: "WATCH" },
+  hype: { bg: "bg-[#FFF1DE]", text: "text-[#C2410C]", label: "HYPE" },
+  positive: { bg: "bg-[#e8f5ea]", text: "text-pos", label: "POSITIVE" },
+  neutral: { bg: "bg-[#f0f0f3]", text: "text-secondary", label: "NEUTRAL" },
+  negative: { bg: "bg-[#fdecea]", text: "text-neg", label: "WATCH" },
 };
 
 function FeedCard({ post }: { post: any }) {
   const cfg = PLATFORMS[post.platform];
   const sent = SENTIMENT_STYLE[post.sentiment];
   return (
-    <div className="group relative bg-white border border-line rounded-2xl hover:border-slate-300 hover:shadow-lg hover:-translate-y-0.5 transition-all overflow-hidden">
+    <div className="group relative bg-white rounded-[18px] transition-all overflow-hidden">
       <div className="p-4">
         <div className="flex items-center justify-between gap-2 mb-3">
           <div className="flex items-center gap-2 min-w-0">
-            <div className="w-7 h-7 rounded-xl flex items-center justify-center shrink-0" style={{ background: cfg?.soft || "#f1f5f9" }}>
-              <span className="w-2 h-2 rounded-full" style={{ background: cfg?.color || "#94a3b8" }} />
+            <div className="w-7 h-7 rounded-xl flex items-center justify-center shrink-0" style={{ background: cfg?.soft || "#f5f5f7" }}>
+              <span className="w-2 h-2 rounded-full" style={{ background: cfg?.color || "#86868b" }} />
             </div>
             <div className="min-w-0">
               <div className="text-xs font-semibold text-primary truncate">{post.page}</div>
@@ -451,12 +477,12 @@ function FeedCard({ post }: { post: any }) {
         {post.title && <div className="text-[13px] text-primary font-semibold leading-snug mb-1 line-clamp-2">{post.title}</div>}
         <div className="text-xs text-secondary leading-relaxed line-clamp-3">{post.body}</div>
         {post.media && (
-          <div className="mt-3 flex items-center gap-1.5 text-[10px] text-muted bg-slate-50 px-2 py-1 rounded-xl w-fit">
+          <div className="mt-3 flex items-center gap-1.5 text-[10px] text-muted bg-[#f5f5f7] px-2 py-1 rounded-xl w-fit">
             {post.media === "video" ? <Play size={10} /> : <ImageIcon size={10} />}
             <span className="uppercase tracking-wider font-semibold">{post.media}</span>
           </div>
         )}
-        <div className="flex items-center justify-between mt-3 pt-3 border-t border-divider">
+        <div className="flex items-center justify-between mt-3 pt-3">
           <div className="flex items-center gap-3.5">
             {engagementSummary(post).map((e, i) => {
               const Icon = e.icon;
@@ -489,9 +515,13 @@ export default function FanDashboard() {
   const [yearRange, setYearRange] = useState("all");
   const [pagesPlatform, setPagesPlatform] = useState("Discord");
   const [pagesDropdownOpen, setPagesDropdownOpen] = useState(false);
+  const [switcherOpen, setSwitcherOpen] = useState(false);
   const [showStarredOnly, setShowStarredOnly] = useState(false);
   const pagesListRef = React.useRef<HTMLDivElement>(null);
   const [pagesAtBottom, setPagesAtBottom] = useState(false);
+  const [pagesScrollable, setPagesScrollable] = useState(false);
+  const [sbThumb, setSbThumb] = useState({ top: 0, height: 0, show: false });
+  const sbDrag = React.useRef<{ startY: number; startScroll: number } | null>(null);
   const [redditPosts, setRedditPosts] = useState<any[]>([]);
   const [redditLoading, setRedditLoading] = useState(false);
   const [sheetsData, setSheetsData] = useState<Record<string, any>>({});
@@ -509,7 +539,7 @@ export default function FanDashboard() {
 
     async function loadSnapshot(): Promise<boolean> {
       try {
-        const res = await fetch(`${import.meta.env.BASE_URL}data.json`, { cache: "no-store" });
+        const res = await fetch(`./data.json`, { cache: "no-store" });
         if (!res.ok) return false;
         const json = await res.json();
         if (!json?.artists || Object.keys(json.artists).length === 0) return false;
@@ -703,11 +733,23 @@ export default function FanDashboard() {
 
   const orderedPlats = PLAT_ORDER.filter((p) => artist.platforms[p] !== undefined);
 
+  // Non-stacked line chart data: blank out each platform's leading zeros so its
+  // line begins cleanly at launch instead of running along 0 then spiking up.
+  const chartHistory = useMemo(() => {
+    const firstIdx: Record<string, number> = {};
+    orderedPlats.forEach((p) => { firstIdx[p] = history.findIndex((d) => ((d[p] as number) || 0) > 0); });
+    return history.map((row, i) => {
+      const next: any = { date: row.date };
+      orderedPlats.forEach((p) => { next[p] = firstIdx[p] === -1 || i < firstIdx[p] ? null : ((row[p] as number) || 0); });
+      return next;
+    });
+  }, [history, orderedPlats]);
+
+  const velocityData = useMemo(() => monthlyVelocity(fullHistory, orderedPlats), [fullHistory, orderedPlats]);
+
   const yScale = useMemo(() => {
     const active = orderedPlats.filter((p) => !hiddenPlats.has(p));
-    const cur = Math.max(...active.map((p) => artist.platforms[p]?.value || 0), 1);
-    const hist = Math.max(...history.flatMap((d) => active.map((p) => (d[p] as number) || 0)), 1);
-    const maxVal = hist <= cur * 2 ? hist : cur;
+    const maxVal = Math.max(1, ...history.map((d) => Math.max(0, ...active.map((p) => (d[p] as number) || 0))));
     const rawStep = maxVal / 4;
     const mag = Math.pow(10, Math.floor(Math.log10(rawStep)));
     const norm = rawStep / mag;
@@ -733,6 +775,61 @@ export default function FanDashboard() {
     [artist.pages, fpEffectivePlatform, showStarredOnly]
   );
 
+  const fpEntityPlural = fpEffectivePlatform === "Discord" ? "servers"
+    : fpEffectivePlatform === "Reddit" ? "subreddits"
+    : fpEffectivePlatform === "Instagram Channels" ? "channels"
+    : fpEffectivePlatform === "X Communities" ? "communities"
+    : "pages";
+  const fpEntitySingular = fpEffectivePlatform === "Discord" ? "server"
+    : fpEffectivePlatform === "Reddit" ? "subreddit"
+    : fpEffectivePlatform === "Instagram Channels" ? "channel"
+    : fpEffectivePlatform === "X Communities" ? "community"
+    : "page";
+
+  const SB_INSET = 22; // px inset top & bottom for the custom scrollbar track
+
+  const updateScrollbar = React.useCallback(() => {
+    const el = pagesListRef.current;
+    if (!el) return;
+    const { scrollTop, scrollHeight, clientHeight } = el;
+    const trackH = clientHeight - SB_INSET * 2;
+    const scrollable = scrollHeight > clientHeight + 4 && trackH > 24;
+    setPagesScrollable(scrollHeight > clientHeight + 4);
+    setPagesAtBottom(scrollTop + clientHeight >= scrollHeight - 8);
+    if (!scrollable) { setSbThumb((s) => (s.show ? { ...s, show: false } : s)); return; }
+    const thumbH = Math.max(28, (clientHeight / scrollHeight) * trackH);
+    const maxScroll = scrollHeight - clientHeight;
+    const frac = maxScroll > 0 ? scrollTop / maxScroll : 0;
+    const top = SB_INSET + frac * (trackH - thumbH);
+    setSbThumb({ top, height: thumbH, show: true });
+  }, []);
+
+  useEffect(() => {
+    const el = pagesListRef.current;
+    if (!el) return;
+    updateScrollbar();
+    const ro = new ResizeObserver(updateScrollbar);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [filteredPages, fpEffectivePlatform, showStarredOnly, updateScrollbar]);
+
+  useEffect(() => {
+    const onMove = (e: MouseEvent) => {
+      const el = pagesListRef.current;
+      if (!el || !sbDrag.current) return;
+      const trackH = el.clientHeight - SB_INSET * 2;
+      const thumbH = Math.max(28, (el.clientHeight / el.scrollHeight) * trackH);
+      const maxScroll = el.scrollHeight - el.clientHeight;
+      const dy = e.clientY - sbDrag.current.startY;
+      const deltaScroll = (dy / (trackH - thumbH)) * maxScroll;
+      el.scrollTop = sbDrag.current.startScroll + deltaScroll;
+    };
+    const onUp = () => { sbDrag.current = null; document.body.style.userSelect = ""; };
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+    return () => { window.removeEventListener("mousemove", onMove); window.removeEventListener("mouseup", onUp); };
+  }, []);
+
   const togglePlat = (p) => {
     const next = new Set(hiddenPlats);
     if (next.has(p)) { next.delete(p); }
@@ -745,127 +842,387 @@ export default function FanDashboard() {
   };
 
   const syncLabel = sheetsLoading
-    ? "syncing…"
+    ? "Syncing…"
     : syncedAt
     ? (() => {
         const mins = Math.floor((Date.now() - syncedAt.getTime()) / 60000);
-        if (mins < 60) return `synced ${mins || "<1"}m ago`;
-        return `synced ${Math.floor(mins / 60)}h ago`;
+        if (mins < 60) return `Synced ${mins || "<1"}m ago`;
+        return `Synced ${Math.floor(mins / 60)}h ago`;
       })()
-    : "live";
+    : "Live";
 
   // ---- Render ----
   return (
     <div
       className="flex h-screen overflow-hidden text-primary"
-      style={{ background: "#f1f5f9", fontFamily: "'Plus Jakarta Sans', 'Inter', system-ui, sans-serif" }}
+      style={{ background: "transparent", fontFamily: "'Satoshi', ui-sans-serif, system-ui, -apple-system, sans-serif" }}
     >
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
-        .recharts-cartesian-axis-tick text { fill: #94a3b8; font-size: 10px; font-weight: 500; }
-        .recharts-cartesian-grid line { stroke: #e2e8f0; }
+        .recharts-cartesian-axis-tick text { fill: #86868b; font-variant-numeric: tabular-nums; }
+        .fng-axis .recharts-cartesian-axis-tick text { text-transform: uppercase; letter-spacing: 0.05em; }
+        .recharts-cartesian-grid line { stroke: #e5e5ea; }
       `}</style>
 
       {sheetsLoading && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/70 backdrop-blur-sm pointer-events-none">
           <div className="flex flex-col items-center gap-3">
-            <div className="w-8 h-8 rounded-full border-2 border-brand border-t-transparent animate-spin" />
+            <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
             <span className="text-xs font-semibold text-secondary">Loading data…</span>
           </div>
         </div>
       )}
 
-      {/* ---- Sidebar ---- */}
-      <aside className="w-56 flex-shrink-0 flex flex-col border-r border-line overflow-hidden bg-white">
-        {/* Logo */}
-        <div className="px-4 py-4 border-b border-line flex items-center gap-3 shrink-0">
-          <div className="relative w-8 h-8 rounded-xl bg-brand flex items-center justify-center shadow-lg shadow-blue-300/40">
-            <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none">
-              <path d="M4 20 L4 4 L12 4 L12 11 L20 11 L20 20 Z" stroke="white" strokeWidth="1.8" strokeLinejoin="round" />
-              <circle cx="12" cy="11" r="1.5" fill="white" />
-            </svg>
-            <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-400 rounded-full ring-2 ring-white animate-pulse" />
-          </div>
-          <div className="leading-none">
-            <div className="text-xl font-bold text-primary tracking-tight">
-              FAN<span className="text-brand">INTEL</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Roster header */}
-        <div className="px-4 pt-4 pb-2 shrink-0 flex items-center justify-between">
-          <span className={EYEBROW}>Roster</span>
-          <span className="text-[10px] text-muted font-medium bg-slate-100 px-1.5 py-px rounded-md">{artists.length}</span>
-        </div>
-
-        {/* Artist list */}
-        <div className="flex-1 overflow-y-auto px-2 pb-2 space-y-px" style={{ scrollbarWidth: "thin" }}>
-          {artists.map((a) => (
-            <SidebarArtistRow key={a.slug} artist={a} active={a.slug === selectedSlug} onClick={() => setSelectedSlug(a.slug)} />
-          ))}
-        </div>
-
-        {/* Sync status */}
-        <div className="px-4 py-3 border-t border-divider shrink-0 flex items-center gap-2">
-          <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${sheetsLoading ? "bg-amber-400" : "bg-emerald-500 animate-pulse"}`} />
-          <span className="text-[10px] font-semibold text-muted truncate">{syncLabel}</span>
-        </div>
-      </aside>
-
       {/* ---- Main ---- */}
       <main className="flex-1 min-w-0 flex flex-col overflow-hidden">
 
+        {/* Header */}
+        <header className="px-[22px] pt-[22px] pb-[22px] flex items-center justify-end gap-4 shrink-0">
+          <div className="flex items-center gap-[22px] shrink-0 relative">
+            {/* Sync status */}
+            <div className="flex items-center gap-2.5 h-12 px-4 rounded-full bg-white text-[14px] font-medium text-primary">
+              <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${sheetsLoading ? "bg-[#ff9f0a]" : "bg-[#34c759] animate-pulse"}`} />
+              <span className="leading-none">{syncLabel}</span>
+            </div>
+
+            {/* Artist switcher */}
+            <div>
+              {switcherOpen && (
+                <div className="fixed inset-0 z-40 bg-black/10" onClick={() => setSwitcherOpen(false)} />
+              )}
+              <button
+                onClick={() => setSwitcherOpen((o) => !o)}
+                className="relative z-50 flex items-center gap-2.5 h-12 pl-1.5 pr-3 rounded-full bg-white hover:bg-[#ececf0] transition"
+              >
+                <div className="w-9 h-9 rounded-full overflow-hidden shrink-0 bg-[#f0f0f3] flex items-center justify-center font-bold text-primary text-sm">
+                  <img
+                    src={iconFor(artist.slug)}
+                    alt={artist.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const el = e.target as HTMLImageElement;
+                      el.style.display = "none";
+                      if (el.parentElement) el.parentElement.textContent = artist.name.charAt(0);
+                    }}
+                  />
+                </div>
+                <div className="text-left leading-tight min-w-0">
+                  <div className="text-[14px] font-medium text-primary truncate max-w-[150px]">{artist.name}</div>
+                </div>
+                <ChevronDown size={16} className={`text-muted transition-transform ${switcherOpen ? "rotate-180" : ""}`} />
+              </button>
+
+              {switcherOpen && (
+                <div className="absolute left-0 right-0 top-full mt-2 z-50 bg-white rounded-[18px] p-1.5 max-h-[70vh] overflow-y-auto" style={{ scrollbarWidth: "thin" }}>
+                  {artists.map((a) => {
+                    const active = a.slug === selectedSlug;
+                    return (
+                      <button
+                        key={a.slug}
+                        onClick={() => { setSelectedSlug(a.slug); setSwitcherOpen(false); }}
+                        className={`w-full flex items-center gap-2.5 py-1.5 px-2 rounded-xl transition text-left ${active ? "bg-[#ebebf0]" : "hover:bg-[#f5f5f7]"}`}
+                      >
+                        <div className="w-9 h-9 rounded-full overflow-hidden shrink-0 bg-[#f0f0f3] flex items-center justify-center font-bold text-xs text-primary">
+                          <img
+                            src={iconFor(a.slug)}
+                            alt={a.name}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              const el = e.target as HTMLImageElement;
+                              el.style.display = "none";
+                              if (el.parentElement) el.parentElement.textContent = a.name.charAt(0);
+                            }}
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-[14px] font-medium text-primary truncate leading-tight">{a.name}</div>
+                          <div className="flex items-center gap-2 mt-1">
+                            <span className="text-[14px] tabular-nums font-semibold text-primary">{fmt(a.totals.value)}</span>
+                            <DeltaPill value={a.totals.delta} />
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        </header>
 
         {/* Content */}
-        <div className="flex-1 min-h-0 p-4 flex flex-col gap-3 overflow-hidden">
+        <div className="flex-1 min-h-0 px-[22px] pb-[22px] flex flex-col gap-[22px] overflow-y-auto">
 
-          {/* KPI strip */}
+          {/* Top row: Reach Network + Fan Page Tracker + Fastest Movers */}
+          <div className="grid grid-cols-12 gap-[22px] items-stretch">
+          {/* Follower Network — combined platform totals + share */}
           {orderedPlats.length > 0 && (
-            <div
-              className="shrink-0 grid gap-3"
-              style={{ gridTemplateColumns: `repeat(${orderedPlats.length}, 1fr)` }}
-            >
-              {orderedPlats.map((p) => (
-                <KpiTile key={p} platform={p} value={artist.platforms[p].value} delta={artist.platforms[p].delta} />
-              ))}
+            <div className={`col-span-6 ${CARD} p-[22px] min-h-0 overflow-y-auto overflow-x-hidden`}>
+              <div className="flex items-center gap-2.5">
+                <PieIcon size={20} className="text-primary shrink-0" strokeWidth={2.25} />
+                <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">Fan Network Reach</h2>
+              </div>
+              <div
+                className="mt-[33px] mb-[33px] grid gap-x-[44px] gap-y-[11px]"
+                style={{ gridTemplateColumns: "max-content max-content", justifyContent: "start" }}
+              >
+                <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none">Total Reach</div>
+                <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none">Last 28 Days</div>
+                <div className="flex items-center h-[14px] text-[14px] font-semibold tabular-nums text-primary leading-none">{fmtFull(artist.totals.value)}</div>
+                <div className="flex items-center h-[14px]"><DeltaPill value={artist.totals.delta} /></div>
+              </div>
+
+              {/* Per-platform ranked table with in-row share bars */}
+              <div
+                className="grid items-center gap-x-[44px]"
+                style={{ gridTemplateColumns: "max-content max-content max-content minmax(0,1fr) max-content" }}
+              >
+                <div
+                  className="grid items-center gap-x-[44px] pb-0 text-[11px] font-semibold uppercase tracking-wider text-muted"
+                  style={{ gridColumn: "1 / -1", gridTemplateColumns: "subgrid" }}
+                >
+                  <span>Platform</span>
+                  <span className="text-right">Reach</span>
+                  <span className="text-right">Last 28 days</span>
+                  <span>Audience Share</span>
+                  <span className="text-right">%</span>
+                </div>
+                {platformShareData(artist).map((d, i, arr) => {
+                  const pd = artist.platforms[d.name];
+                  const pctNum = artist.totals.value > 0 ? (d.value / artist.totals.value) * 100 : 0;
+                  const pct = pctNum.toFixed(1);
+                  return (
+                    <div
+                      key={d.name}
+                      className={`grid items-center gap-x-[44px] ${i === arr.length - 1 ? "pt-[11px]" : "py-[11px]"}`}
+                      style={{ gridColumn: "1 / -1", gridTemplateColumns: "subgrid" }}
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: d.fill }} />
+                        <span className="text-[14px] font-medium text-primary whitespace-nowrap leading-none">{d.name}</span>
+                      </div>
+                      <span className="text-right text-[14px] font-semibold tabular-nums text-primary">{fmtFull(d.value)}</span>
+                      <div className="flex justify-end">{pd ? <DeltaPill value={pd.delta} /> : null}</div>
+                      <div className="h-2.5 rounded-full bg-[#f5f5f7] overflow-hidden">
+                        <div className="h-full rounded-full" style={{ width: `${pctNum}%`, background: d.fill }} />
+                      </div>
+                      <span className="text-right text-[14px] font-semibold tabular-nums text-primary">{pct}%</span>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )}
 
-          {/* Middle row: growth chart + fan page tracker */}
-          <div className="flex-1 min-h-0 grid grid-cols-12 gap-3">
-
-            {/* Growth chart */}
-            <div className={`col-span-8 ${CARD} flex flex-col overflow-hidden`}>
-              <div className="px-5 py-3 border-b border-line flex items-center justify-between gap-4 shrink-0 flex-wrap">
-                <div>
-                  <div className={EYEBROW}>Fan Network Growth</div>
+            {/* Fan Page Tracker */}
+            <div className="col-span-3 relative min-h-0">
+            <div className={`absolute inset-0 ${CARD} flex flex-col overflow-hidden`}>
+              <div className="px-[22px] pt-[22px] pb-[22px] flex items-center justify-between gap-2 shrink-0">
+                <div className="flex items-center gap-2.5">
+                  <LayoutList size={20} className="text-primary shrink-0" strokeWidth={2.25} />
+                  <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">Fan Page Tracker</h2>
                 </div>
-
-                <div className="flex items-center gap-3">
-                  {/* Platform toggles */}
-                  <div className="flex items-center gap-1 flex-wrap">
-                    {orderedPlats.map((p) => {
-                      const off = hiddenPlats.has(p);
-                      return (
-                        <button
-                          key={p}
-                          onClick={() => togglePlat(p)}
-                          className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold transition border ${
-                            off
-                              ? "border-line text-muted bg-slate-50"
-                              : "border-line text-secondary bg-white hover:border-slate-300"
-                          }`}
-                        >
-                          <span className="w-1.5 h-1.5 rounded-full" style={{ background: off ? "#cbd5e1" : PLATFORMS[p].color }} />
-                          {p}
-                        </button>
-                      );
-                    })}
+                <div className="flex items-center gap-[11px]">
+                  <button
+                    onClick={() => setShowStarredOnly((o) => !o)}
+                    className={`w-[34px] h-[34px] rounded-full flex items-center justify-center transition ${
+                      showStarredOnly ? "bg-[#FFF8E1]" : "bg-[#f5f5f7] hover:bg-[#f0f0f3]"
+                    }`}
+                    title="Show starred only"
+                  >
+                    <Star size={15} className={showStarredOnly ? "fill-[#FFCC00] text-[#FFCC00]" : "text-muted"} />
+                  </button>
+                  <div className="relative">
+                    {pagesDropdownOpen && (
+                      <div className="fixed inset-0 z-10" onClick={() => setPagesDropdownOpen(false)} />
+                    )}
+                    <button
+                      onClick={() => setPagesDropdownOpen((o) => !o)}
+                      className="flex items-center gap-2 h-[34px] pl-3 pr-2.5 rounded-full bg-[#f5f5f7] hover:bg-[#f0f0f3] transition"
+                    >
+                      <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: PLATFORMS[fpEffectivePlatform]?.color ?? "#8e8e93" }} />
+                      <span className="text-[14px] font-medium text-primary whitespace-nowrap leading-none">{fpEffectivePlatform}</span>
+                      <ChevronDown size={14} className="text-muted" />
+                    </button>
+                    {pagesDropdownOpen && (
+                      <div className="absolute right-0 top-full mt-2 z-20 bg-white rounded-[18px] p-1.5 min-w-[200px]" style={{ boxShadow: "0 0 0 0.5px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px -6px rgba(0,0,0,0.12), 0 24px 56px -16px rgba(0,0,0,0.16)" }}>
+                        {fpAvailablePlatforms.map((plat) => (
+                          <button
+                            key={plat}
+                            onClick={() => {
+                              setPagesPlatform(plat);
+                              setPagesDropdownOpen(false);
+                              setPagesAtBottom(false);
+                              if (pagesListRef.current) pagesListRef.current.scrollTop = 0;
+                            }}
+                            className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-[14px] font-medium transition ${plat === fpEffectivePlatform ? "text-primary bg-[#f5f5f7]" : "text-muted hover:bg-[#f5f5f7]"}`}
+                          >
+                            <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: PLATFORMS[plat]?.color ?? "#8e8e93" }} />
+                            <span className="leading-none">{plat}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
+                </div>
+              </div>
 
-                  {/* Range selector */}
-                  <div className="flex items-center gap-0.5 bg-slate-100 p-1 rounded-xl shrink-0">
+              <div className="relative flex-1 min-h-0">
+              <div
+                ref={pagesListRef}
+                className={`h-full overflow-y-auto no-scrollbar pl-[22px] pb-[11px] ${pagesScrollable ? "pr-[50px]" : "pr-[22px]"}`}
+                onScroll={updateScrollbar}
+              >
+                {filteredPages.length === 0 ? (
+                  <div className="h-full flex items-center justify-center text-center text-[13px] text-muted">No {fpEffectivePlatform} pages tracked yet</div>
+                ) : (() => {
+                  const platCfg = PLATFORMS[fpEffectivePlatform] || { color: "#8e8e93" };
+                  const unit = MEMBER_PLATFORMS.has(fpEffectivePlatform) ? "Members" : "Followers";
+                  const entity = fpEffectivePlatform === "Discord" ? "Server"
+                    : fpEffectivePlatform === "Reddit" ? "Subreddit"
+                    : fpEffectivePlatform === "Instagram Channels" ? "Channel"
+                    : fpEffectivePlatform === "X Communities" ? "Community"
+                    : "Page";
+                  const entityCount = `${filteredPages.length} ${filteredPages.length === 1 ? fpEntitySingular : fpEntityPlural}`;
+                  return (
+                    <div className="grid grid-cols-[1fr_auto_auto] gap-x-[44px]">
+                      <div className="sticky top-0 z-10 bg-white grid items-center gap-x-[44px] pb-0" style={{ gridColumn: "1 / -1", gridTemplateColumns: "subgrid" }}>
+                        <span className="text-[11px] font-semibold uppercase tracking-wider text-muted tabular-nums whitespace-nowrap">{entityCount}</span>
+                        <span className="text-[11px] font-semibold uppercase tracking-wider text-muted text-right">{unit}</span>
+                        <span className="text-[11px] font-semibold uppercase tracking-wider text-muted text-right">Last Post</span>
+                      </div>
+                      {filteredPages.map((p, i) => {
+                        const Tag = p.link ? "a" : "div";
+                        return (
+                          <Tag
+                            key={p.link || `${p.platform}-${p.name}-${i}`}
+                            {...(p.link ? { href: p.link, target: "_blank", rel: "noopener noreferrer" } : {})}
+                            className="grid items-center gap-x-[44px] py-[11px] no-underline"
+                            style={{ gridColumn: "1 / -1", gridTemplateColumns: "subgrid" }}
+                          >
+                            <div className="flex items-center gap-2.5 min-w-0">
+                              <span className="text-[14px] font-medium text-primary truncate leading-normal">{p.name}</span>
+                              {p.managed && <Star size={12} className="shrink-0 text-[#FFCC00] fill-[#FFCC00]" />}
+                            </div>
+                            <span className="text-right text-[14px] font-semibold tabular-nums text-primary leading-none">{fmtFull(p.followers)}</span>
+                            <span className="text-right text-[14px] font-semibold text-primary whitespace-nowrap leading-none">{p.latest ? fmtPageDate(p.latest) : "\u2014"}</span>
+                          </Tag>
+                        );
+                      })}
+                    </div>
+                  );
+                })()}
+              </div>
+              {sbThumb.show && (
+                <>
+                  <div className="absolute right-[22px] top-[22px] bottom-[22px] w-[6px] rounded-full bg-[#f5f5f7]" />
+                  <div
+                    className="absolute right-[22px] w-[6px] rounded-full bg-[#86868b] hover:bg-[#6e6e73] active:bg-[#5b5b60] transition-colors cursor-pointer"
+                    style={{ top: sbThumb.top, height: sbThumb.height }}
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      const el = pagesListRef.current;
+                      if (!el) return;
+                      sbDrag.current = { startY: e.clientY, startScroll: el.scrollTop };
+                      document.body.style.userSelect = "none";
+                    }}
+                  />
+                </>
+              )}
+              </div>
+            </div>
+            </div>
+
+            {/* Fastest Movers — split into top gainers / biggest drops */}
+            <div className="col-span-3 flex flex-col gap-[22px]">
+              {[
+                { title: "Top Gainers", icon: ArrowUpRight, list: artists.slice().filter((a) => a.totals.delta > 0).sort((a, b) => b.totals.delta - a.totals.delta).slice(0, 3), kind: "gains" },
+                { title: "Biggest Drops", icon: ArrowDownRight, list: artists.slice().filter((a) => a.totals.delta < 0).sort((a, b) => a.totals.delta - b.totals.delta).slice(0, 3), kind: "drops" },
+              ].map((grp) => {
+                const Icon = grp.icon;
+                return (
+                  <div key={grp.title} className={`${CARD} p-[22px] flex flex-col overflow-hidden`}>
+                    <div className="flex items-center gap-2.5 shrink-0 mb-[33px]">
+                      <Icon size={20} className="text-primary shrink-0" strokeWidth={2.25} />
+                      <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">{grp.title}</h2>
+                    </div>
+                    {grp.list.length > 0 && (
+                      <div className="flex items-center justify-between shrink-0 pb-[11px] text-[11px] font-semibold uppercase tracking-wider text-muted">
+                        <span>Artist</span>
+                        <span>Last 28 Days</span>
+                      </div>
+                    )}
+                    <div className="flex flex-col gap-[22px]">
+                      {grp.list.length === 0 ? (
+                        <div className="text-center text-[13px] text-muted py-4">No {grp.kind} in range</div>
+                      ) : grp.list.map((a) => (
+                          <div key={a.slug} className="w-full flex items-center gap-3">
+                            <div className="w-9 h-9 rounded-full overflow-hidden shrink-0 bg-[#f0f0f3] flex items-center justify-center font-bold text-xs text-primary">
+                              <img
+                                src={iconFor(a.slug)}
+                                alt={a.name}
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  const el = e.target as HTMLImageElement;
+                                  el.style.display = "none";
+                                  if (el.parentElement) el.parentElement.textContent = a.name.charAt(0);
+                                }}
+                              />
+                            </div>
+                            <span className="flex-1 text-[14px] font-medium text-primary truncate">{a.name}</span>
+                            <DeltaPill value={a.totals.delta} />
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Lower row: Fan Network Growth + Growth Velocity */}
+          <div className="flex-1 min-h-[300px] grid grid-cols-12 gap-[22px] items-stretch">
+            {/* Growth chart */}
+            <div className={`col-span-8 ${CARD} flex flex-col overflow-hidden min-h-0`}>
+              <div className="px-[22px] pt-[22px] pb-[33px] shrink-0 flex items-start justify-between gap-4">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2.5">
+                    <TrendingUp size={20} className="text-primary shrink-0" strokeWidth={2.25} />
+                    <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">Fan Network Growth</h2>
+                  </div>
+                  {rangeStats && (
+                    <div className="mt-[33px] flex items-start flex-wrap gap-x-[44px] gap-y-3">
+                      <div className="flex items-center gap-[22px]">
+                        <div>
+                          <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none mb-[11px]">{monthLabel(history[0].date)}</div>
+                          <div className="text-[14px] font-semibold tabular-nums text-primary leading-none">{fmt(rangeStats.startTotal)}</div>
+                        </div>
+                        <span className="text-primary text-[14px] font-semibold leading-none">{"\u2192"}</span>
+                        <div>
+                          <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none mb-[11px]">{monthLabel(history[history.length - 1].date)}</div>
+                          <div className="text-[14px] font-semibold tabular-nums text-primary leading-none">{fmt(rangeStats.endTotal)}</div>
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none mb-[11px]">Net Growth</div>
+                        <div className="flex items-center gap-[11px] h-[14px]">
+                          <DeltaPill value={rangeStats.net} />
+                          <span className="text-[14px] font-semibold tabular-nums text-primary leading-none">{rangeStats.pct >= 0 ? "+" : ""}{Math.abs(rangeStats.pct) >= 100 ? Math.round(rangeStats.pct) : rangeStats.pct.toFixed(1).replace(/\.0$/, "")}%</span>
+                        </div>
+                      </div>
+                      {rangeStats.bestGain > 0 && (
+                        <div>
+                          <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none mb-[11px]">Best Month</div>
+                          <div className="flex items-center gap-[11px] h-[14px]">
+                            <span className="text-[14px] font-semibold tabular-nums text-primary whitespace-nowrap leading-none">{monthLabel(rangeStats.bestMonth)}</span>
+                            <DeltaPill value={rangeStats.bestGain} />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+                <div className="flex flex-col items-end gap-[22px] shrink-0">
+                  <div className="flex items-center gap-1 bg-[#f5f5f7] p-1 rounded-full shrink-0">
                     {[
                       { key: "3m", label: "3M" },
                       { key: "6m", label: "6M" },
@@ -876,75 +1233,67 @@ export default function FanDashboard() {
                       <button
                         key={opt.key}
                         onClick={() => setYearRange(opt.key)}
-                        className={`text-[11px] font-semibold px-2.5 py-1 rounded-lg transition ${
+                        className={`text-[12px] font-semibold px-3 py-1 rounded-full transition-all ${
                           yearRange === opt.key
-                            ? "bg-white text-primary shadow-sm"
-                            : "text-secondary hover:text-primary"
+                            ? "bg-white text-primary"
+                            : "text-muted hover:text-primary"
                         }`}
                       >
                         {opt.label}
                       </button>
                     ))}
                   </div>
+                  <div className="flex items-center flex-wrap justify-end gap-x-[11px] gap-y-[33px]">
+                    {orderedPlats.map((p) => {
+                      const off = hiddenPlats.has(p);
+                      return (
+                        <button
+                          key={p}
+                          onClick={() => togglePlat(p)}
+                          className={`flex items-center h-[34px] gap-2 pl-2.5 pr-3 py-1.5 rounded-full transition-all bg-[#f5f5f7]`}
+                          title={off ? `Show ${p}` : `Hide ${p}`}
+                        >
+                          <span className="w-2.5 h-2.5 rounded-full shrink-0 transition-colors" style={{ background: off ? "#d2d2d7" : PLATFORMS[p].color }} />
+                          <span className={`text-[14px] font-medium whitespace-nowrap leading-none transition-colors ${off ? "text-muted" : "text-primary"}`}>{p}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
 
-              {/* Range stats strip */}
-              {rangeStats && (
-                <div className="mx-5 mt-3 mb-3 flex shrink-0 rounded-2xl bg-blue-50 border border-blue-100 divide-x divide-blue-200">
-                  <div className="flex-1 px-4 py-3">
-                    <div className={`${EYEBROW} mb-1`}>Range Start</div>
-                    <div className="text-base font-bold tabular-nums text-primary">{fmt(rangeStats.startTotal)}</div>
-                  </div>
-                  <div className="flex-1 px-4 py-3">
-                    <div className={`${EYEBROW} mb-1`}>Range End</div>
-                    <div className="text-base font-bold tabular-nums text-primary">{fmt(rangeStats.endTotal)}</div>
-                  </div>
-                  <div className="flex-1 px-4 py-3">
-                    <div className={`${EYEBROW} mb-1`}>Net Growth</div>
-                    <div className={`text-base font-bold tabular-nums flex items-center gap-1 ${rangeStats.net >= 0 ? "text-pos" : "text-neg"}`}>
-                      {rangeStats.net >= 0 ? "+" : ""}{fmt(rangeStats.net)}
-                      <span className="text-[10px] font-semibold">({rangeStats.pct >= 0 ? "+" : ""}{rangeStats.pct.toFixed(1).replace(/\.0$/, "")}%)</span>
-                    </div>
-                  </div>
-                  <div className="flex-1 px-4 py-3">
-                    <div className={`${EYEBROW} mb-1`}>Best Month</div>
-                    <div className="text-base font-bold text-primary flex items-center gap-1.5">
-                      {rangeStats.bestMonth ? monthLabel(rangeStats.bestMonth) : "—"}
-                      {rangeStats.bestGain > 0 && <span className="text-xs text-pos font-semibold">+{fmt(rangeStats.bestGain)}</span>}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Chart area */}
-              <div className="flex-1 min-h-0 p-4">
+              {/* Chart area — stacked gradient area */}
+              <div className="fng-axis flex-1 min-h-0 pl-[22px] pr-[22px] pb-[22px]">
                 {history.length === 0 ? (
                   <div className="h-full flex items-center justify-center text-muted text-sm">No data in the selected range</div>
                 ) : (
                   <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={history} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
-                      <CartesianGrid strokeDasharray="3 4" vertical={false} stroke="#e2e8f0" />
+                    <LineChart data={chartHistory} margin={{ top: 8, right: 0, left: 0, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 4" vertical={false} stroke="#e5e5ea" />
                       <XAxis
                         dataKey="date"
                         tickFormatter={monthLabel}
                         interval={Math.max(0, Math.floor(history.length / 8))}
-                        axisLine={{ stroke: "#e2e8f0" }}
+                        axisLine={false}
                         tickLine={false}
-                        tick={{ fill: "#94a3b8", fontSize: 10, fontWeight: 500 }}
+                        tickMargin={19}
+                        height={36}
+                        padding={{ left: 0, right: 0 }}
+                        tick={{ fill: "#86868b", fontSize: 11, fontWeight: 600 }}
                       />
                       <YAxis
                         tickFormatter={fmt}
                         axisLine={false}
                         tickLine={false}
-                        width={48}
+                        width={55}
+                        tickMargin={16}
                         ticks={yScale.ticks}
                         domain={[0, yScale.max]}
-                        tick={{ fill: "#94a3b8", fontSize: 10, fontWeight: 500 }}
+                        tick={{ fill: "#86868b", fontSize: 11, fontWeight: 600 }}
                       />
                       <Tooltip
                         content={<ChartTooltip />}
-                        cursor={{ stroke: "#cbd5e1", strokeDasharray: "3 3" }}
+                        cursor={{ stroke: "#d2d2d7", strokeDasharray: "3 3" }}
                         wrapperStyle={{ transition: "none" }}
                       />
                       {orderedPlats.map((p) => {
@@ -952,13 +1301,15 @@ export default function FanDashboard() {
                         return (
                           <Line
                             key={p}
-                            type="monotone"
+                            type="linear"
                             dataKey={p}
+                            name={p}
                             stroke={PLATFORMS[p].color}
                             strokeWidth={2}
                             dot={false}
                             activeDot={{ r: 4, strokeWidth: 2, stroke: "white" }}
                             isAnimationActive={false}
+                            connectNulls={false}
                           />
                         );
                       })}
@@ -968,277 +1319,77 @@ export default function FanDashboard() {
               </div>
             </div>
 
-            {/* Fan Page Tracker */}
-            <div className={`col-span-4 ${CARD} flex flex-col overflow-hidden`}>
-              <div className="px-5 py-3 border-b border-line flex items-center justify-between shrink-0">
-                <div>
-                  <div className={EYEBROW}>Fan Page Tracker</div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setShowStarredOnly((o) => !o)}
-                    className={`w-6 h-6 rounded-lg flex items-center justify-center transition border ${
-                      showStarredOnly ? "bg-amber-50 border-amber-200" : "bg-white border-line hover:border-slate-300"
-                    }`}
-                    title="Show starred only"
-                  >
-                    <Star size={11} className={showStarredOnly ? "fill-amber-400 text-amber-400" : "text-muted"} />
-                  </button>
-                <div className="relative">
-                  {pagesDropdownOpen && (
-                    <div className="fixed inset-0 z-10" onClick={() => setPagesDropdownOpen(false)} />
-                  )}
-                  <button
-                    onClick={() => setPagesDropdownOpen((o) => !o)}
-                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-line text-[10px] font-semibold text-secondary bg-white hover:border-slate-300 transition"
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: PLATFORMS[fpEffectivePlatform]?.color ?? "#94a3b8" }} />
-                    {fpEffectivePlatform}
-                    <ChevronDown size={10} className="text-muted" />
-                  </button>
-                  {pagesDropdownOpen && (
-                    <div className="absolute right-0 top-full mt-1.5 z-20 bg-white border border-line rounded-2xl shadow-lg py-1.5 min-w-[190px]">
-                      {fpAvailablePlatforms.map((plat) => (
-                        <button
-                          key={plat}
-                          onClick={() => {
-                            setPagesPlatform(plat);
-                            setPagesDropdownOpen(false);
-                            setPagesAtBottom(false);
-                            if (pagesListRef.current) pagesListRef.current.scrollTop = 0;
-                          }}
-                          className={`w-full flex items-center gap-2 px-3 py-1.5 text-[11px] font-semibold transition hover:bg-slate-50 ${plat === fpEffectivePlatform ? "text-primary" : "text-muted"}`}
-                        >
-                          <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: PLATFORMS[plat]?.color ?? "#94a3b8" }} />
-                          {plat}
-                          {plat === fpEffectivePlatform && <span className="ml-auto text-brand">✓</span>}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                </div>
+            {/* Growth Velocity */}
+            <div className={`col-span-4 ${CARD} p-[22px] flex flex-col overflow-hidden min-h-0`}>
+              <div className="flex items-center gap-2.5 shrink-0 mb-[33px]">
+                <Gauge size={20} className="text-primary shrink-0" strokeWidth={2.25} />
+                <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">Growth Velocity</h2>
               </div>
-
-              <div
-                ref={pagesListRef}
-                className="flex-1 min-h-0 overflow-y-auto px-2 py-2"
-                onScroll={(e) => {
-                  const el = e.currentTarget;
-                  setPagesAtBottom(el.scrollTop + el.clientHeight >= el.scrollHeight - 8);
-                }}
-              >
-                {filteredPages.length === 0 ? (
-                  <div className="px-3 py-8 text-center text-xs text-muted">No {fpEffectivePlatform} pages tracked yet</div>
-                ) : (
-                  <div className="space-y-px">
-                    {filteredPages.map((p, i) => {
-                      const platCfg = PLATFORMS[fpEffectivePlatform] || { soft: "#f1f5f9", color: "#94a3b8" };
-                      const Tag = p.link ? "a" : "div";
-                      return (
-                        <Tag
-                          key={p.link || `${p.platform}-${p.name}-${i}`}
-                          {...(p.link ? { href: p.link, target: "_blank", rel: "noopener noreferrer" } : {})}
-                          className="p-2.5 flex items-center gap-3 hover:bg-slate-50 transition cursor-pointer group rounded-xl no-underline"
-                        >
-                          <div
-                            className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
-                            style={{ background: platCfg.soft }}
-                          >
-                            <span className="text-xs font-bold" style={{ color: platCfg.color }}>{String(i + 1).padStart(2, "0")}</span>
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-1">
-                              <div className="text-sm font-semibold text-primary group-hover:text-brand transition truncate">{p.name}</div>
-                              {p.managed && <Star size={10} className="shrink-0 text-amber-400 fill-amber-400" />}
-                            </div>
-                            <div className="text-[10px] text-muted mt-0.5 truncate">
-                              {p.latest ? `Last post ${fmtPageDate(p.latest)}` : p.platform}
-                            </div>
-                          </div>
-                          <div className="text-right shrink-0">
-                            <div className="text-sm font-bold tabular-nums text-primary">{fmtFull(p.followers)}</div>
-                            <div className="text-[10px] text-muted">{MEMBER_PLATFORMS.has(fpEffectivePlatform) ? "members" : "followers"}</div>
-                          </div>
-                        </Tag>
-                      );
-                    })}
+              {velocityData.length > 0 && (
+                <div
+                  className="shrink-0 mb-[33px] grid gap-x-[44px] gap-y-[11px]"
+                  style={{ gridTemplateColumns: "max-content max-content", justifyContent: "start" }}
+                >
+                  <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none">Latest Month</div>
+                  <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none">Positive Months</div>
+                  <div className="flex items-center h-[14px]"><DeltaPill value={velocityData[velocityData.length - 1].net} /></div>
+                  <div className="flex items-center h-[14px] text-[14px] font-semibold tabular-nums text-primary leading-none">
+                    {velocityData.filter((d) => d.net > 0).length}<span>/{velocityData.length}</span>
                   </div>
-                )}
-              </div>
-
-              {filteredPages.length > 0 && (
-                <div className="px-5 py-2 border-t border-divider flex items-center justify-between shrink-0">
-                  <span className="text-[10px] text-muted font-medium">
-                    {filteredPages.length} {(() => {
-                      const n = filteredPages.length;
-                      if (fpEffectivePlatform === "Discord") return n === 1 ? "server" : "servers";
-                      if (fpEffectivePlatform === "Reddit") return n === 1 ? "subreddit" : "subreddits";
-                      if (fpEffectivePlatform === "Instagram Channels") return n === 1 ? "channel" : "channels";
-                      if (fpEffectivePlatform === "X Communities") return n === 1 ? "community" : "communities";
-                      return n === 1 ? "page" : "pages";
-                    })()} tracked
-                  </span>
-                  {!pagesAtBottom && filteredPages.length > 6 && (
-                    <span className="text-[10px] text-muted font-medium flex items-center gap-1">scroll <ChevronDown size={10} /></span>
-                  )}
                 </div>
               )}
-            </div>
-          </div>
-
-          {/* Analytics row */}
-          <div className="shrink-0 grid grid-cols-3 gap-3">
-
-            {/* Platform Share */}
-            <div className={`${CARD} p-4 flex flex-col overflow-hidden aspect-[2/1]`}>
-              <div className="flex items-center gap-2 shrink-0 mb-1">
-                <div className="w-5 h-5 rounded-lg bg-blue-100 flex items-center justify-center">
-                  <PieIcon size={11} className="text-blue-600" />
-                </div>
-                <div className={EYEBROW}>Platform Share</div>
-              </div>
-              <div className="flex-1 min-h-0 flex items-center gap-3">
-                <div
-                  className="relative h-full aspect-square shrink-0"
-                  onMouseMove={(e) => {
-                    const rect = e.currentTarget.getBoundingClientRect();
-                    setPiePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-                  }}
-                  onMouseLeave={() => { setPieHover(null); setPiePos(null); }}
-                >
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={platformShareData(artist)}
-                        innerRadius="42%" outerRadius="72%"
-                        dataKey="value" stroke="white" strokeWidth={2}
-                        startAngle={90} endAngle={-270}
-                        isAnimationActive={false}
-                        onMouseEnter={(d) => setPieHover({ name: d.name, value: d.value, fill: d.payload?.fill || d.fill })}
-                        onMouseLeave={() => setPieHover(null)}
-                      >
-                        {platformShareData(artist).map((d, i) => <Cell key={i} fill={d.fill} />)}
-                      </Pie>
-                    </PieChart>
-                  </ResponsiveContainer>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                    <div className="text-[9px] font-semibold uppercase tracking-widest text-muted">Total</div>
-                    <div className="font-bold text-sm text-primary tabular-nums">{fmt(artist.totals.value)}</div>
-                  </div>
-                  {pieHover && piePos && (
-                    <div
-                      className="absolute pointer-events-none z-10 flex items-center gap-2 text-xs bg-white border border-line rounded-xl px-3 py-1.5 shadow-lg whitespace-nowrap"
-                      style={{ left: piePos.x + 14, top: piePos.y - 16, transform: "translateY(-50%)" }}
-                    >
-                      <span className="w-2 h-2 rounded-full shrink-0" style={{ background: pieHover.fill }} />
-                      <span className="text-secondary font-medium">{pieHover.name}</span>
-                      <span className="font-bold tabular-nums text-primary">{fmtFull(pieHover.value)}</span>
-                    </div>
-                  )}
-                </div>
-                <div className="flex-1 space-y-1.5 overflow-hidden">
-                  {platformShareData(artist).map((d) => {
-                    const pct = artist.totals.value > 0 ? ((d.value / artist.totals.value) * 100).toFixed(1) : "0.0";
-                    return (
-                      <div key={d.name} className="flex items-center gap-2 text-xs">
-                        <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: d.fill }} />
-                        <span className="text-secondary flex-1 font-medium truncate">{d.name}</span>
-                        <span className="font-bold text-primary tabular-nums shrink-0">{pct}%</span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-
-            {/* Growth Velocity */}
-            <div className={`${CARD} p-4 flex flex-col overflow-hidden aspect-[2/1]`}>
-              <div className="flex items-center gap-2 shrink-0 mb-1">
-                <div className="w-5 h-5 rounded-lg bg-amber-100 flex items-center justify-center">
-                  <Zap size={11} className="text-amber-600" />
-                </div>
-                <div className={EYEBROW}>Growth Velocity · 12mo</div>
-              </div>
-              <div className="flex-1 min-h-0">
+              <div className="fng-axis flex-1 min-h-0">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={monthlyVelocity(history, orderedPlats)} margin={{ top: 4, right: 0, left: 0, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 4" vertical={false} stroke="#e2e8f0" />
+                  <BarChart data={velocityData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 4" vertical={false} stroke="#e5e5ea" />
                     <XAxis
                       dataKey="date"
                       tickFormatter={(ym) => monthLabel(ym).split(" ")[0]}
-                      axisLine={false} tickLine={false} interval={1}
-                      tick={{ fill: "#94a3b8", fontSize: 9, fontWeight: 500 }}
+                      axisLine={false} tickLine={false} interval={0}
+                      tickMargin={19}
+                      height={36}
+                      padding={{ left: 22, right: 8 }}
+                      tick={{ fill: "#86868b", fontSize: 11, fontWeight: 600 }}
                     />
                     <YAxis
-                      tickFormatter={fmt} axisLine={false} tickLine={false} width={36}
-                      tick={{ fill: "#94a3b8", fontSize: 9, fontWeight: 500 }}
+                      tickFormatter={fmt} axisLine={false} tickLine={false} width={55} tickMargin={16}
+                      tick={{ fill: "#86868b", fontSize: 11, fontWeight: 600 }}
                     />
                     <Tooltip
                       content={({ active, payload, label }) =>
                         active && payload?.length ? (
-                          <div className="bg-white border border-line rounded-xl shadow-lg p-3 text-xs">
-                            <div className={EYEBROW}>{monthLabel(label)}</div>
-                            <div className="font-bold tabular-nums text-primary text-sm mt-1">
-                              {payload[0].value >= 0 ? "+" : ""}{fmtFull(payload[0].value)}
+                          <div className="bg-white rounded-[18px] p-3.5" style={{ boxShadow: "0 0 0 0.5px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px -6px rgba(0,0,0,0.12), 0 24px 56px -16px rgba(0,0,0,0.16)" }}>
+                            <div className="text-[11px] font-semibold uppercase tracking-wider text-muted mb-2">{monthLabel(label)}</div>
+                            <div className="flex items-center gap-2.5">
+                              <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: payload[0].value >= 0 ? "#248a3d" : "#d70015" }} />
+                              <span className="text-[14px] font-medium text-primary flex-1">Net change</span>
+                              <span className="text-[14px] font-semibold tabular-nums text-primary ml-6">{payload[0].value >= 0 ? "+" : ""}{fmtFull(payload[0].value)}</span>
                             </div>
                           </div>
                         ) : null
                       }
-                      cursor={{ fill: "#f1f5f9" }}
+                      cursor={{ fill: "#f5f5f7" }}
                       wrapperStyle={{ transition: "none" }}
                     />
-                    <Bar dataKey="net" radius={[4, 4, 0, 0]} isAnimationActive={false}>
-                      {monthlyVelocity(history, orderedPlats).map((d, i) => (
-                        <Cell key={i} fill={d.net >= 0 ? "#059669" : "#f43f5e"} />
+                    <Bar dataKey="net" radius={[18, 18, 0, 0]} isAnimationActive={false}>
+                      {velocityData.map((d, i) => (
+                        <Cell key={i} fill={d.net >= 0 ? "#248a3d" : "#d70015"} />
                       ))}
                     </Bar>
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             </div>
-
-            {/* Fastest Movers */}
-            <div className={`${CARD} p-4 flex flex-col overflow-hidden aspect-[2/1]`}>
-              <div className="flex items-center gap-2 shrink-0 mb-1">
-                <div className="w-5 h-5 rounded-lg bg-emerald-100 flex items-center justify-center">
-                  <ArrowUpRight size={11} className="text-pos" />
-                </div>
-                <div className={EYEBROW}>Fastest Movers · 28d</div>
-              </div>
-              <div className="flex-1 min-h-0 overflow-hidden -mx-1 flex flex-col justify-evenly">
-                {artists
-                  .slice()
-                  .sort((a, b) => Math.abs(b.totals.delta) - Math.abs(a.totals.delta))
-                  .slice(0, 5)
-                  .map((a, i) => {
-                    const up = a.totals.delta >= 0;
-                    return (
-                      <div
-                        key={a.slug}
-                        className="w-full flex items-center gap-3 px-2 rounded-xl"
-                      >
-                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 ${
-                          i === 0 ? "bg-amber-100 text-amber-700"
-                          : i === 1 ? "bg-slate-100 text-secondary"
-                          : i === 2 ? "bg-orange-100 text-orange-700"
-                          : "bg-slate-50 text-muted"
-                        }`}>
-                          {i + 1}
-                        </div>
-                        <span className="flex-1 text-base font-semibold text-primary truncate">{a.name}</span>
-                        <span className={`text-sm font-bold tabular-nums px-3 py-1 rounded-full shrink-0 ${up ? "bg-emerald-50 text-pos" : "bg-rose-50 text-neg"}`}>
-                          {up ? "+" : ""}{fmt(a.totals.delta)}
-                        </span>
-                      </div>
-                    );
-                  })}
-              </div>
-            </div>
-
           </div>
+
         </div>
       </main>
     </div>
   );
 }
+
+
+// ---- Standalone preview mount ----
+import { createRoot as __createRoot } from "react-dom/client";
+const __mount = document.getElementById("root");
+if (__mount) __createRoot(__mount).render(React.createElement(FanDashboard));
