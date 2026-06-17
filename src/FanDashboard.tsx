@@ -537,9 +537,9 @@ export default function FanDashboard() {
 
   useEffect(() => {
     const update = () => {
-      // Use screen.width (physical monitor width, unaffected by browser zoom) so we
-      // correct for zoom without enlarging the layout on wider monitors.
-      const scale = window.innerWidth / window.screen.width;
+      // Cap at 1 so the layout never grows beyond 1440px on wide monitors,
+      // but scales down proportionally when zoomed in (small viewport).
+      const scale = Math.min(1, window.innerWidth / 1440);
       const h = Math.round(window.innerHeight / scale);
       const left = Math.max(0, Math.round((window.innerWidth - 1440 * scale) / 2));
       setVp({ scale, h, left });
