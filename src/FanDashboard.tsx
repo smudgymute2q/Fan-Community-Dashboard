@@ -528,7 +528,7 @@ export default function FanDashboard() {
   const [sheetsLoading, setSheetsLoading] = useState(true);
   const [syncedAt, setSyncedAt] = useState<Date | null>(null);
   const [, setNowTick] = useState(0);
-  const [scale, setScale] = useState(1);
+  const [vp, setVp] = useState({ scale: 1, h: 900 });
 
   useEffect(() => {
     const id = setInterval(() => setNowTick((t) => t + 1), 60000);
@@ -536,9 +536,10 @@ export default function FanDashboard() {
   }, []);
 
   useEffect(() => {
-    const DESIGN_W = 1440;
-    const DESIGN_H = 900;
-    const update = () => setScale(Math.min(window.innerWidth / DESIGN_W, window.innerHeight / DESIGN_H));
+    const update = () => {
+      const scale = window.innerWidth / 1440;
+      setVp({ scale, h: Math.round(window.innerHeight / scale) });
+    };
     update();
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
@@ -868,12 +869,12 @@ export default function FanDashboard() {
       className="flex text-primary"
       style={{
         width: 1440,
-        height: 900,
+        height: vp.h,
         position: "absolute",
-        left: "calc(50% - 720px)",
-        top: "calc(50% - 450px)",
-        transform: `scale(${scale})`,
-        transformOrigin: "center center",
+        left: 0,
+        top: 0,
+        transform: `scale(${vp.scale})`,
+        transformOrigin: "top left",
         fontFamily: "'Satoshi', ui-sans-serif, system-ui, -apple-system, sans-serif",
       }}
     >
