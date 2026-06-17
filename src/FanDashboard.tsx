@@ -528,10 +528,20 @@ export default function FanDashboard() {
   const [sheetsLoading, setSheetsLoading] = useState(true);
   const [syncedAt, setSyncedAt] = useState<Date | null>(null);
   const [, setNowTick] = useState(0);
+  const [scale, setScale] = useState(1);
 
   useEffect(() => {
     const id = setInterval(() => setNowTick((t) => t + 1), 60000);
     return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    const DESIGN_W = 1440;
+    const DESIGN_H = 900;
+    const update = () => setScale(Math.min(window.innerWidth / DESIGN_W, window.innerHeight / DESIGN_H));
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
   }, []);
 
   useEffect(() => {
@@ -853,9 +863,19 @@ export default function FanDashboard() {
 
   // ---- Render ----
   return (
+    <div style={{ position: "fixed", inset: 0, overflow: "hidden", background: "#f5f5f7" }}>
     <div
-      className="flex h-screen overflow-hidden text-primary min-w-[1440px]"
-      style={{ background: "transparent", fontFamily: "'Satoshi', ui-sans-serif, system-ui, -apple-system, sans-serif" }}
+      className="flex text-primary"
+      style={{
+        width: 1440,
+        height: 900,
+        position: "absolute",
+        left: "calc(50% - 720px)",
+        top: "calc(50% - 450px)",
+        transform: `scale(${scale})`,
+        transformOrigin: "center center",
+        fontFamily: "'Satoshi', ui-sans-serif, system-ui, -apple-system, sans-serif",
+      }}
     >
       <style>{`
         .recharts-cartesian-axis-tick text { fill: #86868b; font-variant-numeric: tabular-nums; }
@@ -1384,6 +1404,7 @@ export default function FanDashboard() {
 
         </div>
       </main>
+    </div>
     </div>
   );
 }
