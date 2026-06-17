@@ -854,7 +854,7 @@ export default function FanDashboard() {
   // ---- Render ----
   return (
     <div
-      className="flex h-screen overflow-hidden text-primary"
+      className="flex h-screen overflow-hidden text-primary min-w-[1440px]"
       style={{ background: "transparent", fontFamily: "'Satoshi', ui-sans-serif, system-ui, -apple-system, sans-serif" }}
     >
       <style>{`
