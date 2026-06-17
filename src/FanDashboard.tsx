@@ -528,7 +528,7 @@ export default function FanDashboard() {
   const [sheetsLoading, setSheetsLoading] = useState(true);
   const [syncedAt, setSyncedAt] = useState<Date | null>(null);
   const [, setNowTick] = useState(0);
-  const [vp, setVp] = useState({ scale: 1, h: 900 });
+  const [vp, setVp] = useState({ scale: 1, h: 900, left: 0 });
 
   useEffect(() => {
     const id = setInterval(() => setNowTick((t) => t + 1), 60000);
@@ -537,8 +537,12 @@ export default function FanDashboard() {
 
   useEffect(() => {
     const update = () => {
-      const scale = window.innerWidth / 1440;
-      setVp({ scale, h: Math.round(window.innerHeight / scale) });
+      // Use screen.width (physical monitor width, unaffected by browser zoom) so we
+      // correct for zoom without enlarging the layout on wider monitors.
+      const scale = window.innerWidth / window.screen.width;
+      const h = Math.round(window.innerHeight / scale);
+      const left = Math.max(0, Math.round((window.innerWidth - 1440 * scale) / 2));
+      setVp({ scale, h, left });
     };
     update();
     window.addEventListener("resize", update);
@@ -871,7 +875,7 @@ export default function FanDashboard() {
         width: 1440,
         height: vp.h,
         position: "absolute",
-        left: 0,
+        left: vp.left,
         top: 0,
         transform: `scale(${vp.scale})`,
         transformOrigin: "top left",
