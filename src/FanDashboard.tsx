@@ -528,7 +528,7 @@ export default function FanDashboard() {
   const [sheetsLoading, setSheetsLoading] = useState(true);
   const [syncedAt, setSyncedAt] = useState<Date | null>(null);
   const [, setNowTick] = useState(0);
-  const [vp, setVp] = useState({ scale: 1, h: 900, left: 0 });
+  const [vp, setVp] = useState({ scale: 1, h: 900 });
 
   useEffect(() => {
     const id = setInterval(() => setNowTick((t) => t + 1), 60000);
@@ -537,11 +537,9 @@ export default function FanDashboard() {
 
   useEffect(() => {
     const update = () => {
-      // Cap at 1 so the layout never grows beyond 1440px on wide monitors,
-      // but scales down proportionally when zoomed in (small viewport).
-      const scale = Math.min(1, window.innerWidth / 1440);
+      const scale = window.innerWidth / 1440;
       const h = Math.round(window.innerHeight / scale);
-      const left = Math.max(0, Math.round((window.innerWidth - 1440 * scale) / 2));
+      const left = 0;
       setVp({ scale, h, left });
     };
     update();
@@ -875,7 +873,7 @@ export default function FanDashboard() {
         width: 1440,
         height: vp.h,
         position: "absolute",
-        left: vp.left,
+        left: 0,
         top: 0,
         transform: `scale(${vp.scale})`,
         transformOrigin: "top left",
