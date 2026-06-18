@@ -605,7 +605,7 @@ export default function FanDashboard() {
             <div className="grid grid-cols-12 gap-[22px] items-stretch">
               <div className="col-span-6 bg-white rounded-[18px] p-[22px]">
                 <div className="mt-[30px] mb-[33px]" style={{ height: 36 }} />
-                {[...Array(7)].map((_, i, arr) => (
+                {[...Array(6)].map((_, i, arr) => (
                   <div key={i} className={i === arr.length - 1 ? "pt-[11px]" : "py-[11px]"} style={{ height: i === arr.length - 1 ? 36 : 50 }} />
                 ))}
               </div>
