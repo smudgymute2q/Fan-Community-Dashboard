@@ -1214,16 +1214,14 @@ export default function FanDashboard() {
                   </div>
                 <div className="mt-[30px] flex items-start gap-4">
                   {rangeStats && (
-                    <div className="flex items-start flex-wrap gap-x-[44px] gap-y-3 min-w-0">
-                      <div className="flex items-center gap-[22px]">
-                        <div>
-                          <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none mb-[11px]">{monthLabel(history[0].date)}</div>
-                          <div className="text-[14px] font-semibold tabular-nums text-primary leading-none">{fmtFull(rangeStats.startTotal)}</div>
-                        </div>
-                        <div>
-                          <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none mb-[11px]">{monthLabel(history[history.length - 1].date)}</div>
-                          <div className="text-[14px] font-semibold tabular-nums text-primary leading-none">{fmtFull(rangeStats.endTotal)}</div>
-                        </div>
+                    <div className="flex items-start flex-wrap gap-x-[33px] gap-y-3 min-w-0">
+                      <div>
+                        <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none mb-[11px]">{monthLabel(history[0].date)}</div>
+                        <div className="text-[14px] font-semibold tabular-nums text-primary leading-none">{fmtFull(rangeStats.startTotal)}</div>
+                      </div>
+                      <div>
+                        <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none mb-[11px]">{monthLabel(history[history.length - 1].date)}</div>
+                        <div className="text-[14px] font-semibold tabular-nums text-primary leading-none">{fmtFull(rangeStats.endTotal)}</div>
                       </div>
                       <div>
                         <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none mb-[11px]">Net Growth</div>
