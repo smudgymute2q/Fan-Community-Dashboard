@@ -1186,13 +1186,12 @@ export default function FanDashboard() {
           <div className="flex-1 min-h-[300px] grid grid-cols-12 gap-[22px] items-stretch">
             {/* Growth chart */}
             <div className={`col-span-8 ${CARD} flex flex-col overflow-hidden min-h-0`}>
-              <div className="px-[22px] pt-[22px] pb-[33px] shrink-0">
-                <div className="flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-2.5">
-                    <TrendingUp size={20} className="text-primary shrink-0" strokeWidth={2.25} />
-                    <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">Fan Network Growth</h2>
-                  </div>
-                  <div className="flex items-center gap-1 bg-[#f5f5f7] p-1 rounded-full shrink-0">
+              <div className="px-[22px] pt-[22px] pb-[33px] shrink-0 relative">
+                <div className="flex items-center gap-2.5">
+                  <TrendingUp size={20} className="text-primary shrink-0" strokeWidth={2.25} />
+                  <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">Fan Network Growth</h2>
+                </div>
+                <div className="absolute top-[22px] right-[22px] flex items-center gap-1 bg-[#f5f5f7] p-1 rounded-full shrink-0">
                     {[
                       { key: "3m", label: "3M" },
                       { key: "6m", label: "6M" },
@@ -1213,7 +1212,6 @@ export default function FanDashboard() {
                       </button>
                     ))}
                   </div>
-                </div>
                 <div className="mt-[33px] flex items-start gap-4">
                   {rangeStats && (
                     <div className="flex items-start flex-wrap gap-x-[44px] gap-y-3 min-w-0">
