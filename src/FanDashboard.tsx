@@ -242,7 +242,7 @@ function platformShareData(artist) {
   return Object.entries(artist.platforms).map(([name, v]) => ({ name, value: v.value, fill: PLATFORMS[name]?.color || "#888" })).sort((a, b) => b.value - a.value);
 }
 function monthlyVelocity(history, plats) {
-  // Year-to-date: months in the latest year, plus the prior month for delta calc
+  if (history.length < 2) return [];
   const latestYear = history[history.length - 1].date.slice(0, 4);
   const firstIdx = history.findIndex((r) => r.date >= `${latestYear}-01`);
   const startIdx = Math.max(0, (firstIdx === -1 ? history.length - 1 : firstIdx) - 1);
