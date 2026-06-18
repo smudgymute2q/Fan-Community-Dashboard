@@ -1019,12 +1019,12 @@ export default function FanDashboard() {
             {/* Fan Page Tracker */}
             <div className="col-span-3 relative min-h-0">
             <div className={`absolute inset-0 ${CARD} flex flex-col overflow-hidden`}>
-              <div className="px-[22px] pt-[22px] pb-[33px] flex items-center justify-between gap-2 shrink-0">
+              <div className="px-[22px] pt-[22px] pb-[33px] shrink-0 relative">
                 <div className="flex items-center gap-2.5">
                   <LayoutList size={20} className="text-primary shrink-0" strokeWidth={2.25} />
                   <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">Fan Page Tracker</h2>
                 </div>
-                <div className="flex items-center gap-[11px]">
+                <div className="absolute top-[22px] right-[22px] flex items-center gap-[11px]">
                   <button
                     onClick={() => setShowStarredOnly((o) => !o)}
                     className={`w-[34px] h-[34px] rounded-full flex items-center justify-center transition ${
@@ -1186,14 +1186,37 @@ export default function FanDashboard() {
           <div className="flex-1 min-h-[300px] grid grid-cols-12 gap-[22px] items-stretch">
             {/* Growth chart */}
             <div className={`col-span-8 ${CARD} flex flex-col overflow-hidden min-h-0`}>
-              <div className="px-[22px] pt-[22px] pb-[33px] shrink-0 flex items-start justify-between gap-4">
-                <div className="min-w-0">
+              <div className="px-[22px] pt-[22px] pb-[33px] shrink-0">
+                <div className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-2.5">
                     <TrendingUp size={20} className="text-primary shrink-0" strokeWidth={2.25} />
                     <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">Fan Network Growth</h2>
                   </div>
+                  <div className="flex items-center gap-1 bg-[#f5f5f7] p-1 rounded-full shrink-0">
+                    {[
+                      { key: "3m", label: "3M" },
+                      { key: "6m", label: "6M" },
+                      { key: "12m", label: "1Y" },
+                      { key: "ytd", label: "YTD" },
+                      { key: "all", label: "All" },
+                    ].map((opt) => (
+                      <button
+                        key={opt.key}
+                        onClick={() => setYearRange(opt.key)}
+                        className={`text-[12px] font-semibold px-3 py-1 rounded-full transition-all ${
+                          yearRange === opt.key
+                            ? "bg-white text-primary"
+                            : "text-muted hover:text-primary"
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="mt-[33px] flex items-start gap-4">
                   {rangeStats && (
-                    <div className="mt-[33px] flex items-start flex-wrap gap-x-[44px] gap-y-3">
+                    <div className="flex items-start flex-wrap gap-x-[44px] gap-y-3 min-w-0">
                       <div className="flex items-center gap-[22px]">
                         <div>
                           <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none mb-[11px]">{monthLabel(history[0].date)}</div>
@@ -1223,30 +1246,7 @@ export default function FanDashboard() {
                       )}
                     </div>
                   )}
-                </div>
-                <div className="flex flex-col items-end gap-[22px] shrink-0">
-                  <div className="flex items-center gap-1 bg-[#f5f5f7] p-1 rounded-full shrink-0">
-                    {[
-                      { key: "3m", label: "3M" },
-                      { key: "6m", label: "6M" },
-                      { key: "12m", label: "1Y" },
-                      { key: "ytd", label: "YTD" },
-                      { key: "all", label: "All" },
-                    ].map((opt) => (
-                      <button
-                        key={opt.key}
-                        onClick={() => setYearRange(opt.key)}
-                        className={`text-[12px] font-semibold px-3 py-1 rounded-full transition-all ${
-                          yearRange === opt.key
-                            ? "bg-white text-primary"
-                            : "text-muted hover:text-primary"
-                        }`}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
-                  </div>
-                  <div className="flex items-center flex-wrap justify-end gap-x-[11px] gap-y-[33px]">
+                  <div className="flex items-center flex-wrap justify-end gap-x-[11px] gap-y-[33px] shrink-0 ml-auto">
                     {orderedPlats.map((p) => {
                       const off = hiddenPlats.has(p);
                       return (
