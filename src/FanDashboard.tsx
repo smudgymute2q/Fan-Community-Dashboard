@@ -870,6 +870,7 @@ export default function FanDashboard() {
         .recharts-cartesian-axis-tick text { fill: #86868b; font-variant-numeric: tabular-nums; }
         .fng-axis .recharts-cartesian-axis-tick text { text-transform: uppercase; letter-spacing: 0.05em; }
         .recharts-cartesian-grid line { stroke: #e5e5ea; }
+        button, [role="button"], a, select { cursor: pointer; }
       `}</style>
 
       {sheetsLoading && (
