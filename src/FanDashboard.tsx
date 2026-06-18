@@ -591,13 +591,7 @@ export default function FanDashboard() {
 
   const hasData = Object.keys(sheetsData).length > 0;
 
-  if (sheetsLoading || !hasData) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-[#f5f5f7]" style={{ fontFamily: "'Satoshi', ui-sans-serif, system-ui, -apple-system, sans-serif" }}>
-        <div className="w-6 h-6 rounded-full border-2 border-primary border-t-transparent animate-spin" />
-      </div>
-    );
-  }
+  if (sheetsLoading || !hasData) return null;
 
   // ---- Render ----
   return (
