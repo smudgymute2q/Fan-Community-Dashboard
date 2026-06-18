@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useRef } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   LineChart,
   Line,
@@ -851,25 +851,11 @@ export default function FanDashboard() {
       })()
     : "Live";
 
-  // ---- Zoom scaling ----
-  const zoomRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    function applyZoom() {
-      if (zoomRef.current) {
-        (zoomRef.current.style as any).zoom = String(window.innerWidth / 1920);
-      }
-    }
-    applyZoom();
-    window.addEventListener("resize", applyZoom);
-    return () => window.removeEventListener("resize", applyZoom);
-  }, []);
-
   // ---- Render ----
   return (
     <div
-      ref={zoomRef}
-      className="flex overflow-hidden text-primary"
-      style={{ position: "fixed", inset: 0, fontFamily: "'Satoshi', ui-sans-serif, system-ui, -apple-system, sans-serif" }}
+      className="flex h-screen overflow-hidden text-primary"
+      style={{ fontFamily: "'Satoshi', ui-sans-serif, system-ui, -apple-system, sans-serif" }}
     >
       <style>{`
         .recharts-cartesian-axis-tick text { fill: #86868b; font-variant-numeric: tabular-nums; }
