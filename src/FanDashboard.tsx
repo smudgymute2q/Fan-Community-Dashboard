@@ -965,7 +965,7 @@ export default function FanDashboard() {
                 <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">Fan Network Reach</h2>
               </div>
               <div
-                className="mt-[33px] mb-[33px] grid gap-x-[44px] gap-y-[11px]"
+                className="mt-[30px] mb-[33px] grid gap-x-[44px] gap-y-[11px]"
                 style={{ gridTemplateColumns: "max-content max-content", justifyContent: "start" }}
               >
                 <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none">Total Reach</div>
@@ -1019,7 +1019,7 @@ export default function FanDashboard() {
             {/* Fan Page Tracker */}
             <div className="col-span-3 relative min-h-0">
             <div className={`absolute inset-0 ${CARD} flex flex-col overflow-hidden`}>
-              <div className="px-[22px] pt-[22px] pb-[33px] shrink-0 relative">
+              <div className="px-[22px] pt-[22px] pb-[30px] shrink-0 relative">
                 <div className="flex items-center gap-2.5">
                   <LayoutList size={20} className="text-primary shrink-0" strokeWidth={2.25} />
                   <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">Fan Page Tracker</h2>
@@ -1144,7 +1144,7 @@ export default function FanDashboard() {
                 const Icon = grp.icon;
                 return (
                   <div key={grp.title} className={`${CARD} p-[22px] flex flex-col overflow-hidden`}>
-                    <div className="flex items-center gap-2.5 shrink-0 mb-[33px]">
+                    <div className="flex items-center gap-2.5 shrink-0 mb-[30px]">
                       <Icon size={20} className="text-primary shrink-0" strokeWidth={2.25} />
                       <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">{grp.title}</h2>
                     </div>
@@ -1212,7 +1212,7 @@ export default function FanDashboard() {
                       </button>
                     ))}
                   </div>
-                <div className="mt-[33px] flex items-start gap-4">
+                <div className="mt-[30px] flex items-start gap-4">
                   {rangeStats && (
                     <div className="flex items-start flex-wrap gap-x-[44px] gap-y-3 min-w-0">
                       <div className="flex items-center gap-[22px]">
@@ -1322,7 +1322,7 @@ export default function FanDashboard() {
 
             {/* Growth Velocity */}
             <div className={`col-span-4 ${CARD} p-[22px] flex flex-col overflow-hidden min-h-0`}>
-              <div className="flex items-center gap-2.5 shrink-0 mb-[33px]">
+              <div className="flex items-center gap-2.5 shrink-0 mb-[30px]">
                 <Gauge size={20} className="text-primary shrink-0" strokeWidth={2.25} />
                 <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">Growth Velocity</h2>
               </div>
