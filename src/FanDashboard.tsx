@@ -377,7 +377,7 @@ function SidebarArtistRow({ artist, active, onClick }: { artist: any; active: bo
     <button
       onClick={onClick}
       className={`w-full flex items-center gap-2.5 py-2 rounded-xl transition-all text-left pl-2.5 pr-3 ${
-        active ? "bg-[#ebebf0]" : "hover:bg-[#f5f5f7]"
+        active ? "bg-[#f5f5f7]" : "hover:bg-[#f5f5f7]"
       }`}
     >
       <div
@@ -922,7 +922,7 @@ export default function FanDashboard() {
                       <button
                         key={a.slug}
                         onClick={() => { setSelectedSlug(a.slug); setSwitcherOpen(false); }}
-                        className={`w-full flex items-center gap-2.5 py-1.5 px-2 rounded-xl transition text-left ${active ? "bg-[#ebebf0]" : "hover:bg-[#f5f5f7]"}`}
+                        className={`w-full flex items-center gap-2.5 py-1.5 px-2 rounded-xl transition text-left ${active ? "bg-[#f5f5f7]" : "hover:bg-[#f5f5f7]"}`}
                       >
                         <div className="w-9 h-9 rounded-full overflow-hidden shrink-0 bg-[#f0f0f3] flex items-center justify-center font-bold text-xs text-primary">
                           <img
