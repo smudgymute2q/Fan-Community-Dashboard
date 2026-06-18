@@ -3,6 +3,4 @@ dist
 dist-ssr
 *.local
 .DS_Store
-
-# Generated at build time by scripts/fetch-data.mjs
 public/data.json
