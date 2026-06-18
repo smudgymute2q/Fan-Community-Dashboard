@@ -1189,7 +1189,7 @@ export default function FanDashboard() {
           </div>
 
           {/* Lower row: Fan Network Growth + Growth Velocity */}
-          <div className="flex-1 min-h-[300px] grid grid-cols-12 gap-[22px] items-stretch">
+          <div className="h-[560px] grid grid-cols-12 gap-[22px] items-stretch">
             {/* Growth chart */}
             <div className={`col-span-8 ${CARD} flex flex-col overflow-hidden min-h-0`}>
               <div className="px-[22px] pt-[22px] pb-[33px] shrink-0 flex items-start justify-between gap-4">
