@@ -528,18 +528,10 @@ export default function FanDashboard() {
   const [sheetsLoading, setSheetsLoading] = useState(true);
   const [syncedAt, setSyncedAt] = useState<Date | null>(null);
   const [, setNowTick] = useState(0);
-  const [zoom, setZoom] = useState(1);
 
   useEffect(() => {
     const id = setInterval(() => setNowTick((t) => t + 1), 60000);
     return () => clearInterval(id);
-  }, []);
-
-  useEffect(() => {
-    const update = () => setZoom(window.innerWidth / 2560);
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
   }, []);
 
   useEffect(() => {
@@ -861,10 +853,9 @@ export default function FanDashboard() {
 
   // ---- Render ----
   return (
-    <div style={{ position: "fixed", inset: 0, zoom }}>
     <div
-      className="flex text-primary"
-      style={{ position: "absolute", inset: 0, fontFamily: "'Satoshi', ui-sans-serif, system-ui, -apple-system, sans-serif" }}
+      className="flex h-screen overflow-hidden text-primary"
+      style={{ fontFamily: "'Satoshi', ui-sans-serif, system-ui, -apple-system, sans-serif" }}
     >
       <style>{`
         .recharts-cartesian-axis-tick text { fill: #86868b; font-variant-numeric: tabular-nums; }
@@ -1394,7 +1385,6 @@ export default function FanDashboard() {
 
         </div>
       </main>
-    </div>
     </div>
   );
 }
