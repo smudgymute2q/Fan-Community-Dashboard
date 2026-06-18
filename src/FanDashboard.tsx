@@ -862,6 +862,8 @@ export default function FanDashboard() {
         .fng-axis .recharts-cartesian-axis-tick text { text-transform: uppercase; letter-spacing: 0.05em; }
         .recharts-cartesian-grid line { stroke: #e5e5ea; }
         button, [role="button"], a, select { cursor: pointer; }
+        .no-scrollbar { scrollbar-width: none; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
       `}</style>
 
       {sheetsLoading && (
