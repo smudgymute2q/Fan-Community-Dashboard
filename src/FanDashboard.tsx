@@ -1019,7 +1019,7 @@ export default function FanDashboard() {
             {/* Fan Page Tracker */}
             <div className="col-span-3 relative min-h-0">
             <div className={`absolute inset-0 ${CARD} flex flex-col overflow-hidden`}>
-              <div className="px-[22px] pt-[22px] pb-[47px] shrink-0 relative">
+              <div className="px-[22px] pt-[22px] pb-[30px] shrink-0 relative">
                 <div className="flex items-center gap-2.5">
                   <LayoutList size={20} className="text-primary shrink-0" strokeWidth={2.25} />
                   <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">Fan Page Tracker</h2>
