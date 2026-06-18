@@ -939,7 +939,7 @@ export default function FanDashboard() {
                         <div className="flex-1 min-w-0">
                           <div className="text-[14px] font-medium text-primary truncate leading-tight">{a.name}</div>
                           <div className="flex items-center gap-2 mt-1">
-                            <span className="text-[14px] tabular-nums font-semibold text-primary">{fmt(a.totals.value)}</span>
+                            <span className="text-[14px] tabular-nums font-semibold text-primary">{fmtFull(a.totals.value)}</span>
                             <DeltaPill value={a.totals.delta} />
                           </div>
                         </div>
@@ -1218,12 +1218,12 @@ export default function FanDashboard() {
                       <div className="flex items-center gap-[22px]">
                         <div>
                           <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none mb-[11px]">{monthLabel(history[0].date)}</div>
-                          <div className="text-[14px] font-semibold tabular-nums text-primary leading-none">{fmt(rangeStats.startTotal)}</div>
+                          <div className="text-[14px] font-semibold tabular-nums text-primary leading-none">{fmtFull(rangeStats.startTotal)}</div>
                         </div>
                         <span className="text-primary text-[14px] font-semibold leading-none">{"\u2192"}</span>
                         <div>
                           <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none mb-[11px]">{monthLabel(history[history.length - 1].date)}</div>
-                          <div className="text-[14px] font-semibold tabular-nums text-primary leading-none">{fmt(rangeStats.endTotal)}</div>
+                          <div className="text-[14px] font-semibold tabular-nums text-primary leading-none">{fmtFull(rangeStats.endTotal)}</div>
                         </div>
                       </div>
                       <div>
