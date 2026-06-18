@@ -1253,7 +1253,7 @@ export default function FanDashboard() {
                         <button
                           key={p}
                           onClick={() => togglePlat(p)}
-                          className={`flex items-center h-[34px] gap-2 pl-2.5 pr-3 py-1.5 rounded-full transition-all bg-[#f5f5f7]`}
+                          className={`flex items-center h-[34px] gap-2 pl-2.5 pr-3 py-1.5 rounded-full transition-all bg-[#f5f5f7] hover:bg-[#f0f0f3]`}
                           title={off ? `Show ${p}` : `Hide ${p}`}
                         >
                           <span className="w-2.5 h-2.5 rounded-full shrink-0 transition-colors" style={{ background: off ? "#d2d2d7" : PLATFORMS[p].color }} />
