@@ -856,7 +856,7 @@ export default function FanDashboard() {
   useEffect(() => {
     function applyZoom() {
       if (zoomRef.current) {
-        (zoomRef.current.style as any).zoom = String(window.innerWidth / 1440);
+        (zoomRef.current.style as any).zoom = String(window.innerWidth / 1920);
       }
     }
     applyZoom();
