@@ -536,7 +536,7 @@ export default function FanDashboard() {
   }, []);
 
   useEffect(() => {
-    const update = () => setZoom(window.innerWidth / 1440);
+    const update = () => setZoom(window.innerWidth / 2560);
     update();
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
