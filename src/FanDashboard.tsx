@@ -10,45 +10,27 @@ import {
   BarChart,
   Bar,
   Cell,
-  PieChart,
-  Pie,
-  AreaChart,
-  Area,
 } from "recharts";
 import {
   ChevronDown,
   ArrowUpRight,
-  ArrowUp,
   ArrowDownRight,
-  Minus,
   PieChart as PieIcon,
-  Zap,
-  MessageSquare,
-  Heart,
-  Repeat2,
-  ExternalLink,
-  Filter,
-  Image as ImageIcon,
-  Play,
-  AlertCircle,
   Star,
-  Users,
   LayoutList,
   Gauge,
   TrendingUp,
-  Radar,
-  Trophy,
 } from "lucide-react";
 
 // ---- Platform tokens ----
 const PLATFORMS = {
-  Discord: { color: "#5865F2", soft: "#E8EAFD" },
-  Reddit: { color: "#FF4500", soft: "#FFECE3" },
-  Instagram: { color: "#FF0069", soft: "#FFE0EE" },
-  "Instagram Channels": { color: "#D300C5", soft: "#FBE0F7" },
-  X: { color: "#000000", soft: "#E5E7EB" },
-  "X Communities": { color: "#808080", soft: "#F3F4F6" },
-  TikTok: { color: "#25F4EE", soft: "#E0FDFB" },
+  Discord: { color: "#5865F2" },
+  Reddit: { color: "#FF4500" },
+  Instagram: { color: "#FF0069" },
+  "Instagram Channels": { color: "#D300C5" },
+  X: { color: "#000000" },
+  "X Communities": { color: "#808080" },
+  TikTok: { color: "#25F4EE" },
 };
 
 // ---- Platform display order + classification ----
@@ -57,7 +39,6 @@ const MEMBER_PLATFORMS = new Set(["Discord", "Reddit", "X Communities", "Instagr
 
 // ---- Design tokens ----
 const CARD = "bg-white rounded-[18px]";
-const EYEBROW = "text-[12px] font-medium text-muted whitespace-nowrap";
 
 // ---- Cloudflare Worker proxy ----
 const WORKER_URL = "https://fanintel.smudgy-mute2q.workers.dev";
@@ -67,7 +48,7 @@ const SHEET_ID = "2PACX-1vRX8lP3Nb-LWMmUoTtHDHihOX-SkhFMUXoQJIuinbUhctXSjgJ1CCI9
 const sheetTabs = (name: string) => ({ network: `${name} (Fan Network)`, pages: `${name} (Fan Pages)` });
 
 // ---- LocalStorage cache utilities ----
-const CACHE_MS = { sheets: 86_400_000, reddit: 900_000 };
+const CACHE_MS = { sheets: 86_400_000 };
 
 function getCached<T>(key: string, ttl: number): { data: T; ts: number } | null {
   try {
@@ -237,54 +218,20 @@ function parsePagesTab(rows: string[][]) {
 
 // ---- Static fallback artist data ----
 const STATIC_ARTISTS = [
-  { slug: "opium", name: "Opium", subreddit: "opium", totals: { value: 168074, delta: 808 }, platforms: { Discord: { value: 8809, delta: 1 }, Reddit: { value: 19795, delta: 425 }, Instagram: { value: 95339, delta: 415 }, "Instagram Channels": { value: 9400, delta: -200 }, X: { value: 1775, delta: 154 }, TikTok: { value: 32956, delta: 13 } }, pages: [{ name: "/opium00", followers: 8809, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "playboi-carti", name: "Playboi Carti", subreddit: "playboicarti", totals: { value: 1495905, delta: 4537 }, platforms: { Discord: { value: 182148, delta: 338 }, Reddit: { value: 1029516, delta: 8064 }, Instagram: { value: 253236, delta: -3425 }, "Instagram Channels": { value: 23900, delta: -400 }, X: { value: 6995, delta: -38 }, "X Communities": { value: 110, delta: -2 } }, pages: [{ name: "/playboicarti", followers: 182148, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/pbc00", followers: 13193, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "ken-carson", name: "Ken Carson", subreddit: "kencarson", totals: { value: 536568, delta: 11932 }, platforms: { Discord: { value: 76270, delta: 236 }, Reddit: { value: 75448, delta: 904 }, Instagram: { value: 212157, delta: 8336 }, "Instagram Channels": { value: 22500, delta: 1000 }, X: { value: 45700, delta: 300 }, "X Communities": { value: 79146, delta: 9 }, TikTok: { value: 24300, delta: 100 } }, pages: [{ name: "/kencarson", followers: 76270, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/BuZYYKZQ", followers: 153, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "destroy-lonely", name: "Destroy Lonely", subreddit: "destroylonely", totals: { value: 213034, delta: 59171 }, platforms: { Discord: { value: 36318, delta: 98 }, Reddit: { value: 55756, delta: 499 }, Instagram: { value: 65854, delta: 7484 }, "Instagram Channels": { value: 1600, delta: -2400 }, X: { value: 28706, delta: 28690 }, "X Communities": { value: 9200, delta: 0 }, TikTok: { value: 15600, delta: 0 } }, pages: [{ name: "/destroylonely", followers: 36318, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/bh3", followers: 1867, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "hxg", name: "HXG", subreddit: "homixidegang", totals: { value: 37566, delta: -231 }, platforms: { Discord: { value: 10277, delta: -51 }, Reddit: { value: 8943, delta: 35 }, Instagram: { value: 18346, delta: -215 } }, pages: [{ name: "/hxg", followers: 10277, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "pierre-bourne", name: "Pi'erre Bourne", subreddit: "pierrebourne", totals: { value: 37147, delta: 171 }, platforms: { Discord: { value: 4955, delta: 53 }, Reddit: { value: 22381, delta: 104 }, Instagram: { value: 9424, delta: -14 }, "Instagram Channels": { value: 387, delta: 28 } }, pages: [{ name: "/pierrebourne", followers: 4955, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/yopierre", followers: 372, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "rema", name: "Rema", subreddit: "rema", totals: { value: 2123652, delta: 4239 }, platforms: { Discord: { value: 2541, delta: 23 }, Reddit: { value: 308, delta: 4 }, Instagram: { value: 698524, delta: 3991 }, X: { value: 22179, delta: -79 }, TikTok: { value: 1400100, delta: 300 } }, pages: [{ name: "/heisrema", followers: 2541, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "untiljapan", name: "untiljapan", subreddit: "untiljapan", totals: { value: 6802, delta: 136 }, platforms: { Discord: { value: 2039, delta: 44 }, Reddit: { value: 1416, delta: -7 }, Instagram: { value: 1713, delta: 22 }, X: { value: 1079, delta: 60 }, "X Communities": { value: 555, delta: 17 }, TikTok: { value: 9, delta: 0 } }, pages: [{ name: "/untiljapan", followers: 2039, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "jim-legxacy", name: "Jim Legxacy", subreddit: "jimlegxacy", totals: { value: 10144, delta: 2202 }, platforms: { Discord: { value: 6089, delta: 1410 }, Reddit: { value: 359, delta: 39 }, Instagram: { value: 322, delta: 131 }, X: { value: 2362, delta: 235 }, "X Communities": { value: 261, delta: 23 }, TikTok: { value: 751, delta: 364 } }, pages: [{ name: "/PfeRaWF4bG", followers: 6089, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "apollored1", name: "ApolloRed1", subreddit: "apollored1", totals: { value: 1659, delta: 80 }, platforms: { Discord: { value: 283, delta: 44 }, Reddit: { value: 56, delta: 8 }, Instagram: { value: 1320, delta: 28 } }, pages: [{ name: "/apollohub", followers: 564, latest: "Apr 9, 2026", platform: "Discord" }, { name: "/apollored1", followers: 283, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "destin-laurel", name: "Destin Laurel", subreddit: "destinlaurel", totals: { value: 0, delta: 0 }, platforms: {}, pages: [] },
-  { slug: "2hollis", name: "2hollis", subreddit: "2hollis", totals: { value: 0, delta: 0 }, platforms: {}, pages: [] },
+  { slug: "opium", name: "Opium",totals: { value: 168074, delta: 808 }, platforms: { Discord: { value: 8809, delta: 1 }, Reddit: { value: 19795, delta: 425 }, Instagram: { value: 95339, delta: 415 }, "Instagram Channels": { value: 9400, delta: -200 }, X: { value: 1775, delta: 154 }, TikTok: { value: 32956, delta: 13 } }, pages: [{ name: "/opium00", followers: 8809, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "playboi-carti", name: "Playboi Carti", totals: { value: 1495905, delta: 4537 }, platforms: { Discord: { value: 182148, delta: 338 }, Reddit: { value: 1029516, delta: 8064 }, Instagram: { value: 253236, delta: -3425 }, "Instagram Channels": { value: 23900, delta: -400 }, X: { value: 6995, delta: -38 }, "X Communities": { value: 110, delta: -2 } }, pages: [{ name: "/playboicarti", followers: 182148, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/pbc00", followers: 13193, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "ken-carson", name: "Ken Carson", totals: { value: 536568, delta: 11932 }, platforms: { Discord: { value: 76270, delta: 236 }, Reddit: { value: 75448, delta: 904 }, Instagram: { value: 212157, delta: 8336 }, "Instagram Channels": { value: 22500, delta: 1000 }, X: { value: 45700, delta: 300 }, "X Communities": { value: 79146, delta: 9 }, TikTok: { value: 24300, delta: 100 } }, pages: [{ name: "/kencarson", followers: 76270, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/BuZYYKZQ", followers: 153, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "destroy-lonely", name: "Destroy Lonely", totals: { value: 213034, delta: 59171 }, platforms: { Discord: { value: 36318, delta: 98 }, Reddit: { value: 55756, delta: 499 }, Instagram: { value: 65854, delta: 7484 }, "Instagram Channels": { value: 1600, delta: -2400 }, X: { value: 28706, delta: 28690 }, "X Communities": { value: 9200, delta: 0 }, TikTok: { value: 15600, delta: 0 } }, pages: [{ name: "/destroylonely", followers: 36318, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/bh3", followers: 1867, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "hxg", name: "HXG", totals: { value: 37566, delta: -231 }, platforms: { Discord: { value: 10277, delta: -51 }, Reddit: { value: 8943, delta: 35 }, Instagram: { value: 18346, delta: -215 } }, pages: [{ name: "/hxg", followers: 10277, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "pierre-bourne", name: "Pi'erre Bourne", totals: { value: 37147, delta: 171 }, platforms: { Discord: { value: 4955, delta: 53 }, Reddit: { value: 22381, delta: 104 }, Instagram: { value: 9424, delta: -14 }, "Instagram Channels": { value: 387, delta: 28 } }, pages: [{ name: "/pierrebourne", followers: 4955, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/yopierre", followers: 372, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "rema", name: "Rema", totals: { value: 2123652, delta: 4239 }, platforms: { Discord: { value: 2541, delta: 23 }, Reddit: { value: 308, delta: 4 }, Instagram: { value: 698524, delta: 3991 }, X: { value: 22179, delta: -79 }, TikTok: { value: 1400100, delta: 300 } }, pages: [{ name: "/heisrema", followers: 2541, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "untiljapan", name: "untiljapan", totals: { value: 6802, delta: 136 }, platforms: { Discord: { value: 2039, delta: 44 }, Reddit: { value: 1416, delta: -7 }, Instagram: { value: 1713, delta: 22 }, X: { value: 1079, delta: 60 }, "X Communities": { value: 555, delta: 17 }, TikTok: { value: 9, delta: 0 } }, pages: [{ name: "/untiljapan", followers: 2039, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "jim-legxacy", name: "Jim Legxacy", totals: { value: 10144, delta: 2202 }, platforms: { Discord: { value: 6089, delta: 1410 }, Reddit: { value: 359, delta: 39 }, Instagram: { value: 322, delta: 131 }, X: { value: 2362, delta: 235 }, "X Communities": { value: 261, delta: 23 }, TikTok: { value: 751, delta: 364 } }, pages: [{ name: "/PfeRaWF4bG", followers: 6089, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "apollored1", name: "ApolloRed1", totals: { value: 1659, delta: 80 }, platforms: { Discord: { value: 283, delta: 44 }, Reddit: { value: 56, delta: 8 }, Instagram: { value: 1320, delta: 28 } }, pages: [{ name: "/apollohub", followers: 564, latest: "Apr 9, 2026", platform: "Discord" }, { name: "/apollored1", followers: 283, latest: "Apr 1, 2026", platform: "Discord" }] },
+  { slug: "destin-laurel", name: "Destin Laurel", totals: { value: 0, delta: 0 }, platforms: {}, pages: [] },
+  { slug: "2hollis", name: "2hollis", totals: { value: 0, delta: 0 }, platforms: {}, pages: [] },
 ];
 
-const MOCK_FEED = {
-  "playboi-carti": [
-    { platform: "Reddit", page: "/r/playboicarti", author: "u/tearsofravage", time: "12m ago", title: "New snippet from the Antagonist sessions leaked on Discord", body: "Production credits line up with what Wheezy hinted at last week.", engagement: { upvotes: 2847, comments: 412 }, media: "image", sentiment: "hype" },
-    { platform: "Instagram", page: "@playboicarti", author: "playboicarti", time: "2h ago", title: null, body: "Antagonist. 06.13.", engagement: { likes: 847293, comments: 23847 }, media: "image", sentiment: "hype" },
-    { platform: "X", page: "@playboicarti", author: "playboicarti", time: "6h ago", title: null, body: "soon.", engagement: { likes: 67482, reposts: 12847, replies: 8394 }, sentiment: "hype" },
-  ],
-  "ken-carson": [
-    { platform: "Instagram", page: "@kencarson", author: "kencarson", time: "23m ago", title: null, body: "A CHAIN FOR THE TEEN X.", engagement: { likes: 234827, comments: 4829 }, media: "image", sentiment: "hype" },
-  ],
-  "destroy-lonely": [
-    { platform: "X", page: "@destroylonely", author: "destroylonely", time: "15m ago", title: null, body: "LOVE LASTS 4EVER DELUXE. 14 NEW TRACKS. MAY 22.", engagement: { likes: 28490, reposts: 8471, replies: 2847 }, sentiment: "hype" },
-  ],
-  "rema": [
-    { platform: "TikTok", page: "@heisrema", author: "heisrema", time: "18m ago", title: null, body: "HEIS. world tour. Lagos kickoff", engagement: { likes: 1284273, comments: 48273, shares: 184273 }, media: "video", sentiment: "hype" },
-  ],
-  "hxg": [
-    { platform: "Reddit", page: "/r/homixidegang", author: "u/hxg_forever", time: "2h ago", title: "Snot x Beno collab album rumors", body: "Someone in the Carti Discord dropped a snippet.", engagement: { upvotes: 847, comments: 184 }, sentiment: "hype" },
-  ],
-  "pierre-bourne": [
-    { platform: "X", page: "@pierrebourne", author: "pierrebourne", time: "1h ago", title: null, body: "SossHouse Vol 3 mastering wrapped. release window q3.", engagement: { likes: 8473, reposts: 1247, replies: 384 }, sentiment: "hype" },
-  ],
-  "opium": [
-    { platform: "Instagram", page: "@opium", author: "opium", time: "45m ago", title: null, body: "OPIUM TOUR 2026. full lineup next week.", engagement: { likes: 184273, comments: 8472 }, media: "image", sentiment: "hype" },
-  ],
-  "untiljapan": [
-    { platform: "Discord", page: "/untiljapan", author: "untiljapan_mod", time: "1h ago", title: "#new-release", body: "EP drops Friday. 6 tracks, all produced with 808 Mafia.", engagement: { reactions: 247, replies: 84 }, sentiment: "positive" },
-  ],
-  "apollored1": [
-    { platform: "Instagram", page: "@apollo", author: "apollored1", time: "3h ago", title: null, body: "BACK FROM HIATUS. new music soon.", engagement: { likes: 8471, comments: 847 }, media: "image", sentiment: "hype" },
-  ],
-  "jim-legxacy": [
-    { platform: "TikTok", page: "@pfeproject", author: "pfeproject", time: "22m ago", title: null, body: "unreleased snippet → full track on friday", engagement: { likes: 18472, comments: 847, shares: 2847 }, media: "video", sentiment: "hype" },
-  ],
-};
 
 function buildHistory(artist) {
   const months = [];
@@ -314,7 +261,6 @@ function buildHistory(artist) {
 }
 
 const fmt = (n) => { if (n === undefined || n === null) return "—"; const abs = Math.abs(n); if (abs >= 1_000_000) return (n / 1_000_000).toFixed(n % 1_000_000 === 0 ? 0 : 2) + "M"; if (abs >= 10_000) return (n / 1_000).toFixed(0) + "K"; if (abs >= 1_000) return (n / 1_000).toFixed(1).replace(/\.0$/, "") + "K"; return n.toLocaleString(); };
-const fmtPill = (n) => { if (n === undefined || n === null) return "—"; const abs = Math.abs(n); if (abs >= 1_000_000) return (n / 1_000_000).toFixed(1) + "M"; if (abs >= 1_000) return (n / 1_000).toFixed(1) + "K"; return n.toLocaleString(); };
 const fmtFull = (n) => (n ?? 0).toLocaleString();
 const fmtPageDate = (s: string) => { const [m, d, y] = s.split("/").map(Number); const mon = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][m - 1]; return y === new Date().getFullYear() ? `${mon} ${d}` : `${mon} ${d}, ${y}`; };
 const monthLabel = (ym) => { const [y, m] = ym.split("-"); return new Date(parseInt(y), parseInt(m) - 1, 1).toLocaleString("en", { month: "short", year: "numeric" }); };
@@ -352,61 +298,7 @@ function DeltaPill({ value, small = false }: { value: number | null | undefined;
   );
 }
 
-function KpiTile({ platform, value, delta }: { platform: string; value: number; delta: number }) {
-  const cfg = PLATFORMS[platform];
-  return (
-    <div className="rounded-[18px] p-[22px] bg-white min-w-0">
-      <div className="flex items-center justify-between gap-2 mb-3">
-        <span className="text-[12px] font-medium text-secondary truncate">{platform}</span>
-        <span className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 bg-[#f0f0f3]">
-          <span className="w-2 h-2 rounded-full" style={{ background: cfg?.color || "#86868b" }} />
-        </span>
-      </div>
-      <div className="font-extrabold tabular-nums text-[22px] text-primary leading-none mb-2.5 truncate">{fmtFull(value)}</div>
-      <DeltaPill value={delta} />
-    </div>
-  );
-}
-
 const iconFor = (slug: string) => `./icons/${slug}.png`;
-
-function SidebarArtistRow({ artist, active, onClick }: { artist: any; active: boolean; onClick: () => void }) {
-  const icon = iconFor(artist.slug);
-  const initial = artist.name.charAt(0);
-  return (
-    <button
-      onClick={onClick}
-      className={`w-full flex items-center gap-2.5 py-2 rounded-xl transition-all text-left pl-2.5 pr-3 ${
-        active ? "bg-[#f5f5f7]" : "hover:bg-[#f5f5f7]"
-      }`}
-    >
-      <div
-        className="w-9 h-9 rounded-xl overflow-hidden shrink-0 flex items-center justify-center font-bold text-xs"
-        style={{ background: active ? "#e3e3e8" : "#f0f0f3" }}
-      >
-        <img
-          src={icon}
-          alt={artist.name}
-          className="w-full h-full object-cover"
-          onError={(e) => {
-            const el = e.target as HTMLImageElement;
-            el.style.display = "none";
-            if (el.parentElement) el.parentElement.textContent = initial;
-          }}
-        />
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className={`text-sm font-semibold truncate leading-tight ${active ? "text-primary" : "text-primary"}`}>
-          {artist.name}
-        </div>
-        <div className="flex items-center gap-1.5 mt-0.5">
-          <span className="text-[11px] tabular-nums font-medium text-muted">{fmt(artist.totals.value)}</span>
-          <DeltaPill value={artist.totals.delta} small />
-        </div>
-      </div>
-    </button>
-  );
-}
 
 function ChartTooltip({ active, payload, label }: any) {
   if (!active || !payload || !payload.length) return null;
@@ -440,90 +332,21 @@ function ChartTooltip({ active, payload, label }: any) {
   );
 }
 
-function engagementSummary(post) {
-  const e = post.engagement;
-  if (post.platform === "Reddit") return [{ icon: ArrowUp, label: fmt(e.upvotes) }, { icon: MessageSquare, label: fmt(e.comments) }];
-  if (post.platform === "Discord") return [{ icon: Heart, label: fmt(e.reactions) }, { icon: MessageSquare, label: fmt(e.replies) }];
-  if (post.platform === "X") return [{ icon: Heart, label: fmt(e.likes) }, { icon: Repeat2, label: fmt(e.reposts) }, { icon: MessageSquare, label: fmt(e.replies) }];
-  if (post.platform === "TikTok") return [{ icon: Heart, label: fmt(e.likes) }, { icon: MessageSquare, label: fmt(e.comments) }, { icon: Repeat2, label: fmt(e.shares) }];
-  return [{ icon: Heart, label: fmt(e.likes) }, { icon: MessageSquare, label: fmt(e.comments) }];
-}
-
-const SENTIMENT_STYLE = {
-  hype: { bg: "bg-[#FFF1DE]", text: "text-[#C2410C]", label: "HYPE" },
-  positive: { bg: "bg-[#e8f5ea]", text: "text-pos", label: "POSITIVE" },
-  neutral: { bg: "bg-[#f0f0f3]", text: "text-secondary", label: "NEUTRAL" },
-  negative: { bg: "bg-[#fdecea]", text: "text-neg", label: "WATCH" },
-};
-
-function FeedCard({ post }: { post: any }) {
-  const cfg = PLATFORMS[post.platform];
-  const sent = SENTIMENT_STYLE[post.sentiment];
-  return (
-    <div className="group relative bg-white rounded-[18px] transition-all overflow-hidden">
-      <div className="p-4">
-        <div className="flex items-center justify-between gap-2 mb-3">
-          <div className="flex items-center gap-2 min-w-0">
-            <div className="w-7 h-7 rounded-xl flex items-center justify-center shrink-0" style={{ background: cfg?.soft || "#f5f5f7" }}>
-              <span className="w-2 h-2 rounded-full" style={{ background: cfg?.color || "#86868b" }} />
-            </div>
-            <div className="min-w-0">
-              <div className="text-xs font-semibold text-primary truncate">{post.page}</div>
-              <div className="text-[10px] text-muted truncate">@{post.author.replace(/^u\//, "").replace(/^@/, "")} · {post.time}</div>
-            </div>
-          </div>
-          <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full ${sent.bg} ${sent.text} shrink-0`}>{sent.label}</span>
-        </div>
-        {post.title && <div className="text-[13px] text-primary font-semibold leading-snug mb-1 line-clamp-2">{post.title}</div>}
-        <div className="text-xs text-secondary leading-relaxed line-clamp-3">{post.body}</div>
-        {post.media && (
-          <div className="mt-3 flex items-center gap-1.5 text-[10px] text-muted bg-[#f5f5f7] px-2 py-1 rounded-xl w-fit">
-            {post.media === "video" ? <Play size={10} /> : <ImageIcon size={10} />}
-            <span className="uppercase tracking-wider font-semibold">{post.media}</span>
-          </div>
-        )}
-        <div className="flex items-center justify-between mt-3 pt-3">
-          <div className="flex items-center gap-3.5">
-            {engagementSummary(post).map((e, i) => {
-              const Icon = e.icon;
-              return (
-                <div key={i} className="flex items-center gap-1 text-[11px] text-secondary font-medium">
-                  <Icon size={11} strokeWidth={2.2} />
-                  <span className="tabular-nums">{e.label}</span>
-                </div>
-              );
-            })}
-          </div>
-          {post.link
-            ? <a href={post.link} target="_blank" rel="noopener noreferrer" className="opacity-0 group-hover:opacity-100 transition text-[10px] text-muted hover:text-primary flex items-center gap-1 font-medium">open <ExternalLink size={10} /></a>
-            : <span className="opacity-0 group-hover:opacity-100 transition text-[10px] text-muted flex items-center gap-1 font-medium">open <ExternalLink size={10} /></span>
-          }
-        </div>
-      </div>
-    </div>
-  );
-}
 
 // ---- Main dashboard ----
 
 export default function FanDashboard() {
   const [selectedSlug, setSelectedSlug] = useState("opium");
-  const [pieHover, setPieHover] = useState<{ name: string; value: number; fill: string } | null>(null);
-  const [piePos, setPiePos] = useState<{ x: number; y: number } | null>(null);
   const [hiddenPlats, setHiddenPlats] = useState(new Set());
-  const [feedFilter, setFeedFilter] = useState("All");
   const [yearRange, setYearRange] = useState("all");
   const [pagesPlatform, setPagesPlatform] = useState("Discord");
   const [pagesDropdownOpen, setPagesDropdownOpen] = useState(false);
   const [switcherOpen, setSwitcherOpen] = useState(false);
   const [showStarredOnly, setShowStarredOnly] = useState(false);
   const pagesListRef = React.useRef<HTMLDivElement>(null);
-  const [pagesAtBottom, setPagesAtBottom] = useState(false);
   const [pagesScrollable, setPagesScrollable] = useState(false);
   const [sbThumb, setSbThumb] = useState({ top: 0, height: 0, show: false });
   const sbDrag = React.useRef<{ startY: number; startScroll: number } | null>(null);
-  const [redditPosts, setRedditPosts] = useState<any[]>([]);
-  const [redditLoading, setRedditLoading] = useState(false);
   const [sheetsData, setSheetsData] = useState<Record<string, any>>({});
   const [sheetsLoading, setSheetsLoading] = useState(true);
   const [syncedAt, setSyncedAt] = useState<Date | null>(null);
@@ -626,73 +449,9 @@ export default function FanDashboard() {
   const artist = artists.find((a) => a.slug === selectedSlug)!;
 
   useEffect(() => {
-    setFeedFilter("All");
     setPagesPlatform("Discord");
-    setPieHover(null);
     setHiddenPlats(new Set());
     setShowStarredOnly(false);
-  }, [selectedSlug]);
-
-  useEffect(() => {
-    const subreddit = STATIC_ARTISTS.find((a) => a.slug === selectedSlug)?.subreddit;
-    if (!subreddit) { setRedditPosts([]); return; }
-    let cancelled = false;
-    setRedditLoading(true);
-    setRedditPosts([]);
-    const redditUrl = `https://www.reddit.com/r/${subreddit}/hot.json?limit=6&raw_json=1`;
-
-    const parseRedditData = (data: any) => {
-      return (data.data?.children || []).filter((child: any) => !child.data.stickied).map((child: any) => {
-        const p = child.data;
-        const mins = Math.floor((Date.now() - p.created_utc * 1000) / 60000);
-        const time = mins < 60 ? `${mins}m ago` : mins < 1440 ? `${Math.floor(mins / 60)}h ago` : `${Math.floor(mins / 1440)}d ago`;
-        return {
-          platform: "Reddit", page: `/r/${p.subreddit}`, author: `u/${p.author}`, time,
-          title: p.title,
-          body: p.selftext ? (p.selftext.length > 200 ? p.selftext.slice(0, 200) + "…" : p.selftext) : null,
-          engagement: { upvotes: p.score, comments: p.num_comments },
-          media: p.post_hint === "image" ? "image" : p.is_video ? "video" : undefined,
-          sentiment: p.score > 2000 ? "hype" : p.score < 0 ? "negative" : "neutral",
-          link: `https://reddit.com${p.permalink}`,
-        };
-      });
-    };
-
-    const tryFetch = async (url: string) => {
-      const r = await fetch(url);
-      if (!r.ok) throw new Error(`HTTP ${r.status}`);
-      return r.json();
-    };
-
-    async function loadReddit() {
-      const cacheKey = `fanIntel_reddit_${selectedSlug}`;
-      const cached = getCached<any[]>(cacheKey, CACHE_MS.reddit);
-      if (cached) {
-        if (!cancelled) { setRedditPosts(cached.data); setRedditLoading(false); }
-        return;
-      }
-      const attempts = [
-        `${WORKER_URL}/reddit?subreddit=${subreddit}`,
-        redditUrl,
-        `https://api.allorigins.win/raw?url=${encodeURIComponent(redditUrl)}`,
-      ];
-      for (const url of attempts) {
-        try {
-          const data = await tryFetch(url);
-          if (cancelled) return;
-          const posts = parseRedditData(data);
-          if (posts.length > 0) { setRedditPosts(posts); setRedditLoading(false); setCached(cacheKey, posts); return; }
-        } catch { /* try next */ }
-      }
-      if (!cancelled) {
-        const mockReddit = (MOCK_FEED[selectedSlug] || []).filter((p: any) => p.platform === "Reddit");
-        setRedditPosts(mockReddit);
-        setRedditLoading(false);
-      }
-    }
-
-    loadReddit();
-    return () => { cancelled = true; };
   }, [selectedSlug]);
 
   const fullHistory = useMemo(
@@ -795,7 +554,6 @@ export default function FanDashboard() {
     const trackH = clientHeight - SB_INSET * 2;
     const scrollable = scrollHeight > clientHeight + 4 && trackH > 24;
     setPagesScrollable(scrollHeight > clientHeight + 4);
-    setPagesAtBottom(scrollTop + clientHeight >= scrollHeight - 8);
     if (!scrollable) { setSbThumb((s) => (s.show ? { ...s, show: false } : s)); return; }
     const thumbH = Math.max(28, (clientHeight / scrollHeight) * trackH);
     const maxScroll = scrollHeight - clientHeight;
@@ -866,14 +624,6 @@ export default function FanDashboard() {
         .no-scrollbar::-webkit-scrollbar { display: none; }
       `}</style>
 
-      {sheetsLoading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/70 backdrop-blur-sm pointer-events-none">
-          <div className="flex flex-col items-center gap-3">
-            <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
-            <span className="text-xs font-semibold text-secondary">Loading data…</span>
-          </div>
-        </div>
-      )}
 
       {/* ---- Main ---- */}
       <main className="flex-1 min-w-0 flex flex-col overflow-hidden">
@@ -1054,7 +804,6 @@ export default function FanDashboard() {
                             onClick={() => {
                               setPagesPlatform(plat);
                               setPagesDropdownOpen(false);
-                              setPagesAtBottom(false);
                               if (pagesListRef.current) pagesListRef.current.scrollTop = 0;
                             }}
                             className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-[14px] font-medium transition ${plat === fpEffectivePlatform ? "text-primary bg-[#f5f5f7]" : "text-muted hover:bg-[#f5f5f7]"}`}
@@ -1078,13 +827,7 @@ export default function FanDashboard() {
                 {filteredPages.length === 0 ? (
                   <div className="h-full flex items-center justify-center text-center text-[13px] text-muted">No {fpEffectivePlatform} pages tracked yet</div>
                 ) : (() => {
-                  const platCfg = PLATFORMS[fpEffectivePlatform] || { color: "#8e8e93" };
                   const unit = MEMBER_PLATFORMS.has(fpEffectivePlatform) ? "Members" : "Followers";
-                  const entity = fpEffectivePlatform === "Discord" ? "Server"
-                    : fpEffectivePlatform === "Reddit" ? "Subreddit"
-                    : fpEffectivePlatform === "Instagram Channels" ? "Channel"
-                    : fpEffectivePlatform === "X Communities" ? "Community"
-                    : "Page";
                   const entityCount = `${filteredPages.length} ${filteredPages.length === 1 ? fpEntitySingular : fpEntityPlural}`;
                   return (
                     <div className="grid grid-cols-[1fr_auto_auto] gap-x-[44px]">
