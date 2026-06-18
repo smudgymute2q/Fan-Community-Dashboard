@@ -638,7 +638,7 @@ export default function FanDashboard() {
                   <div className="pb-0 flex gap-[44px] mb-0">
                     {[72, 48, 72, 120, 24].map((w, i) => <S key={i} w={w} h={2.75} />)}
                   </div>
-                  {[...Array(6)].map((_, i, arr) => (
+                  {[...Array(7)].map((_, i, arr) => (
                     <div key={i} className={`flex items-center gap-[44px] ${i === arr.length - 1 ? "pt-[11px]" : "py-[11px]"}`}>
                       <div className="flex items-center gap-2.5" style={{ width: 120 }}>
                         <div className="w-2.5 h-2.5 rounded-full bg-[#f0f0f3] shrink-0" />
