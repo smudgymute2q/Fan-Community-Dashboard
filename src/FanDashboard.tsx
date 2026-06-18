@@ -592,23 +592,115 @@ export default function FanDashboard() {
   const hasData = Object.keys(sheetsData).length > 0;
 
   if (sheetsLoading || !hasData) {
+    const S = ({ w, h = 3, round = "full" }: { w: number; h?: number; round?: string }) => (
+      <div className={`bg-[#f0f0f3] rounded-${round} shrink-0`} style={{ width: w, height: h * 4 }} />
+    );
     return (
       <div className="flex h-screen overflow-hidden bg-[#f5f5f7]" style={{ fontFamily: "'Satoshi', ui-sans-serif, system-ui, -apple-system, sans-serif" }}>
         <main className="flex-1 min-w-0 flex flex-col overflow-hidden">
-          <div className="px-[22px] pt-[22px] pb-[22px] flex justify-end gap-[22px] shrink-0">
-            <div className="h-12 w-36 rounded-full bg-white" />
-            <div className="h-12 w-40 rounded-full bg-white" />
-          </div>
-          <div className="flex-1 min-h-0 px-[22px] pb-[22px] flex flex-col gap-[22px]">
-            <div className="grid grid-cols-12 gap-[22px]" style={{ height: "45%" }}>
-              <div className="col-span-6 bg-white rounded-[18px]" />
-              <div className="col-span-3 bg-white rounded-[18px]" />
-              <div className="col-span-3 flex flex-col gap-[22px]">
-                <div className="flex-1 bg-white rounded-[18px]" />
-                <div className="flex-1 bg-white rounded-[18px]" />
+
+          {/* Header — exact same classes */}
+          <header className="px-[22px] pt-[22px] pb-[22px] flex items-center justify-end gap-4 shrink-0">
+            <div className="flex items-center gap-[22px]">
+              <div className="flex items-center gap-2.5 h-12 px-4 rounded-full bg-white">
+                <div className="w-2.5 h-2.5 rounded-full bg-[#f0f0f3] shrink-0" />
+                <S w={112} h={3} />
+              </div>
+              <div className="flex items-center gap-2.5 h-12 pl-1.5 pr-3 rounded-full bg-white">
+                <div className="w-9 h-9 rounded-full bg-[#f0f0f3] shrink-0" />
+                <S w={56} h={3} />
+                <S w={16} h={4} round="md" />
               </div>
             </div>
-            <div className="flex-1 grid grid-cols-12 gap-[22px]">
+          </header>
+
+          {/* Content — exact same classes */}
+          <div className="flex-1 min-h-0 px-[22px] pb-[22px] flex flex-col gap-[22px] overflow-hidden">
+
+            {/* Top row */}
+            <div className="grid grid-cols-12 gap-[22px] items-stretch">
+
+              {/* Fan Network Reach */}
+              <div className="col-span-6 bg-white rounded-[18px] p-[22px]">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-5 h-5 rounded bg-[#f0f0f3] shrink-0" />
+                  <S w={140} h={3.5} />
+                </div>
+                <div className="mt-[30px] mb-[33px] flex gap-[44px]">
+                  {[96, 80].map((w, i) => (
+                    <div key={i} className="flex flex-col gap-[11px]">
+                      <S w={w} h={2.75} />
+                      <S w={w - 16} h={3.5} />
+                    </div>
+                  ))}
+                </div>
+                <div className="flex flex-col">
+                  <div className="pb-0 flex gap-[44px] mb-0">
+                    {[72, 48, 72, 120, 24].map((w, i) => <S key={i} w={w} h={2.75} />)}
+                  </div>
+                  {[...Array(6)].map((_, i, arr) => (
+                    <div key={i} className={`flex items-center gap-[44px] ${i === arr.length - 1 ? "pt-[11px]" : "py-[11px]"}`}>
+                      <div className="flex items-center gap-2.5" style={{ width: 120 }}>
+                        <div className="w-2.5 h-2.5 rounded-full bg-[#f0f0f3] shrink-0" />
+                        <S w={88} h={3.5} />
+                      </div>
+                      <S w={56} h={3.5} />
+                      <S w={48} h={5} />
+                      <div className="flex-1 h-2.5 rounded-full bg-[#f0f0f3]" />
+                      <S w={32} h={3.5} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Fan Page Tracker */}
+              <div className="col-span-3 bg-white rounded-[18px] p-[22px] flex flex-col">
+                <div className="flex items-center gap-2.5 mb-[36px]">
+                  <div className="w-5 h-5 rounded bg-[#f0f0f3] shrink-0" />
+                  <S w={120} h={3.5} />
+                </div>
+                <div className="flex flex-col flex-1">
+                  <div className="flex items-center gap-[44px] pb-0">
+                    {[80, 56, 56].map((w, i) => <S key={i} w={w} h={2.75} />)}
+                  </div>
+                  {[...Array(8)].map((_, i) => (
+                    <div key={i} className="py-[11px] flex items-center gap-[44px]">
+                      <div className="flex-1 h-[14px] rounded-full bg-[#f0f0f3]" />
+                      <S w={56} h={3.5} />
+                      <S w={48} h={3.5} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Top Gainers + Biggest Drops */}
+              <div className="col-span-3 flex flex-col gap-[22px]">
+                {[0, 1].map((g) => (
+                  <div key={g} className="flex-1 bg-white rounded-[18px] p-[22px] flex flex-col">
+                    <div className="flex items-center gap-2.5 mb-[30px]">
+                      <div className="w-5 h-5 rounded bg-[#f0f0f3] shrink-0" />
+                      <S w={96} h={3.5} />
+                    </div>
+                    <div className="flex items-center justify-between mb-[11px]">
+                      <S w={48} h={2.75} />
+                      <S w={72} h={2.75} />
+                    </div>
+                    <div className="flex flex-col gap-[22px]">
+                      {[...Array(3)].map((_, i) => (
+                        <div key={i} className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-full bg-[#f0f0f3] shrink-0" />
+                          <div className="flex-1 h-[14px] rounded-full bg-[#f0f0f3]" />
+                          <S w={48} h={5} />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Bottom row — exact same classes */}
+            <div className="flex-1 min-h-[300px] grid grid-cols-12 gap-[22px] items-stretch">
               <div className="col-span-8 bg-white rounded-[18px]" />
               <div className="col-span-4 bg-white rounded-[18px]" />
             </div>
