@@ -894,7 +894,7 @@ export default function FanDashboard() {
               )}
               <button
                 onClick={() => setSwitcherOpen((o) => !o)}
-                className="relative z-50 flex items-center gap-2.5 h-12 pl-1.5 pr-3 rounded-full bg-white hover:bg-[#ececf0] transition"
+                className="relative z-50 flex items-center gap-2.5 h-12 pl-1.5 pr-3 rounded-full bg-white hover:bg-[#ebebed] transition"
               >
                 <div className="w-9 h-9 rounded-full overflow-hidden shrink-0 bg-[#f0f0f3] flex items-center justify-center font-bold text-primary text-sm">
                   <img
@@ -1028,7 +1028,7 @@ export default function FanDashboard() {
                   <button
                     onClick={() => setShowStarredOnly((o) => !o)}
                     className={`w-[34px] h-[34px] rounded-full flex items-center justify-center transition ${
-                      showStarredOnly ? "bg-[#FFF8E1]" : "bg-[#f5f5f7] hover:bg-[#f0f0f3]"
+                      showStarredOnly ? "bg-[#FFF8E1]" : "bg-[#f5f5f7] hover:bg-[#ebebed]"
                     }`}
                     title="Show starred only"
                   >
@@ -1040,7 +1040,7 @@ export default function FanDashboard() {
                     )}
                     <button
                       onClick={() => setPagesDropdownOpen((o) => !o)}
-                      className="flex items-center gap-2 h-[34px] pl-3 pr-2.5 rounded-full bg-[#f5f5f7] hover:bg-[#f0f0f3] transition"
+                      className="flex items-center gap-2 h-[34px] pl-3 pr-2.5 rounded-full bg-[#f5f5f7] hover:bg-[#ebebed] transition"
                     >
                       <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: PLATFORMS[fpEffectivePlatform]?.color ?? "#8e8e93" }} />
                       <span className="text-[14px] font-medium text-primary whitespace-nowrap leading-none">{fpEffectivePlatform}</span>
@@ -1253,7 +1253,7 @@ export default function FanDashboard() {
                         <button
                           key={p}
                           onClick={() => togglePlat(p)}
-                          className={`flex items-center h-[34px] gap-2 pl-2.5 pr-3 py-1.5 rounded-full transition-all bg-[#f5f5f7] hover:bg-[#f0f0f3]`}
+                          className={`flex items-center h-[34px] gap-2 pl-2.5 pr-3 py-1.5 rounded-full transition-all bg-[#f5f5f7] hover:bg-[#ebebed]`}
                           title={off ? `Show ${p}` : `Hide ${p}`}
                         >
                           <span className="w-2.5 h-2.5 rounded-full shrink-0 transition-colors" style={{ background: off ? "#d2d2d7" : PLATFORMS[p].color }} />
