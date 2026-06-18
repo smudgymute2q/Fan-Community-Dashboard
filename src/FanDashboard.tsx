@@ -1113,8 +1113,3 @@ export default function FanDashboard() {
   );
 }
 
-
-// ---- Standalone preview mount ----
-import { createRoot as __createRoot } from "react-dom/client";
-const __mount = document.getElementById("root");
-if (__mount) __createRoot(__mount).render(React.createElement(FanDashboard));
