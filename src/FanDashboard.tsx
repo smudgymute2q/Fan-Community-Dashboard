@@ -216,49 +216,22 @@ function parsePagesTab(rows: string[][]) {
     .filter((p) => !isNaN(p.followers));
 }
 
-// ---- Static fallback artist data ----
+// ---- Artist roster (names/slugs only — all data comes from Sheets) ----
 const STATIC_ARTISTS = [
-  { slug: "opium", name: "Opium",totals: { value: 168074, delta: 808 }, platforms: { Discord: { value: 8809, delta: 1 }, Reddit: { value: 19795, delta: 425 }, Instagram: { value: 95339, delta: 415 }, "Instagram Channels": { value: 9400, delta: -200 }, X: { value: 1775, delta: 154 }, TikTok: { value: 32956, delta: 13 } }, pages: [{ name: "/opium00", followers: 8809, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "playboi-carti", name: "Playboi Carti", totals: { value: 1495905, delta: 4537 }, platforms: { Discord: { value: 182148, delta: 338 }, Reddit: { value: 1029516, delta: 8064 }, Instagram: { value: 253236, delta: -3425 }, "Instagram Channels": { value: 23900, delta: -400 }, X: { value: 6995, delta: -38 }, "X Communities": { value: 110, delta: -2 } }, pages: [{ name: "/playboicarti", followers: 182148, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/pbc00", followers: 13193, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "ken-carson", name: "Ken Carson", totals: { value: 536568, delta: 11932 }, platforms: { Discord: { value: 76270, delta: 236 }, Reddit: { value: 75448, delta: 904 }, Instagram: { value: 212157, delta: 8336 }, "Instagram Channels": { value: 22500, delta: 1000 }, X: { value: 45700, delta: 300 }, "X Communities": { value: 79146, delta: 9 }, TikTok: { value: 24300, delta: 100 } }, pages: [{ name: "/kencarson", followers: 76270, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/BuZYYKZQ", followers: 153, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "destroy-lonely", name: "Destroy Lonely", totals: { value: 213034, delta: 59171 }, platforms: { Discord: { value: 36318, delta: 98 }, Reddit: { value: 55756, delta: 499 }, Instagram: { value: 65854, delta: 7484 }, "Instagram Channels": { value: 1600, delta: -2400 }, X: { value: 28706, delta: 28690 }, "X Communities": { value: 9200, delta: 0 }, TikTok: { value: 15600, delta: 0 } }, pages: [{ name: "/destroylonely", followers: 36318, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/bh3", followers: 1867, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "hxg", name: "HXG", totals: { value: 37566, delta: -231 }, platforms: { Discord: { value: 10277, delta: -51 }, Reddit: { value: 8943, delta: 35 }, Instagram: { value: 18346, delta: -215 } }, pages: [{ name: "/hxg", followers: 10277, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "pierre-bourne", name: "Pi'erre Bourne", totals: { value: 37147, delta: 171 }, platforms: { Discord: { value: 4955, delta: 53 }, Reddit: { value: 22381, delta: 104 }, Instagram: { value: 9424, delta: -14 }, "Instagram Channels": { value: 387, delta: 28 } }, pages: [{ name: "/pierrebourne", followers: 4955, latest: "Apr 1, 2026", platform: "Discord" }, { name: "/yopierre", followers: 372, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "rema", name: "Rema", totals: { value: 2123652, delta: 4239 }, platforms: { Discord: { value: 2541, delta: 23 }, Reddit: { value: 308, delta: 4 }, Instagram: { value: 698524, delta: 3991 }, X: { value: 22179, delta: -79 }, TikTok: { value: 1400100, delta: 300 } }, pages: [{ name: "/heisrema", followers: 2541, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "untiljapan", name: "untiljapan", totals: { value: 6802, delta: 136 }, platforms: { Discord: { value: 2039, delta: 44 }, Reddit: { value: 1416, delta: -7 }, Instagram: { value: 1713, delta: 22 }, X: { value: 1079, delta: 60 }, "X Communities": { value: 555, delta: 17 }, TikTok: { value: 9, delta: 0 } }, pages: [{ name: "/untiljapan", followers: 2039, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "jim-legxacy", name: "Jim Legxacy", totals: { value: 10144, delta: 2202 }, platforms: { Discord: { value: 6089, delta: 1410 }, Reddit: { value: 359, delta: 39 }, Instagram: { value: 322, delta: 131 }, X: { value: 2362, delta: 235 }, "X Communities": { value: 261, delta: 23 }, TikTok: { value: 751, delta: 364 } }, pages: [{ name: "/PfeRaWF4bG", followers: 6089, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "apollored1", name: "ApolloRed1", totals: { value: 1659, delta: 80 }, platforms: { Discord: { value: 283, delta: 44 }, Reddit: { value: 56, delta: 8 }, Instagram: { value: 1320, delta: 28 } }, pages: [{ name: "/apollohub", followers: 564, latest: "Apr 9, 2026", platform: "Discord" }, { name: "/apollored1", followers: 283, latest: "Apr 1, 2026", platform: "Discord" }] },
-  { slug: "destin-laurel", name: "Destin Laurel", totals: { value: 0, delta: 0 }, platforms: {}, pages: [] },
-  { slug: "2hollis", name: "2hollis", totals: { value: 0, delta: 0 }, platforms: {}, pages: [] },
+  { slug: "opium", name: "Opium" },
+  { slug: "playboi-carti", name: "Playboi Carti" },
+  { slug: "ken-carson", name: "Ken Carson" },
+  { slug: "destroy-lonely", name: "Destroy Lonely" },
+  { slug: "hxg", name: "HXG" },
+  { slug: "pierre-bourne", name: "Pi'erre Bourne" },
+  { slug: "rema", name: "Rema" },
+  { slug: "untiljapan", name: "untiljapan" },
+  { slug: "jim-legxacy", name: "Jim Legxacy" },
+  { slug: "apollored1", name: "ApolloRed1" },
+  { slug: "destin-laurel", name: "Destin Laurel" },
+  { slug: "2hollis", name: "2hollis" },
 ];
 
-
-function buildHistory(artist) {
-  const months = [];
-  const start = new Date(2022, 7, 1);
-  const end = new Date(2026, 2, 1);
-  const cur = new Date(start);
-  while (cur <= end) { months.push(new Date(cur)); cur.setMonth(cur.getMonth() + 1); }
-  const seedFromSlug = artist.slug.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-  const rand = (i) => { const x = Math.sin(seedFromSlug * 97 + i * 13) * 10000; return x - Math.floor(x); };
-  return months.map((d, i) => {
-    const t = i / (months.length - 1);
-    const row = { date: d.toISOString().slice(0, 7) };
-    Object.keys(artist.platforms).forEach((plat, pIdx) => {
-      const current = artist.platforms[plat].value;
-      let curve;
-      if (plat === "Reddit") curve = Math.pow(t, 0.6);
-      else if (plat === "Instagram") { const base = Math.pow(t, 0.8); const wobble = Math.sin(t * 9 + pIdx) * 0.04; curve = Math.max(0, base + wobble); }
-      else if (plat === "Discord") curve = Math.pow(t, 1.1);
-      else if (plat === "TikTok") curve = t < 0.3 ? 0 : Math.pow((t - 0.3) / 0.7, 0.7);
-      else if (plat === "X") curve = t < 0.4 ? 0 : (t - 0.4) / 0.6;
-      else curve = Math.pow(t, 1.3);
-      const noise = (rand(i * 7 + pIdx) - 0.5) * 0.03;
-      row[plat] = curve === 0 ? 0 : Math.max(0, Math.round(current * (curve + noise)));
-    });
-    return row;
-  });
-}
 
 const fmt = (n) => { if (n === undefined || n === null) return "—"; const abs = Math.abs(n); if (abs >= 1_000_000) return (n / 1_000_000).toFixed(n % 1_000_000 === 0 ? 0 : 2) + "M"; if (abs >= 10_000) return (n / 1_000).toFixed(0) + "K"; if (abs >= 1_000) return (n / 1_000).toFixed(1).replace(/\.0$/, "") + "K"; return n.toLocaleString(); };
 const fmtFull = (n) => (n ?? 0).toLocaleString();
@@ -442,7 +415,14 @@ export default function FanDashboard() {
   }, []);
 
   const artists = useMemo(
-    () => STATIC_ARTISTS.map((a) => ({ ...a, ...(sheetsData[a.slug] || {}) })),
+    () => STATIC_ARTISTS.map((a) => ({
+      slug: a.slug,
+      name: a.name,
+      totals: { value: 0, delta: 0 },
+      platforms: {},
+      pages: [],
+      ...(sheetsData[a.slug] || {}),
+    })),
     [sheetsData]
   );
 
@@ -455,8 +435,8 @@ export default function FanDashboard() {
   }, [selectedSlug]);
 
   const fullHistory = useMemo(
-    () => sheetsData[selectedSlug]?.history?.length ? sheetsData[selectedSlug].history : buildHistory(artist),
-    [sheetsData, selectedSlug, artist]
+    () => sheetsData[selectedSlug]?.history || [],
+    [sheetsData, selectedSlug]
   );
 
   const history = useMemo(() => {
