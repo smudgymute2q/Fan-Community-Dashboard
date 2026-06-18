@@ -346,7 +346,7 @@ function DeltaPill({ value, small = false }: { value: number | null | undefined;
     <span className={`inline-flex items-center gap-0.5 font-semibold tabular-nums rounded-full ${
       small ? "text-[10px] px-1.5 py-0.5" : "text-xs px-2 py-0.5"
     } ${up ? "bg-[#e8f5ea] text-pos" : "bg-[#fdecea] text-neg"}`}>
-      {up ? "+" : ""}{fmtPill(value)}
+      {up ? "+" : ""}{fmtFull(value)}
       <span className={small ? "text-[8px] -mr-0.5" : "text-[10px] -mr-0.5"}>{up ? "\u2197" : "\u2198"}</span>
     </span>
   );
