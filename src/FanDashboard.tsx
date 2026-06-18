@@ -1099,7 +1099,7 @@ export default function FanDashboard() {
                           <Tag
                             key={p.link || `${p.platform}-${p.name}-${i}`}
                             {...(p.link ? { href: p.link, target: "_blank", rel: "noopener noreferrer" } : {})}
-                            className="grid items-center gap-x-[44px] py-[11px] no-underline"
+                            className="grid items-center gap-x-[44px] py-[11px] no-underline rounded-xl px-2.5 -mx-2.5 hover:bg-[#f5f5f7] transition-colors"
                             style={{ gridColumn: "1 / -1", gridTemplateColumns: "subgrid" }}
                           >
                             <div className="flex items-center gap-2.5 min-w-0">
