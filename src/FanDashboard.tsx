@@ -591,7 +591,31 @@ export default function FanDashboard() {
 
   const hasData = Object.keys(sheetsData).length > 0;
 
-  if (sheetsLoading || !hasData) return null;
+  if (sheetsLoading || !hasData) {
+    return (
+      <div className="flex h-screen overflow-hidden bg-[#f5f5f7]" style={{ fontFamily: "'Satoshi', ui-sans-serif, system-ui, -apple-system, sans-serif" }}>
+        <main className="flex-1 min-w-0 flex flex-col overflow-hidden">
+          <div className="px-[22px] pt-[22px] pb-[22px] flex justify-end shrink-0">
+            <div className="h-12 w-48 rounded-full bg-white" />
+          </div>
+          <div className="flex-1 min-h-0 px-[22px] pb-[22px] flex flex-col gap-[22px]">
+            <div className="grid grid-cols-12 gap-[22px]" style={{ height: "45%" }}>
+              <div className="col-span-6 bg-white rounded-[18px]" />
+              <div className="col-span-3 bg-white rounded-[18px]" />
+              <div className="col-span-3 flex flex-col gap-[22px]">
+                <div className="flex-1 bg-white rounded-[18px]" />
+                <div className="flex-1 bg-white rounded-[18px]" />
+              </div>
+            </div>
+            <div className="flex-1 grid grid-cols-12 gap-[22px]">
+              <div className="col-span-8 bg-white rounded-[18px]" />
+              <div className="col-span-4 bg-white rounded-[18px]" />
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   // ---- Render ----
   return (
