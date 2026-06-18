@@ -595,8 +595,9 @@ export default function FanDashboard() {
     return (
       <div className="flex h-screen overflow-hidden bg-[#f5f5f7]" style={{ fontFamily: "'Satoshi', ui-sans-serif, system-ui, -apple-system, sans-serif" }}>
         <main className="flex-1 min-w-0 flex flex-col overflow-hidden">
-          <div className="px-[22px] pt-[22px] pb-[22px] flex justify-end shrink-0">
-            <div className="h-12 w-48 rounded-full bg-white" />
+          <div className="px-[22px] pt-[22px] pb-[22px] flex justify-end gap-[22px] shrink-0">
+            <div className="h-12 w-36 rounded-full bg-white" />
+            <div className="h-12 w-40 rounded-full bg-white" />
           </div>
           <div className="flex-1 min-h-0 px-[22px] pb-[22px] flex flex-col gap-[22px]">
             <div className="grid grid-cols-12 gap-[22px]" style={{ height: "45%" }}>
