@@ -1088,7 +1088,7 @@ export default function FanDashboard() {
                   const entityCount = `${filteredPages.length} ${filteredPages.length === 1 ? fpEntitySingular : fpEntityPlural}`;
                   return (
                     <div className="grid grid-cols-[1fr_auto_auto] gap-x-[44px]">
-                      <div className="sticky top-0 z-10 bg-white grid items-center gap-x-[44px] pb-0" style={{ gridColumn: "1 / -1", gridTemplateColumns: "subgrid" }}>
+                      <div className="sticky top-0 z-10 bg-white grid items-center gap-x-[44px] pb-0 leading-none" style={{ gridColumn: "1 / -1", gridTemplateColumns: "subgrid" }}>
                         <span className="text-[11px] font-semibold uppercase tracking-wider text-muted tabular-nums whitespace-nowrap">{entityCount}</span>
                         <span className="text-[11px] font-semibold uppercase tracking-wider text-muted text-right">{unit}</span>
                         <span className="text-[11px] font-semibold uppercase tracking-wider text-muted text-right">Last Post</span>
@@ -1149,7 +1149,7 @@ export default function FanDashboard() {
                       <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">{grp.title}</h2>
                     </div>
                     {grp.list.length > 0 && (
-                      <div className="flex items-center justify-between shrink-0 pb-[11px] text-[11px] font-semibold uppercase tracking-wider text-muted">
+                      <div className="flex items-center justify-between shrink-0 pb-[11px] text-[11px] font-semibold uppercase tracking-wider text-muted leading-none">
                         <span>Artist</span>
                         <span>Last 28 Days</span>
                       </div>
