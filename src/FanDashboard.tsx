@@ -754,7 +754,7 @@ export default function FanDashboard() {
                 style={{ gridTemplateColumns: "max-content max-content max-content minmax(0,1fr) max-content" }}
               >
                 <div
-                  className="grid items-center gap-x-[44px] pb-0 text-[11px] font-semibold uppercase tracking-wider text-muted"
+                  className="grid items-center gap-x-[44px] pb-0 leading-none text-[11px] font-semibold uppercase tracking-wider text-muted"
                   style={{ gridColumn: "1 / -1", gridTemplateColumns: "subgrid" }}
                 >
                   <span>Platform</span>
@@ -777,12 +777,12 @@ export default function FanDashboard() {
                         <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: d.fill }} />
                         <span className="text-[14px] font-medium text-primary whitespace-nowrap leading-none">{d.name}</span>
                       </div>
-                      <span className="text-right text-[14px] font-semibold tabular-nums text-primary">{fmtFull(d.value)}</span>
-                      <div className="flex justify-end">{pd ? <DeltaPill value={pd.delta} /> : null}</div>
+                      <span className="text-right text-[14px] font-semibold tabular-nums text-primary leading-none">{fmtFull(d.value)}</span>
+                      <div className="flex justify-end items-center h-[14px]">{pd ? <DeltaPill value={pd.delta} /> : null}</div>
                       <div className="h-2.5 rounded-full bg-[#f5f5f7] overflow-hidden">
                         <div className="h-full rounded-full" style={{ width: `${pctNum}%`, background: d.fill }} />
                       </div>
-                      <span className="text-right text-[14px] font-semibold tabular-nums text-primary">{pct}%</span>
+                      <span className="text-right text-[14px] font-semibold tabular-nums text-primary leading-none">{pct}%</span>
                     </div>
                   );
                 })}
