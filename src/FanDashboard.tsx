@@ -870,7 +870,7 @@ export default function FanDashboard() {
                             style={{ gridColumn: "1 / -1", gridTemplateColumns: "subgrid" }}
                           >
                             <div className="flex items-center gap-2.5 min-w-0">
-                              <span className="text-[14px] font-medium text-primary truncate leading-none">{p.name}</span>
+                              <span className="text-[14px] font-medium text-primary truncate leading-none pb-[4px] -mb-[4px]">{p.name}</span>
                               {p.managed && <Star size={12} className="shrink-0 text-[#FFCC00] fill-[#FFCC00]" />}
                             </div>
                             <span className="text-right text-[14px] font-semibold tabular-nums text-primary leading-none">{fmtFull(p.followers)}</span>
