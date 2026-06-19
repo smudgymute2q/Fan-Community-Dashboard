@@ -20,6 +20,7 @@ import {
   LayoutList,
   Gauge,
   TrendingUp,
+  Filter,
 } from "lucide-react";
 
 // ---- Platform tokens ----
@@ -322,6 +323,7 @@ export default function FanDashboard() {
   const [yearRange, setYearRange] = useState("all");
   const [pagesPlatform, setPagesPlatform] = useState("Discord");
   const [pagesDropdownOpen, setPagesDropdownOpen] = useState(false);
+  const [platDropdownOpen, setPlatDropdownOpen] = useState(false);
   const [switcherOpen, setSwitcherOpen] = useState(false);
   const [showStarredOnly, setShowStarredOnly] = useState(false);
   const pagesListRef = React.useRef<HTMLDivElement>(null);
@@ -958,7 +960,8 @@ export default function FanDashboard() {
                   <TrendingUp size={20} className="text-primary shrink-0" strokeWidth={2.25} />
                   <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">Fan Network Growth</h2>
                 </div>
-                <div className="absolute top-[22px] right-[22px] flex items-center gap-1 bg-[#f5f5f7] p-1 rounded-full shrink-0">
+                <div className="absolute top-[22px] right-[22px] flex items-center gap-[11px]">
+                  <div className="flex items-center gap-1 bg-[#f5f5f7] p-1 rounded-full shrink-0">
                     {[
                       { key: "3m", label: "3M" },
                       { key: "6m", label: "6M" },
@@ -979,6 +982,39 @@ export default function FanDashboard() {
                       </button>
                     ))}
                   </div>
+                  <div className="relative">
+                    {platDropdownOpen && (
+                      <div className="fixed inset-0 z-10" onClick={() => setPlatDropdownOpen(false)} />
+                    )}
+                    <button
+                      onClick={() => setPlatDropdownOpen((o) => !o)}
+                      className={`relative z-20 w-[34px] h-[34px] rounded-full flex items-center justify-center transition ${
+                        platDropdownOpen ? "bg-[#ebebed]" : "bg-[#f5f5f7] hover:bg-[#ebebed]"
+                      }`}
+                      title="Filter platforms"
+                    >
+                      <Filter size={15} className={hiddenPlats.size > 0 ? "text-primary" : "text-muted"} />
+                    </button>
+                    {platDropdownOpen && (
+                      <div className="absolute right-0 top-full mt-2 z-20 bg-white rounded-[18px] p-1.5 min-w-[200px]" style={{ boxShadow: "0 0 0 0.5px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px -6px rgba(0,0,0,0.12), 0 24px 56px -16px rgba(0,0,0,0.16)" }}>
+                        {orderedPlats.map((p) => {
+                          const off = hiddenPlats.has(p);
+                          return (
+                            <button
+                              key={p}
+                              onClick={() => togglePlat(p)}
+                              className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-[14px] font-medium transition ${off ? "text-muted hover:bg-[#f5f5f7]" : "text-primary hover:bg-[#f5f5f7]"}`}
+                              title={off ? `Show ${p}` : `Hide ${p}`}
+                            >
+                              <span className="w-2.5 h-2.5 rounded-full shrink-0 transition-colors" style={{ background: off ? "#d2d2d7" : PLATFORMS[p].color }} />
+                              <span className="leading-none flex-1 text-left">{p}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </div>
                 <div className="mt-[30px] flex items-start gap-4">
                   {rangeStats && (
                     <div className="flex items-start flex-wrap gap-x-[33px] gap-y-3 min-w-0">
@@ -1008,22 +1044,6 @@ export default function FanDashboard() {
                       )}
                     </div>
                   )}
-                  <div className="flex items-center flex-wrap justify-end gap-x-[11px] gap-y-[33px] shrink-0 ml-auto">
-                    {orderedPlats.map((p) => {
-                      const off = hiddenPlats.has(p);
-                      return (
-                        <button
-                          key={p}
-                          onClick={() => togglePlat(p)}
-                          className={`flex items-center h-[34px] gap-2 pl-2.5 pr-3 py-1.5 rounded-full transition-all bg-[#f5f5f7] hover:bg-[#ebebed]`}
-                          title={off ? `Show ${p}` : `Hide ${p}`}
-                        >
-                          <span className="w-2.5 h-2.5 rounded-full shrink-0 transition-colors" style={{ background: off ? "#d2d2d7" : PLATFORMS[p].color }} />
-                          <span className={`text-[14px] font-medium whitespace-nowrap leading-none transition-colors ${off ? "text-muted" : "text-primary"}`}>{p}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
                 </div>
               </div>
 
