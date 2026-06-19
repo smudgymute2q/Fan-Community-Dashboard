@@ -800,7 +800,7 @@ export default function FanDashboard() {
                   <LayoutList size={20} className="text-primary shrink-0" strokeWidth={2.25} />
                   <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">Fan Page Tracker</h2>
                 </div>
-                <div className="absolute top-[22px] right-[22px] flex items-center gap-[11px]">
+                <div className="absolute top-[22px] right-[22px] flex items-center gap-[22px]">
                   <button
                     onClick={() => setShowStarredOnly((o) => !o)}
                     className={`w-[34px] h-[34px] rounded-full flex items-center justify-center transition ${
@@ -1017,7 +1017,7 @@ export default function FanDashboard() {
                 </div>
                 <div className="mt-[30px] flex items-start gap-4">
                   {rangeStats && (
-                    <div className="flex items-start flex-wrap gap-x-[33px] gap-y-3 min-w-0">
+                    <div className="flex items-start flex-wrap gap-x-[44px] gap-y-3 min-w-0">
                       <div>
                         <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none mb-[11px]">{monthLabel(history[0].date)}</div>
                         <div className="text-[14px] font-semibold tabular-nums text-primary leading-none">{fmtFull(rangeStats.startTotal)}</div>
