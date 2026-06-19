@@ -258,8 +258,16 @@ function monthlyVelocity(history, plats) {
 // ---- Components ----
 
 function DeltaPill({ value, small = false }: { value: number | null | undefined; small?: boolean }) {
-  if (value === 0 || value === null || value === undefined)
+  if (value === null || value === undefined)
     return <span className={`text-muted ${small ? "text-[10px]" : "text-xs"} font-medium`}>—</span>;
+  if (value === 0)
+    return (
+      <span className={`inline-flex items-center font-semibold tabular-nums rounded-full bg-[#f0f0f3] text-muted ${
+        small ? "text-[10px] px-1.5 py-0.5" : "text-xs px-2 py-0.5"
+      }`}>
+        0
+      </span>
+    );
   const up = value > 0;
   return (
     <span className={`inline-flex items-center gap-0.5 font-semibold tabular-nums rounded-full ${
