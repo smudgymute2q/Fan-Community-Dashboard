@@ -1,15 +1,5 @@
 @import "tailwindcss";
 
-/* ---- Fluid root ----
-   The whole UI sizes in rem, so this single knob scales type + spacing
-   together as the viewport grows. At 16px (the floor) every rem equals its
-   original px, preserving the tuned layout; it grows on larger screens so
-   the dashboard fills the display instead of looking tiny. Tune the middle
-   term (px base + vw slope) to taste. */
-html {
-  font-size: clamp(16px, 12px + 0.32vw, 21px);
-}
-
 @theme {
   --color-primary: #0f172a;   /* primary text */
   --color-secondary: #475569; /* secondary text */
