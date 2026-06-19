@@ -800,7 +800,7 @@ export default function FanDashboard() {
                   <LayoutList size={20} className="text-primary shrink-0" strokeWidth={2.25} />
                   <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">Fan Page Tracker</h2>
                 </div>
-                <div className="absolute top-[22px] right-[22px] flex items-center gap-[22px]">
+                <div className="absolute top-[22px] right-[22px] flex items-center gap-[11px]">
                   <button
                     onClick={() => setShowStarredOnly((o) => !o)}
                     className={`w-[34px] h-[34px] rounded-full flex items-center justify-center transition ${
