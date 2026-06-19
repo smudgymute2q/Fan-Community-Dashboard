@@ -866,15 +866,15 @@ export default function FanDashboard() {
                           <Tag
                             key={p.link || `${p.platform}-${p.name}-${i}`}
                             {...(p.link ? { href: p.link, target: "_blank", rel: "noopener noreferrer" } : {})}
-                            className="grid items-center gap-x-[44px] py-[11px] no-underline rounded-xl px-2.5 -mx-2.5 hover:bg-[#f5f5f7] transition-colors"
+                            className={`grid items-center gap-x-[44px] ${i === 0 ? "pt-0 pb-[11px]" : "py-[11px]"} no-underline rounded-xl px-2.5 -mx-2.5 hover:bg-[#f5f5f7] transition-colors`}
                             style={{ gridColumn: "1 / -1", gridTemplateColumns: "subgrid" }}
                           >
                             <div className="flex items-center gap-2.5 min-w-0">
-                              <span className="text-[14px] font-medium text-primary truncate leading-normal">{p.name}</span>
+                              <span className="text-[14px] font-medium text-primary truncate leading-none">{p.name}</span>
                               {p.managed && <Star size={12} className="shrink-0 text-[#FFCC00] fill-[#FFCC00]" />}
                             </div>
-                            <span className="text-right text-[14px] font-semibold tabular-nums text-primary leading-normal">{fmtFull(p.followers)}</span>
-                            <span className="text-right text-[14px] font-semibold text-primary whitespace-nowrap leading-normal">{p.latest ? fmtPageDate(p.latest) : "\u2014"}</span>
+                            <span className="text-right text-[14px] font-semibold tabular-nums text-primary leading-none">{fmtFull(p.followers)}</span>
+                            <span className="text-right text-[14px] font-semibold text-primary whitespace-nowrap leading-none">{p.latest ? fmtPageDate(p.latest) : "\u2014"}</span>
                           </Tag>
                         );
                       })}
