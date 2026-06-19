@@ -960,7 +960,7 @@ export default function FanDashboard() {
                   <TrendingUp size={20} className="text-primary shrink-0" strokeWidth={2.25} />
                   <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">Fan Network Growth</h2>
                 </div>
-                <div className="absolute top-[22px] right-[22px] flex items-center gap-[22px]">
+                <div className="absolute top-[22px] right-[22px] flex items-center gap-[11px]">
                   <div className="flex items-center gap-1 bg-[#f5f5f7] p-1 rounded-full shrink-0">
                     {[
                       { key: "3m", label: "3M" },
