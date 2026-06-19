@@ -332,36 +332,11 @@ export default function FanDashboard() {
   const [sheetsLoading, setSheetsLoading] = useState(true);
   const [syncedAt, setSyncedAt] = useState<Date | null>(null);
   const [, setNowTick] = useState(0);
-  const [uiScale, setUiScale] = useState(1);
 
   useEffect(() => {
     const id = setInterval(() => setNowTick((t) => t + 1), 60000);
     return () => clearInterval(id);
   }, []);
-
-  // ---- Fit-to-viewport scaling ----
-  // The dashboard is a fixed-composition cockpit designed at REF_W wide. Rather
-  // than reflow (which would break the tuned proportions), scale the whole stage
-  // uniformly by viewport width so it fills any screen crisply. Clamped so it
-  // never gets cartoonishly large on ultrawide or unusably small on narrow.
-  useEffect(() => {
-    const REF_W = 1440;
-    const MIN_SCALE = 0.72;
-    const MAX_SCALE = 1.6;
-    const update = () =>
-      setUiScale(Math.min(Math.max(window.innerWidth / REF_W, MIN_SCALE), MAX_SCALE));
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
-  }, []);
-
-  const STAGE_W = 1440;
-  const stageStyle: React.CSSProperties = {
-    width: STAGE_W,
-    height: `calc(100vh / ${uiScale})`,
-    transform: `scale(${uiScale})`,
-    transformOrigin: "top center",
-  };
 
   useEffect(() => {
     let cancelled = false;
@@ -626,8 +601,7 @@ export default function FanDashboard() {
 
   if (sheetsLoading || !hasData) {
     return (
-      <div className="w-screen h-screen overflow-hidden bg-[#f5f5f7] flex justify-center items-start">
-       <div className="flex bg-[#f5f5f7]" style={{ ...stageStyle, fontFamily: "'Satoshi', ui-sans-serif, system-ui, -apple-system, sans-serif" }}>
+      <div className="flex h-screen overflow-hidden bg-[#f5f5f7]" style={{ fontFamily: "'Satoshi', ui-sans-serif, system-ui, -apple-system, sans-serif" }}>
         <main className="flex-1 min-w-0 flex flex-col overflow-hidden">
           <header className="px-[22px] pt-[22px] pb-[22px] flex items-center justify-end gap-4 shrink-0">
             <div className="flex items-center gap-[22px]">
@@ -655,17 +629,15 @@ export default function FanDashboard() {
             </div>
           </div>
         </main>
-       </div>
       </div>
     );
   }
 
   // ---- Render ----
   return (
-    <div className="w-screen h-screen overflow-hidden bg-[#f5f5f7] flex justify-center items-start">
-     <div
-      className="flex text-primary"
-      style={{ ...stageStyle, fontFamily: "'Satoshi', ui-sans-serif, system-ui, -apple-system, sans-serif" }}
+    <div
+      className="flex h-screen overflow-hidden text-primary"
+      style={{ fontFamily: "'Satoshi', ui-sans-serif, system-ui, -apple-system, sans-serif" }}
     >
       <style>{`
         .recharts-cartesian-axis-tick text { fill: #86868b; font-variant-numeric: tabular-nums; }
@@ -1177,7 +1149,6 @@ export default function FanDashboard() {
 
         </div>
       </main>
-     </div>
     </div>
   );
 }
