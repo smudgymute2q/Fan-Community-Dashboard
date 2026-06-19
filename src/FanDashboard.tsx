@@ -873,8 +873,8 @@ export default function FanDashboard() {
                               <span className="text-[14px] font-medium text-primary truncate leading-normal">{p.name}</span>
                               {p.managed && <Star size={12} className="shrink-0 text-[#FFCC00] fill-[#FFCC00]" />}
                             </div>
-                            <span className="text-right text-[14px] font-semibold tabular-nums text-primary leading-none">{fmtFull(p.followers)}</span>
-                            <span className="text-right text-[14px] font-semibold text-primary whitespace-nowrap leading-none">{p.latest ? fmtPageDate(p.latest) : "\u2014"}</span>
+                            <span className="text-right text-[14px] font-semibold tabular-nums text-primary leading-normal">{fmtFull(p.followers)}</span>
+                            <span className="text-right text-[14px] font-semibold text-primary whitespace-nowrap leading-normal">{p.latest ? fmtPageDate(p.latest) : "\u2014"}</span>
                           </Tag>
                         );
                       })}
