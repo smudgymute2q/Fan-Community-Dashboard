@@ -857,7 +857,7 @@ export default function FanDashboard() {
                   const entityCount = `${filteredPages.length} ${filteredPages.length === 1 ? fpEntitySingular : fpEntityPlural}`;
                   return (
                     <div className="grid grid-cols-[1fr_auto_auto] gap-x-[44px]">
-                      <div className="sticky top-0 z-10 bg-white grid items-center gap-x-[44px] pb-[11px] leading-none -mx-2.5 px-2.5" style={{ gridColumn: "1 / -1", gridTemplateColumns: "subgrid" }}>
+                      <div className="sticky top-0 z-10 bg-white grid items-center gap-x-[44px] pb-0 leading-none -mx-2.5 px-2.5" style={{ gridColumn: "1 / -1", gridTemplateColumns: "subgrid" }}>
                         <span className="text-[11px] font-semibold uppercase tracking-wider text-muted tabular-nums whitespace-nowrap">{entityCount}</span>
                         <span className="text-[11px] font-semibold uppercase tracking-wider text-muted text-right">{unit}</span>
                         <span className="text-[11px] font-semibold uppercase tracking-wider text-muted text-right">Last Post</span>
@@ -868,7 +868,7 @@ export default function FanDashboard() {
                           <Tag
                             key={p.link || `${p.platform}-${p.name}-${i}`}
                             {...(p.link ? { href: p.link, target: "_blank", rel: "noopener noreferrer" } : {})}
-                            className={`grid items-center gap-x-[44px] ${i === 0 ? "pt-0 pb-[11px]" : "py-[11px]"} no-underline rounded-xl px-2.5 -mx-2.5 hover:bg-[#f5f5f7] transition-colors`}
+                            className="grid items-center gap-x-[44px] py-[11px] no-underline rounded-xl px-2.5 -mx-2.5 hover:bg-[#f5f5f7] transition-colors"
                             style={{ gridColumn: "1 / -1", gridTemplateColumns: "subgrid" }}
                           >
                             <div className="flex items-center gap-2.5 min-w-0">
