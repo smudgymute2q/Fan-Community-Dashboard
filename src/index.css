@@ -2,12 +2,12 @@
 
 @theme {
   /*
-   * Stacked (single-column) layout should appear only past 150% zoom. The page
-   * viewport itself doesn't scroll, so at 150% zoom width = 2560 / 1.5 ≈ 1707px
-   * on the target 2560px-wide screen. Raising `lg` to 1706px keeps the desktop
-   * grid through 150% and stacks just beyond it.
+   * Stacked (single-column) layout should appear past 150% zoom — specifically
+   * around 175%. The page viewport itself doesn't scroll, so at 175% zoom width
+   * = 2560 / 1.75 ≈ 1463px on the target 2560px-wide screen. Setting `lg` to
+   * 1463px keeps the desktop grid through ~174% and stacks at 175%.
    */
-  --breakpoint-lg: 1706px;
+  --breakpoint-lg: 1463px;
 
   --color-primary: #0f172a;   /* primary text */
   --color-secondary: #475569; /* secondary text */
