@@ -611,8 +611,8 @@ export default function FanDashboard() {
               <div className="h-12 w-[140px] rounded-full bg-white" />
             </div>
           </header>
-          <div className="flex-1 min-h-0 px-[var(--pad)] pb-[var(--pad)] flex flex-col gap-[var(--pad)] overflow-y-auto lg:overflow-hidden">
-            <div className="grid grid-cols-12 gap-[var(--pad)] items-stretch shrink-0">
+          <div className="flex-1 min-h-0 px-[var(--pad)] pb-[var(--pad)] flex flex-col gap-[var(--pad)] overflow-y-auto">
+            <div className="grid grid-cols-12 gap-[var(--pad)] items-stretch">
               <div className="col-span-12 lg:col-span-6 bg-white rounded-[var(--rad)] p-[var(--pad)]">
                 <div className="mt-[var(--vlg)] mb-[var(--vlg)]" style={{ height: 36 }} />
                 {[...Array(6)].map((_, i, arr) => (
@@ -625,9 +625,9 @@ export default function FanDashboard() {
                 <div className="flex-1 min-h-[140px] bg-white rounded-[var(--rad)]" />
               </div>
             </div>
-            <div className="grid grid-cols-12 gap-[var(--pad)] items-stretch min-h-[300px] lg:min-h-0 lg:flex-1">
-              <div className="col-span-12 lg:col-span-8 min-h-[320px] lg:min-h-0 bg-white rounded-[var(--rad)]" />
-              <div className="col-span-12 lg:col-span-4 min-h-[320px] lg:min-h-0 bg-white rounded-[var(--rad)]" />
+            <div className="flex-1 min-h-[300px] grid grid-cols-12 gap-[var(--pad)] items-stretch">
+              <div className="col-span-12 lg:col-span-8 min-h-[320px] bg-white rounded-[var(--rad)]" />
+              <div className="col-span-12 lg:col-span-4 min-h-[320px] bg-white rounded-[var(--rad)]" />
             </div>
           </div>
         </main>
@@ -729,10 +729,10 @@ export default function FanDashboard() {
         </header>
 
         {/* Content */}
-        <div className="flex-1 min-h-0 px-[var(--pad)] pb-[var(--pad)] flex flex-col gap-[var(--pad)] overflow-y-auto lg:overflow-hidden">
+        <div className="flex-1 min-h-0 px-[var(--pad)] pb-[var(--pad)] flex flex-col gap-[var(--pad)] overflow-y-auto">
 
           {/* Top row: Reach Network + Fan Page Tracker + Fastest Movers */}
-          <div className="grid grid-cols-12 gap-[var(--pad)] items-stretch shrink-0">
+          <div className="grid grid-cols-12 gap-[var(--pad)] items-stretch">
           {/* Follower Network — combined platform totals + share */}
           {orderedPlats.length > 0 && (
             <div className={`col-span-12 lg:col-span-6 ${CARD} p-[var(--pad)] min-h-0 overflow-y-auto overflow-x-hidden`}>
@@ -952,9 +952,9 @@ export default function FanDashboard() {
           </div>
 
           {/* Lower row: Fan Network Growth + Growth Velocity */}
-          <div className="grid grid-cols-12 gap-[var(--pad)] items-stretch min-h-[300px] lg:min-h-0 lg:flex-1">
+          <div className="flex-1 min-h-[300px] grid grid-cols-12 gap-[var(--pad)] items-stretch">
             {/* Growth chart */}
-            <div className={`col-span-12 lg:col-span-8 ${CARD} flex flex-col overflow-hidden min-h-[320px] lg:min-h-0`}>
+            <div className={`col-span-12 lg:col-span-8 ${CARD} flex flex-col overflow-hidden min-h-[320px]`}>
               <div className="px-[var(--pad)] pt-[var(--pad)] pb-[var(--vlg)] shrink-0 relative">
                 <div className="flex items-center gap-2.5">
                   <TrendingUp size={20} className="text-primary shrink-0" strokeWidth={2.25} />
@@ -1105,7 +1105,7 @@ export default function FanDashboard() {
             </div>
 
             {/* Growth Velocity */}
-            <div className={`col-span-12 lg:col-span-4 ${CARD} p-[var(--pad)] flex flex-col overflow-hidden min-h-[320px] lg:min-h-0`}>
+            <div className={`col-span-12 lg:col-span-4 ${CARD} p-[var(--pad)] flex flex-col overflow-hidden min-h-[320px]`}>
               <div className="flex items-center gap-2.5 shrink-0 mb-[var(--vlg)]">
                 <Gauge size={20} className="text-primary shrink-0" strokeWidth={2.25} />
                 <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">Growth Velocity</h2>
