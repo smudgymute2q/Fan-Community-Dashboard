@@ -611,7 +611,8 @@ export default function FanDashboard() {
               <div className="h-12 w-[140px] rounded-full bg-white" />
             </div>
           </header>
-          <div className="flex-1 min-h-0 px-[var(--pad)] flex flex-col gap-[var(--pad)] overflow-y-auto">
+          <div className="flex-1 min-h-0 px-[var(--pad)] overflow-y-auto">
+            <div className="flex flex-col gap-[var(--pad)] pb-[22px] min-h-full">
             <div className="grid grid-cols-12 gap-[var(--pad)] items-stretch">
               <div className="col-span-12 lg:col-span-6 bg-white rounded-[var(--rad)] p-[var(--pad)]">
                 <div className="mt-[var(--vlg)] mb-[var(--vlg)]" style={{ height: 36 }} />
@@ -625,10 +626,11 @@ export default function FanDashboard() {
                 <div className="flex-1 min-h-[140px] bg-white rounded-[var(--rad)]" />
               </div>
             </div>
-            <div className="flex-1 min-h-[300px] grid grid-cols-12 gap-[var(--pad)] items-stretch pb-[22px]">
+            <div className="flex-1 min-h-[300px] grid grid-cols-12 gap-[var(--pad)] items-stretch">
               <div className="col-span-12 lg:col-span-8 min-h-[320px] bg-white rounded-[var(--rad)]" />
               <div className="col-span-12 lg:col-span-4 min-h-[320px] bg-white rounded-[var(--rad)]" />
             </div>
+          </div>
           </div>
         </main>
       </div>
@@ -729,7 +731,10 @@ export default function FanDashboard() {
         </header>
 
         {/* Content */}
-        <div className="flex-1 min-h-0 px-[var(--pad)] flex flex-col gap-[var(--pad)] overflow-y-auto">
+        <div className="flex-1 min-h-0 px-[var(--pad)] overflow-y-auto">
+          {/* Inner wrapper carries the bottom padding so it survives scrolling
+              (a scroll container's own padding-bottom is dropped by some browsers). */}
+          <div className="flex flex-col gap-[var(--pad)] pb-[22px] min-h-full">
 
           {/* Top row: Reach Network + Fan Page Tracker + Fastest Movers */}
           <div className="grid grid-cols-12 gap-[var(--pad)] items-stretch">
@@ -952,7 +957,7 @@ export default function FanDashboard() {
           </div>
 
           {/* Lower row: Fan Network Growth + Growth Velocity */}
-          <div className="flex-1 min-h-[300px] grid grid-cols-12 gap-[var(--pad)] items-stretch pb-[22px]">
+          <div className="flex-1 min-h-[300px] grid grid-cols-12 gap-[var(--pad)] items-stretch">
             {/* Growth chart */}
             <div className={`col-span-12 lg:col-span-8 ${CARD} flex flex-col overflow-hidden min-h-[320px]`}>
               <div className="px-[var(--pad)] pt-[var(--pad)] pb-[var(--vlg)] shrink-0 relative">
@@ -1165,6 +1170,7 @@ export default function FanDashboard() {
                 </ResponsiveContainer>
               </div>
             </div>
+          </div>
           </div>
 
         </div>
