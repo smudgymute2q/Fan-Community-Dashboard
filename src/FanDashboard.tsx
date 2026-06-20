@@ -611,7 +611,7 @@ export default function FanDashboard() {
               <div className="h-12 w-[140px] rounded-full bg-white" />
             </div>
           </header>
-          <div className="flex-1 min-h-0 px-[var(--pad)] pb-[var(--pad)] flex flex-col gap-[var(--pad)] overflow-y-auto">
+          <div className="flex-1 min-h-0 px-[var(--pad)] pb-[22px] flex flex-col gap-[var(--pad)] overflow-y-auto">
             <div className="grid grid-cols-12 gap-[var(--pad)] items-stretch">
               <div className="col-span-12 lg:col-span-6 bg-white rounded-[var(--rad)] p-[var(--pad)]">
                 <div className="mt-[var(--vlg)] mb-[var(--vlg)]" style={{ height: 36 }} />
@@ -729,7 +729,7 @@ export default function FanDashboard() {
         </header>
 
         {/* Content */}
-        <div className="flex-1 min-h-0 px-[var(--pad)] pb-[var(--pad)] flex flex-col gap-[var(--pad)] overflow-y-auto">
+        <div className="flex-1 min-h-0 px-[var(--pad)] pb-[22px] flex flex-col gap-[var(--pad)] overflow-y-auto">
 
           {/* Top row: Reach Network + Fan Page Tracker + Fastest Movers */}
           <div className="grid grid-cols-12 gap-[var(--pad)] items-stretch">
