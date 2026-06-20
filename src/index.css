@@ -10,3 +10,17 @@
   --color-line: #e2e8f0;      /* card / control borders */
   --color-divider: #f1f5f9;   /* internal dividers */
 }
+
+/*
+ * Fluid density scale. Only spacing/radius scale with the viewport — font sizes
+ * stay fixed so text never becomes illegible. Vertical rhythm keys off vh so the
+ * dashboard compresses on short screens to stay on a single page; horizontal
+ * spacing keys off vw. Each value clamps back to the original desktop size.
+ */
+:root {
+  --pad:  clamp(14px, 1.6vw, 22px);  /* outer padding + inter-card gaps (was 22px) */
+  --cgap: clamp(16px, 3.2vw, 44px);  /* wide in-card column gaps (was 44px) */
+  --vsm:  clamp(6px,  1.2vh, 11px);  /* small vertical rhythm (was 11px) */
+  --vlg:  clamp(14px, 3.2vh, 33px);  /* large section spacing (was 30/33/36px) */
+  --rad:  clamp(12px, 1.2vw, 18px);  /* card corner radius (was 18px) */
+}

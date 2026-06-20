@@ -39,7 +39,7 @@ const PLAT_ORDER = ["Discord", "Reddit", "Instagram", "Instagram Channels", "X",
 const MEMBER_PLATFORMS = new Set(["Discord", "Reddit", "X Communities", "Instagram Channels"]);
 
 // ---- Design tokens ----
-const CARD = "bg-white rounded-[18px]";
+const CARD = "bg-white rounded-[var(--rad)]";
 
 // ---- Cloudflare Worker proxy ----
 const WORKER_URL = "https://fanintel.smudgy-mute2q.workers.dev";
@@ -290,7 +290,7 @@ function ChartTooltip({ active, payload, label }: any) {
     .sort((a, b) => b.value - a.value);
   if (!rows.length) return null;
   return (
-    <div className="bg-white rounded-[18px] p-3.5 min-w-[184px]" style={{ boxShadow: "0 0 0 0.5px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px -6px rgba(0,0,0,0.12), 0 24px 56px -16px rgba(0,0,0,0.16)" }}>
+    <div className="bg-white rounded-[var(--rad)] p-3.5 min-w-[184px]" style={{ boxShadow: "0 0 0 0.5px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px -6px rgba(0,0,0,0.12), 0 24px 56px -16px rgba(0,0,0,0.16)" }}>
       <div className="text-[11px] font-semibold uppercase tracking-wider text-muted mb-3">
         {label && typeof label === "string" && label.includes("-") ? monthLabel(label) : label}
       </div>
@@ -605,29 +605,29 @@ export default function FanDashboard() {
     return (
       <div className="flex h-screen overflow-hidden bg-[#f5f5f7]" style={{ fontFamily: "'Satoshi', ui-sans-serif, system-ui, -apple-system, sans-serif" }}>
         <main className="flex-1 min-w-0 flex flex-col overflow-hidden">
-          <header className="px-[22px] pt-[22px] pb-[22px] flex items-center justify-end gap-4 shrink-0">
-            <div className="flex items-center gap-[22px]">
+          <header className="px-[var(--pad)] pt-[var(--pad)] pb-[var(--pad)] flex items-center justify-end gap-4 shrink-0">
+            <div className="flex items-center gap-[var(--pad)]">
               <div className="h-12 w-[130px] rounded-full bg-white" />
               <div className="h-12 w-[140px] rounded-full bg-white" />
             </div>
           </header>
-          <div className="flex-1 min-h-0 px-[22px] pb-[22px] flex flex-col gap-[22px] overflow-hidden">
-            <div className="grid grid-cols-12 gap-[22px] items-stretch">
-              <div className="col-span-6 bg-white rounded-[18px] p-[22px]">
-                <div className="mt-[30px] mb-[33px]" style={{ height: 36 }} />
+          <div className="flex-1 min-h-0 px-[var(--pad)] pb-[var(--pad)] flex flex-col gap-[var(--pad)] overflow-y-auto lg:overflow-hidden">
+            <div className="grid grid-cols-12 gap-[var(--pad)] items-stretch shrink-0">
+              <div className="col-span-12 lg:col-span-6 bg-white rounded-[var(--rad)] p-[var(--pad)]">
+                <div className="mt-[var(--vlg)] mb-[var(--vlg)]" style={{ height: 36 }} />
                 {[...Array(6)].map((_, i, arr) => (
-                  <div key={i} className={i === arr.length - 1 ? "pt-[11px]" : "py-[11px]"} style={{ height: i === arr.length - 1 ? 36 : 50 }} />
+                  <div key={i} className={i === arr.length - 1 ? "pt-[var(--vsm)]" : "py-[var(--vsm)]"} style={{ height: i === arr.length - 1 ? 36 : 50 }} />
                 ))}
               </div>
-              <div className="col-span-3 bg-white rounded-[18px]" />
-              <div className="col-span-3 flex flex-col gap-[22px]">
-                <div className="flex-1 bg-white rounded-[18px]" />
-                <div className="flex-1 bg-white rounded-[18px]" />
+              <div className="col-span-12 lg:col-span-3 min-h-[440px] lg:min-h-0 bg-white rounded-[var(--rad)]" />
+              <div className="col-span-12 lg:col-span-3 flex flex-col gap-[var(--pad)]">
+                <div className="flex-1 min-h-[140px] bg-white rounded-[var(--rad)]" />
+                <div className="flex-1 min-h-[140px] bg-white rounded-[var(--rad)]" />
               </div>
             </div>
-            <div className="flex-1 min-h-[300px] grid grid-cols-12 gap-[22px] items-stretch">
-              <div className="col-span-8 bg-white rounded-[18px]" />
-              <div className="col-span-4 bg-white rounded-[18px]" />
+            <div className="grid grid-cols-12 gap-[var(--pad)] items-stretch min-h-[300px] lg:min-h-0 lg:flex-1">
+              <div className="col-span-12 lg:col-span-8 min-h-[320px] lg:min-h-0 bg-white rounded-[var(--rad)]" />
+              <div className="col-span-12 lg:col-span-4 min-h-[320px] lg:min-h-0 bg-white rounded-[var(--rad)]" />
             </div>
           </div>
         </main>
@@ -655,8 +655,8 @@ export default function FanDashboard() {
       <main className="flex-1 min-w-0 flex flex-col overflow-hidden">
 
         {/* Header */}
-        <header className="px-[22px] pt-[22px] pb-[22px] flex items-center justify-end gap-4 shrink-0">
-          <div className="flex items-center gap-[22px] shrink-0 relative">
+        <header className="px-[var(--pad)] pt-[var(--pad)] pb-[var(--pad)] flex items-center justify-end gap-4 shrink-0">
+          <div className="flex items-center gap-[var(--pad)] shrink-0 relative">
             {/* Sync status */}
             <div className="flex items-center gap-2.5 h-12 px-4 rounded-full bg-white text-[14px] font-medium text-primary">
               <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${sheetsLoading ? "bg-[#ff9f0a]" : "bg-[#34c759] animate-pulse"}`} />
@@ -691,7 +691,7 @@ export default function FanDashboard() {
               </button>
 
               {switcherOpen && (
-                <div className="absolute left-0 right-0 top-full mt-2 z-50 bg-white rounded-[18px] p-1.5 max-h-[70vh] overflow-y-auto" style={{ scrollbarWidth: "thin" }}>
+                <div className="absolute left-0 right-0 top-full mt-2 z-50 bg-white rounded-[var(--rad)] p-1.5 max-h-[70vh] overflow-y-auto" style={{ scrollbarWidth: "thin" }}>
                   {artists.map((a) => {
                     const active = a.slug === selectedSlug;
                     return (
@@ -729,19 +729,19 @@ export default function FanDashboard() {
         </header>
 
         {/* Content */}
-        <div className="flex-1 min-h-0 px-[22px] pb-[22px] flex flex-col gap-[22px] overflow-y-auto">
+        <div className="flex-1 min-h-0 px-[var(--pad)] pb-[var(--pad)] flex flex-col gap-[var(--pad)] overflow-y-auto lg:overflow-hidden">
 
           {/* Top row: Reach Network + Fan Page Tracker + Fastest Movers */}
-          <div className="grid grid-cols-12 gap-[22px] items-stretch">
+          <div className="grid grid-cols-12 gap-[var(--pad)] items-stretch shrink-0">
           {/* Follower Network — combined platform totals + share */}
           {orderedPlats.length > 0 && (
-            <div className={`col-span-6 ${CARD} p-[22px] min-h-0 overflow-y-auto overflow-x-hidden`}>
+            <div className={`col-span-12 lg:col-span-6 ${CARD} p-[var(--pad)] min-h-0 overflow-y-auto overflow-x-hidden`}>
               <div className="flex items-center gap-2.5">
                 <PieIcon size={20} className="text-primary shrink-0" strokeWidth={2.25} />
                 <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">Fan Network Reach</h2>
               </div>
               <div
-                className="mt-[30px] mb-[33px] grid gap-x-[44px] gap-y-[11px]"
+                className="mt-[var(--vlg)] mb-[var(--vlg)] grid gap-x-[var(--cgap)] gap-y-[var(--vsm)]"
                 style={{ gridTemplateColumns: "max-content max-content", justifyContent: "start" }}
               >
                 <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none">Total Reach</div>
@@ -752,11 +752,11 @@ export default function FanDashboard() {
 
               {/* Per-platform ranked table with in-row share bars */}
               <div
-                className="grid items-center gap-x-[44px]"
+                className="grid items-center gap-x-[var(--cgap)]"
                 style={{ gridTemplateColumns: "max-content max-content max-content minmax(0,1fr) max-content" }}
               >
                 <div
-                  className="grid items-center gap-x-[44px] pb-0 leading-none text-[11px] font-semibold uppercase tracking-wider text-muted"
+                  className="grid items-center gap-x-[var(--cgap)] pb-0 leading-none text-[11px] font-semibold uppercase tracking-wider text-muted"
                   style={{ gridColumn: "1 / -1", gridTemplateColumns: "subgrid" }}
                 >
                   <span>Platform</span>
@@ -772,7 +772,7 @@ export default function FanDashboard() {
                   return (
                     <div
                       key={d.name}
-                      className={`grid items-center gap-x-[44px] ${i === arr.length - 1 ? "pt-[11px]" : "py-[11px]"}`}
+                      className={`grid items-center gap-x-[var(--cgap)] ${i === arr.length - 1 ? "pt-[var(--vsm)]" : "py-[var(--vsm)]"}`}
                       style={{ gridColumn: "1 / -1", gridTemplateColumns: "subgrid" }}
                     >
                       <div className="flex items-center gap-2.5 min-w-0">
@@ -793,14 +793,14 @@ export default function FanDashboard() {
           )}
 
             {/* Fan Page Tracker */}
-            <div className="col-span-3 relative min-h-0">
+            <div className="col-span-12 lg:col-span-3 relative min-h-[440px] lg:min-h-0">
             <div className={`absolute inset-0 ${CARD} flex flex-col overflow-hidden`}>
-              <div className="px-[22px] pt-[22px] pb-[36px] shrink-0 relative">
+              <div className="px-[var(--pad)] pt-[var(--pad)] pb-[var(--vlg)] shrink-0 relative">
                 <div className="flex items-center gap-2.5">
                   <LayoutList size={20} className="text-primary shrink-0" strokeWidth={2.25} />
                   <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">Fan Page Tracker</h2>
                 </div>
-                <div className="absolute top-[22px] right-[22px] flex items-center gap-[11px]">
+                <div className="absolute top-[var(--pad)] right-[var(--pad)] flex items-center gap-[var(--vsm)]">
                   <button
                     onClick={() => setShowStarredOnly((o) => !o)}
                     className={`w-[34px] h-[34px] rounded-full flex items-center justify-center transition ${
@@ -823,7 +823,7 @@ export default function FanDashboard() {
                       <ChevronDown size={14} className="text-muted" />
                     </button>
                     {pagesDropdownOpen && (
-                      <div className="absolute right-0 top-full mt-2 z-20 bg-white rounded-[18px] p-1.5 min-w-[200px]" style={{ boxShadow: "0 0 0 0.5px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px -6px rgba(0,0,0,0.12), 0 24px 56px -16px rgba(0,0,0,0.16)" }}>
+                      <div className="absolute right-0 top-full mt-2 z-20 bg-white rounded-[var(--rad)] p-1.5 min-w-[200px]" style={{ boxShadow: "0 0 0 0.5px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px -6px rgba(0,0,0,0.12), 0 24px 56px -16px rgba(0,0,0,0.16)" }}>
                         {fpAvailablePlatforms.map((plat) => (
                           <button
                             key={plat}
@@ -847,7 +847,7 @@ export default function FanDashboard() {
               <div className="relative flex-1 min-h-0">
               <div
                 ref={pagesListRef}
-                className={`h-full overflow-y-auto no-scrollbar pl-[22px] pb-[11px] ${pagesScrollable ? "pr-[50px]" : "pr-[22px]"}`}
+                className={`h-full overflow-y-auto no-scrollbar pl-[var(--pad)] pb-[var(--vsm)] ${pagesScrollable ? "pr-[50px]" : "pr-[var(--pad)]"}`}
                 onScroll={updateScrollbar}
               >
                 {filteredPages.length === 0 ? (
@@ -856,8 +856,8 @@ export default function FanDashboard() {
                   const unit = MEMBER_PLATFORMS.has(fpEffectivePlatform) ? "Members" : "Followers";
                   const entityCount = `${filteredPages.length} ${filteredPages.length === 1 ? fpEntitySingular : fpEntityPlural}`;
                   return (
-                    <div className="grid grid-cols-[1fr_auto_auto] gap-x-[44px]">
-                      <div className="sticky top-0 z-10 bg-white grid items-center gap-x-[44px] pb-0 leading-none -mx-2.5 px-2.5" style={{ gridColumn: "1 / -1", gridTemplateColumns: "subgrid" }}>
+                    <div className="grid grid-cols-[1fr_auto_auto] gap-x-[var(--cgap)]">
+                      <div className="sticky top-0 z-10 bg-white grid items-center gap-x-[var(--cgap)] pb-0 leading-none -mx-2.5 px-2.5" style={{ gridColumn: "1 / -1", gridTemplateColumns: "subgrid" }}>
                         <span className="text-[11px] font-semibold uppercase tracking-wider text-muted tabular-nums whitespace-nowrap">{entityCount}</span>
                         <span className="text-[11px] font-semibold uppercase tracking-wider text-muted text-right">{unit}</span>
                         <span className="text-[11px] font-semibold uppercase tracking-wider text-muted text-right">Last Post</span>
@@ -868,7 +868,7 @@ export default function FanDashboard() {
                           <Tag
                             key={p.link || `${p.platform}-${p.name}-${i}`}
                             {...(p.link ? { href: p.link, target: "_blank", rel: "noopener noreferrer" } : {})}
-                            className="grid items-center gap-x-[44px] py-[11px] no-underline rounded-xl px-2.5 -mx-2.5 hover:bg-[#f5f5f7] transition-colors"
+                            className="grid items-center gap-x-[var(--cgap)] py-[var(--vsm)] no-underline rounded-xl px-2.5 -mx-2.5 hover:bg-[#f5f5f7] transition-colors"
                             style={{ gridColumn: "1 / -1", gridTemplateColumns: "subgrid" }}
                           >
                             <div className="flex items-center gap-2.5 min-w-0">
@@ -905,25 +905,25 @@ export default function FanDashboard() {
             </div>
 
             {/* Fastest Movers — split into top gainers / biggest drops */}
-            <div className="col-span-3 flex flex-col gap-[22px]">
+            <div className="col-span-12 lg:col-span-3 flex flex-col gap-[var(--pad)]">
               {[
                 { title: "Top Gainers", icon: ArrowUpRight, list: artists.slice().filter((a) => a.totals.delta > 0).sort((a, b) => b.totals.delta - a.totals.delta).slice(0, 3), kind: "gains" },
                 { title: "Biggest Drops", icon: ArrowDownRight, list: artists.slice().filter((a) => a.totals.delta < 0).sort((a, b) => a.totals.delta - b.totals.delta).slice(0, 3), kind: "drops" },
               ].map((grp) => {
                 const Icon = grp.icon;
                 return (
-                  <div key={grp.title} className={`${CARD} p-[22px] flex flex-col overflow-hidden`}>
-                    <div className="flex items-center gap-2.5 shrink-0 mb-[30px]">
+                  <div key={grp.title} className={`${CARD} p-[var(--pad)] flex flex-col overflow-hidden`}>
+                    <div className="flex items-center gap-2.5 shrink-0 mb-[var(--vlg)]">
                       <Icon size={20} className="text-primary shrink-0" strokeWidth={2.25} />
                       <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">{grp.title}</h2>
                     </div>
                     {grp.list.length > 0 && (
-                      <div className="flex items-center justify-between shrink-0 pb-[11px] text-[11px] font-semibold uppercase tracking-wider text-muted leading-none">
+                      <div className="flex items-center justify-between shrink-0 pb-[var(--vsm)] text-[11px] font-semibold uppercase tracking-wider text-muted leading-none">
                         <span>Artist</span>
                         <span>Last 28 Days</span>
                       </div>
                     )}
-                    <div className="flex flex-col gap-[22px]">
+                    <div className="flex flex-col gap-[var(--pad)]">
                       {grp.list.length === 0 ? (
                         <div className="text-center text-[13px] text-muted py-4">No {grp.kind} in range</div>
                       ) : grp.list.map((a) => (
@@ -952,15 +952,15 @@ export default function FanDashboard() {
           </div>
 
           {/* Lower row: Fan Network Growth + Growth Velocity */}
-          <div className="flex-1 min-h-[300px] grid grid-cols-12 gap-[22px] items-stretch">
+          <div className="grid grid-cols-12 gap-[var(--pad)] items-stretch min-h-[300px] lg:min-h-0 lg:flex-1">
             {/* Growth chart */}
-            <div className={`col-span-8 ${CARD} flex flex-col overflow-hidden min-h-0`}>
-              <div className="px-[22px] pt-[22px] pb-[33px] shrink-0 relative">
+            <div className={`col-span-12 lg:col-span-8 ${CARD} flex flex-col overflow-hidden min-h-[320px] lg:min-h-0`}>
+              <div className="px-[var(--pad)] pt-[var(--pad)] pb-[var(--vlg)] shrink-0 relative">
                 <div className="flex items-center gap-2.5">
                   <TrendingUp size={20} className="text-primary shrink-0" strokeWidth={2.25} />
                   <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">Fan Network Growth</h2>
                 </div>
-                <div className="absolute top-[22px] right-[22px] flex items-center gap-[11px]">
+                <div className="absolute top-[var(--pad)] right-[var(--pad)] flex items-center gap-[var(--vsm)]">
                   <div className="flex items-center gap-1 bg-[#f5f5f7] p-1 rounded-full shrink-0">
                     {[
                       { key: "3m", label: "3M" },
@@ -996,7 +996,7 @@ export default function FanDashboard() {
                       <Filter size={15} className={hiddenPlats.size > 0 ? "text-primary" : "text-muted"} />
                     </button>
                     {platDropdownOpen && (
-                      <div className="absolute right-0 top-full mt-2 z-20 bg-white rounded-[18px] p-1.5 min-w-[200px]" style={{ boxShadow: "0 0 0 0.5px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px -6px rgba(0,0,0,0.12), 0 24px 56px -16px rgba(0,0,0,0.16)" }}>
+                      <div className="absolute right-0 top-full mt-2 z-20 bg-white rounded-[var(--rad)] p-1.5 min-w-[200px]" style={{ boxShadow: "0 0 0 0.5px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px -6px rgba(0,0,0,0.12), 0 24px 56px -16px rgba(0,0,0,0.16)" }}>
                         {orderedPlats.map((p) => {
                           const off = hiddenPlats.has(p);
                           return (
@@ -1015,28 +1015,28 @@ export default function FanDashboard() {
                     )}
                   </div>
                 </div>
-                <div className="mt-[30px] flex items-start gap-4">
+                <div className="mt-[var(--vlg)] flex items-start gap-4">
                   {rangeStats && (
-                    <div className="flex items-start flex-wrap gap-x-[44px] gap-y-3 min-w-0">
+                    <div className="flex items-start flex-wrap gap-x-[var(--cgap)] gap-y-3 min-w-0">
                       <div>
-                        <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none mb-[11px]">{monthLabel(history[0].date)}</div>
+                        <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none mb-[var(--vsm)]">{monthLabel(history[0].date)}</div>
                         <div className="text-[14px] font-semibold tabular-nums text-primary leading-none">{fmtFull(rangeStats.startTotal)}</div>
                       </div>
                       <div>
-                        <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none mb-[11px]">{monthLabel(history[history.length - 1].date)}</div>
+                        <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none mb-[var(--vsm)]">{monthLabel(history[history.length - 1].date)}</div>
                         <div className="text-[14px] font-semibold tabular-nums text-primary leading-none">{fmtFull(rangeStats.endTotal)}</div>
                       </div>
                       <div>
-                        <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none mb-[11px]">Net Growth</div>
-                        <div className="flex items-center gap-[11px] h-[14px]">
+                        <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none mb-[var(--vsm)]">Net Growth</div>
+                        <div className="flex items-center gap-[var(--vsm)] h-[14px]">
                           <DeltaPill value={rangeStats.net} />
                           <span className="text-[14px] font-semibold tabular-nums text-primary leading-none">{rangeStats.pct >= 0 ? "+" : ""}{Math.abs(rangeStats.pct) >= 100 ? Math.round(rangeStats.pct) : rangeStats.pct.toFixed(1).replace(/\.0$/, "")}%</span>
                         </div>
                       </div>
                       {rangeStats.bestGain > 0 && (
                         <div>
-                          <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none mb-[11px]">Best Month</div>
-                          <div className="flex items-center gap-[11px] h-[14px]">
+                          <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none mb-[var(--vsm)]">Best Month</div>
+                          <div className="flex items-center gap-[var(--vsm)] h-[14px]">
                             <span className="text-[14px] font-semibold tabular-nums text-primary whitespace-nowrap leading-none">{monthLabel(rangeStats.bestMonth)}</span>
                             <DeltaPill value={rangeStats.bestGain} />
                           </div>
@@ -1048,7 +1048,7 @@ export default function FanDashboard() {
               </div>
 
               {/* Chart area — stacked gradient area */}
-              <div className="fng-axis flex-1 min-h-0 pl-[22px] pr-[22px] pb-[22px]">
+              <div className="fng-axis flex-1 min-h-0 pl-[var(--pad)] pr-[var(--pad)] pb-[var(--pad)]">
                 {history.length === 0 ? (
                   <div className="h-full flex items-center justify-center text-muted text-sm">No data in the selected range</div>
                 ) : (
@@ -1105,14 +1105,14 @@ export default function FanDashboard() {
             </div>
 
             {/* Growth Velocity */}
-            <div className={`col-span-4 ${CARD} p-[22px] flex flex-col overflow-hidden min-h-0`}>
-              <div className="flex items-center gap-2.5 shrink-0 mb-[30px]">
+            <div className={`col-span-12 lg:col-span-4 ${CARD} p-[var(--pad)] flex flex-col overflow-hidden min-h-[320px] lg:min-h-0`}>
+              <div className="flex items-center gap-2.5 shrink-0 mb-[var(--vlg)]">
                 <Gauge size={20} className="text-primary shrink-0" strokeWidth={2.25} />
                 <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">Growth Velocity</h2>
               </div>
               {velocityData.length > 0 && (
                 <div
-                  className="shrink-0 mb-[33px] grid gap-x-[44px] gap-y-[11px]"
+                  className="shrink-0 mb-[var(--vlg)] grid gap-x-[var(--cgap)] gap-y-[var(--vsm)]"
                   style={{ gridTemplateColumns: "max-content max-content", justifyContent: "start" }}
                 >
                   <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none">Latest Month</div>
@@ -1143,7 +1143,7 @@ export default function FanDashboard() {
                     <Tooltip
                       content={({ active, payload, label }) =>
                         active && payload?.length ? (
-                          <div className="bg-white rounded-[18px] p-3.5" style={{ boxShadow: "0 0 0 0.5px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px -6px rgba(0,0,0,0.12), 0 24px 56px -16px rgba(0,0,0,0.16)" }}>
+                          <div className="bg-white rounded-[var(--rad)] p-3.5" style={{ boxShadow: "0 0 0 0.5px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px -6px rgba(0,0,0,0.12), 0 24px 56px -16px rgba(0,0,0,0.16)" }}>
                             <div className="text-[11px] font-semibold uppercase tracking-wider text-muted mb-2">{monthLabel(label)}</div>
                             <div className="flex items-center gap-2.5">
                               <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: payload[0].value >= 0 ? "#248a3d" : "#d70015" }} />
