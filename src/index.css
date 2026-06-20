@@ -1,6 +1,14 @@
 @import "tailwindcss";
 
 @theme {
+  /*
+   * Stacked (single-column) layout should appear only past 150% zoom. The page
+   * viewport itself doesn't scroll, so at 150% zoom width = 2560 / 1.5 ≈ 1707px
+   * on the target 2560px-wide screen. Raising `lg` to 1706px keeps the desktop
+   * grid through 150% and stacks just beyond it.
+   */
+  --breakpoint-lg: 1706px;
+
   --color-primary: #0f172a;   /* primary text */
   --color-secondary: #475569; /* secondary text */
   --color-muted: #64748b;     /* muted / label text */
