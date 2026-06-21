@@ -735,13 +735,7 @@ export default function FanDashboard() {
                             }}
                           />
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="text-[14px] font-medium text-primary truncate leading-tight">{a.name}</div>
-                          <div className="flex items-center gap-2 mt-1">
-                            <span className="text-[14px] tabular-nums font-semibold text-primary">{fmtFull(a.totals.value)}</span>
-                            <DeltaPill value={a.totals.delta} />
-                          </div>
-                        </div>
+                        <span className="flex-1 min-w-0 text-[14px] font-medium text-primary truncate">{a.name}</span>
                       </button>
                     );
                   })}
