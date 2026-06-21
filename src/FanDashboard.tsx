@@ -877,7 +877,7 @@ export default function FanDashboard() {
               <div className="relative flex-1 min-h-0">
               <div
                 ref={pagesListRef}
-                className={`h-full overflow-y-auto no-scrollbar pl-[var(--pad)] pb-[var(--vsm)] ${pagesScrollable ? "pr-[50px]" : "pr-[var(--pad)]"}`}
+                className={`h-full overflow-y-auto overscroll-contain no-scrollbar pl-[var(--pad)] pb-[var(--vsm)] ${pagesScrollable ? "pr-[50px]" : "pr-[var(--pad)]"}`}
                 onScroll={updateScrollbar}
               >
                 {filteredPages.length === 0 ? (
