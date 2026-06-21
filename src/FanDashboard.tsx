@@ -1048,11 +1048,8 @@ export default function FanDashboard() {
                         <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none mb-[var(--vsm)]">{monthLabel(history[0].date)}</div>
                         <div className="text-[14px] font-semibold tabular-nums text-primary leading-none">{fmtFull(rangeStats.startTotal)}</div>
                       </div>
-                      <div className="flex flex-col -mx-[22px]" aria-hidden="true">
-                        <div className="text-[11px] leading-none mb-[var(--vsm)]">&nbsp;</div>
-                        <div className="h-[14px] flex items-center">
-                          <ArrowRight size={16} strokeWidth={2.75} className="text-primary shrink-0 -translate-y-[2px]" />
-                        </div>
+                      <div className="flex items-center self-stretch -mx-[22px]" aria-hidden="true">
+                        <ArrowRight size={16} strokeWidth={2.75} className="text-primary shrink-0" />
                       </div>
                       <div>
                         <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none mb-[var(--vsm)]">{monthLabel(history[history.length - 1].date)}</div>
