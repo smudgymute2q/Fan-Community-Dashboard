@@ -626,7 +626,7 @@ export default function FanDashboard() {
                 <div className="flex-1 min-h-[140px] bg-white rounded-[var(--rad)]" />
               </div>
             </div>
-            <div className="flex-1 min-h-[300px] grid grid-cols-12 gap-[var(--pad)] items-stretch">
+            <div className="grid grid-cols-12 gap-[var(--pad)] items-stretch">
               <div className="col-span-12 lg:col-span-8 min-h-[480px] bg-white rounded-[var(--rad)]" />
               <div className="col-span-12 lg:col-span-4 min-h-[480px] bg-white rounded-[var(--rad)]" />
             </div>
@@ -957,7 +957,7 @@ export default function FanDashboard() {
           </div>
 
           {/* Lower row: Fan Network Growth + Growth Velocity */}
-          <div className="flex-1 min-h-[300px] grid grid-cols-12 gap-[var(--pad)] items-stretch">
+          <div className="grid grid-cols-12 gap-[var(--pad)] items-stretch">
             {/* Growth chart */}
             <div className={`col-span-12 lg:col-span-8 ${CARD} flex flex-col overflow-hidden min-h-[480px]`}>
               <div className="px-[var(--pad)] pt-[var(--pad)] pb-[var(--vlg)] shrink-0 relative">
