@@ -1051,7 +1051,7 @@ export default function FanDashboard() {
                       <div className="flex flex-col -mx-[22px]" aria-hidden="true">
                         <div className="text-[11px] leading-none mb-[var(--vsm)]">&nbsp;</div>
                         <div className="h-[14px] flex items-center">
-                          <ArrowRight size={16} strokeWidth={2.75} className="text-primary shrink-0" />
+                          <ArrowRight size={16} strokeWidth={2.75} className="text-primary shrink-0 -translate-y-[2px]" />
                         </div>
                       </div>
                       <div>
