@@ -330,6 +330,8 @@ export default function FanDashboard() {
   const [pagesScrollable, setPagesScrollable] = useState(false);
   const [sbThumb, setSbThumb] = useState({ top: 0, height: 0, show: false });
   const sbDrag = React.useRef<{ startY: number; startScroll: number } | null>(null);
+  const firstRowRef = React.useRef<HTMLDivElement>(null);
+  const chartRowRef = React.useRef<HTMLDivElement>(null);
   const [sheetsData, setSheetsData] = useState<Record<string, any>>({});
   const [sheetsLoading, setSheetsLoading] = useState(true);
   const [syncedAt, setSyncedAt] = useState<Date | null>(null);
@@ -561,6 +563,24 @@ export default function FanDashboard() {
     return () => ro.disconnect();
   }, [filteredPages, fpEffectivePlatform, showStarredOnly, updateScrollbar]);
 
+  // Cap the chart row at the height of the first row of panels (floored at the
+  // 480px tooltip minimum) so the two chart panels grow to balance with the top
+  // row but never exceed it. Published as a CSS var consumed only at lg+ (the grid
+  // layout); below lg the chart panels keep stacking at their own min height.
+  React.useLayoutEffect(() => {
+    const first = firstRowRef.current;
+    const chart = chartRowRef.current;
+    if (!first || !chart) return;
+    const apply = () => {
+      const h = first.getBoundingClientRect().height;
+      chart.style.setProperty("--first-row-h", `${Math.max(480, Math.round(h))}px`);
+    };
+    apply();
+    const ro = new ResizeObserver(apply);
+    ro.observe(first);
+    return () => ro.disconnect();
+  }, [sheetsLoading, sheetsData, selectedSlug]);
+
   useEffect(() => {
     const onMove = (e: MouseEvent) => {
       const el = pagesListRef.current;
@@ -737,7 +757,7 @@ export default function FanDashboard() {
           <div className="flex flex-col gap-[var(--pad)] pb-[22px] min-h-full">
 
           {/* Top row: Reach Network + Fan Page Tracker + Fastest Movers */}
-          <div className="grid grid-cols-12 gap-[var(--pad)] items-stretch">
+          <div ref={firstRowRef} className="grid grid-cols-12 gap-[var(--pad)] items-stretch">
           {/* Follower Network — combined platform totals + share */}
           {orderedPlats.length > 0 && (
             <div className={`col-span-12 lg:col-span-6 ${CARD} p-[var(--pad)] min-h-0 overflow-y-auto overflow-x-hidden`}>
@@ -957,7 +977,7 @@ export default function FanDashboard() {
           </div>
 
           {/* Lower row: Fan Network Growth + Growth Velocity */}
-          <div className="grid grid-cols-12 gap-[var(--pad)] items-stretch">
+          <div ref={chartRowRef} className="grid grid-cols-12 gap-[var(--pad)] items-stretch lg:h-[var(--first-row-h,480px)]">
             {/* Growth chart */}
             <div className={`col-span-12 lg:col-span-8 ${CARD} flex flex-col overflow-hidden min-h-[480px]`}>
               <div className="px-[var(--pad)] pt-[var(--pad)] pb-[var(--vlg)] shrink-0 relative">
