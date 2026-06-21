@@ -1078,7 +1078,7 @@ export default function FanDashboard() {
                   <div className="h-full flex items-center justify-center text-muted text-sm">No data in the selected range</div>
                 ) : (
                   <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={chartHistory} margin={{ top: 8, right: 0, left: 0, bottom: 0 }}>
+                    <LineChart data={chartHistory} margin={{ top: 8, right: 32, left: 0, bottom: 0 }}>
                       <CartesianGrid strokeDasharray="3 4" vertical={false} stroke="#e5e5ea" />
                       <XAxis
                         dataKey="date"
