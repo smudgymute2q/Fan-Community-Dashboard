@@ -1050,7 +1050,9 @@ export default function FanDashboard() {
                       </div>
                       <div className="flex flex-col -mx-[22px]" aria-hidden="true">
                         <div className="text-[11px] leading-none mb-[var(--vsm)]">&nbsp;</div>
-                        <ArrowRight size={16} strokeWidth={2.5} className="text-muted shrink-0 -mt-[1px]" />
+                        <div className="h-[14px] flex items-center">
+                          <ArrowRight size={16} strokeWidth={2.75} className="text-primary shrink-0" />
+                        </div>
                       </div>
                       <div>
                         <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none mb-[var(--vsm)]">{monthLabel(history[history.length - 1].date)}</div>
