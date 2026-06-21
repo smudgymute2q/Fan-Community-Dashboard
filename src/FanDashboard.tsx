@@ -1059,7 +1059,7 @@ export default function FanDashboard() {
                         <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none mb-[var(--vsm)]">Net Growth</div>
                         <div className="flex items-center gap-[var(--vsm)] h-[14px]">
                           <DeltaPill value={rangeStats.net} />
-                          <span className="text-[14px] font-semibold tabular-nums text-primary leading-none">{rangeStats.pct >= 0 ? "+" : ""}{Math.abs(rangeStats.pct) >= 100 ? Math.round(rangeStats.pct) : rangeStats.pct.toFixed(1).replace(/\.0$/, "")}%</span>
+                          <span className="text-[14px] font-semibold tabular-nums text-primary leading-none">{rangeStats.pct >= 0 ? "+" : ""}{(() => { const p = rangeStats.pct; const abs = Math.abs(p); if (abs >= 100) return Math.round(p).toString(); if (abs >= 1) return p.toFixed(1).replace(/\.0$/, ""); if (p === 0) return "0"; for (let d = 1; d <= 6; d++) { const s = abs.toFixed(d); if (/[1-9]/.test(s.split(".")[1] ?? "")) return p.toFixed(d); } return p.toFixed(2); })()}%</span>
                         </div>
                       </div>
                       {rangeStats.bestGain > 0 && (
