@@ -327,6 +327,7 @@ export default function FanDashboard() {
   const [platDropdownOpen, setPlatDropdownOpen] = useState(false);
   const [switcherOpen, setSwitcherOpen] = useState(false);
   const [showStarredOnly, setShowStarredOnly] = useState(false);
+  const [pagesSort, setPagesSort] = useState<{ key: "name" | "followers" | "latest"; dir: "asc" | "desc" }>({ key: "followers", dir: "desc" });
   const pagesListRef = React.useRef<HTMLDivElement>(null);
   const [pagesScrollable, setPagesScrollable] = useState(false);
   const [sbThumb, setSbThumb] = useState({ top: 0, height: 0, show: false });
@@ -520,12 +521,21 @@ export default function FanDashboard() {
     ? "Discord"
     : fpAvailablePlatforms[0] || "Discord";
 
-  const filteredPages = useMemo(
-    () => artist.pages
-      .filter((p) => p.platform === fpEffectivePlatform && (!showStarredOnly || p.managed))
-      .sort((a, b) => b.followers - a.followers),
-    [artist.pages, fpEffectivePlatform, showStarredOnly]
-  );
+  const filteredPages = useMemo(() => {
+    const pages = artist.pages.filter((p) => p.platform === fpEffectivePlatform && (!showStarredOnly || p.managed));
+    const { key, dir } = pagesSort;
+    const mul = dir === "asc" ? 1 : -1;
+    return pages.sort((a, b) => {
+      if (key === "name") return mul * a.name.localeCompare(b.name);
+      if (key === "followers") return mul * (a.followers - b.followers);
+      if (key === "latest") {
+        const ta = a.latest ? new Date(a.latest).getTime() : 0;
+        const tb = b.latest ? new Date(b.latest).getTime() : 0;
+        return mul * (ta - tb);
+      }
+      return 0;
+    });
+  }, [artist.pages, fpEffectivePlatform, showStarredOnly, pagesSort]);
 
   const fpEntityPlural = fpEffectivePlatform === "Discord" ? "servers"
     : fpEffectivePlatform === "Reddit" ? "subreddits"
@@ -878,9 +888,20 @@ export default function FanDashboard() {
                   return (
                     <div className="grid grid-cols-[1fr_auto_auto] gap-x-[var(--cgap)]">
                       <div className="sticky top-0 z-10 bg-white grid items-center gap-x-[var(--cgap)] pb-0 leading-none -mx-2.5 px-2.5" style={{ gridColumn: "1 / -1", gridTemplateColumns: "subgrid" }}>
-                        <span className="text-[11px] font-semibold uppercase tracking-wider text-muted tabular-nums whitespace-nowrap">{entityCount}</span>
-                        <span className="text-[11px] font-semibold uppercase tracking-wider text-muted text-right">{unit}</span>
-                        <span className="text-[11px] font-semibold uppercase tracking-wider text-muted text-right">Last Post</span>
+                        {(["name", "followers", "latest"] as const).map((col, ci) => {
+                          const labels = [entityCount, unit, "Last Post"];
+                          const active = pagesSort.key === col;
+                          return (
+                            <button
+                              key={col}
+                              onClick={() => setPagesSort((s) => s.key === col ? { key: col, dir: s.dir === "asc" ? "desc" : "asc" } : { key: col, dir: col === "name" ? "asc" : "desc" })}
+                              className={`flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider whitespace-nowrap transition-colors ${active ? "text-primary" : "text-muted hover:text-primary"} ${ci > 0 ? "justify-end" : ""}`}
+                            >
+                              <span>{labels[ci]}</span>
+                              <span className="text-[10px] leading-none">{active ? (pagesSort.dir === "asc" ? "↑" : "↓") : ""}</span>
+                            </button>
+                          );
+                        })}
                       </div>
                       {filteredPages.map((p, i) => {
                         const Tag = p.link ? "a" : "div";
