@@ -13,6 +13,7 @@ import {
 } from "recharts";
 import {
   ChevronDown,
+  ChevronUp,
   ArrowUpRight,
   ArrowDownRight,
   ArrowRight,
@@ -891,14 +892,21 @@ export default function FanDashboard() {
                         {(["name", "followers", "latest"] as const).map((col, ci) => {
                           const labels = [entityCount, unit, "Last Post"];
                           const active = pagesSort.key === col;
+                          const Arrow = pagesSort.dir === "asc" ? ChevronUp : ChevronDown;
+                          const arrowSlot = (
+                            <span className="w-3 flex justify-center shrink-0">
+                              {active && <Arrow size={13} strokeWidth={2.75} className="text-primary" />}
+                            </span>
+                          );
                           return (
                             <button
                               key={col}
                               onClick={() => setPagesSort((s) => s.key === col ? { key: col, dir: s.dir === "asc" ? "desc" : "asc" } : { key: col, dir: col === "name" ? "asc" : "desc" })}
                               className={`flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider whitespace-nowrap transition-colors ${active ? "text-primary" : "text-muted hover:text-primary"} ${ci > 0 ? "justify-end" : ""}`}
                             >
+                              {ci > 0 && arrowSlot}
                               <span>{labels[ci]}</span>
-                              <span className="text-[10px] leading-none">{active ? (pagesSort.dir === "asc" ? "↑" : "↓") : ""}</span>
+                              {ci === 0 && arrowSlot}
                             </button>
                           );
                         })}
