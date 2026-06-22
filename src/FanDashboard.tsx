@@ -494,7 +494,7 @@ export default function FanDashboard() {
     orderedPlats.forEach((p) => { firstIdx[p] = history.findIndex((d) => ((d[p] as number) || 0) > 0); });
     return history.map((row, i) => {
       const next: any = { date: row.date };
-      orderedPlats.forEach((p) => { next[p] = firstIdx[p] === -1 || i < firstIdx[p] ? null : ((row[p] as number) || 0); });
+      orderedPlats.forEach((p) => { next[p] = firstIdx[p] === -1 || i < firstIdx[p] ? null : ((row[p] as number) || null); });
       return next;
     });
   }, [history, orderedPlats]);
