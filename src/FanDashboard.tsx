@@ -262,11 +262,11 @@ function monthlyVelocity(history, plats) {
 
 function DeltaPill({ value, small = false }: { value: number | null | undefined; small?: boolean }) {
   if (value === null || value === undefined)
-    return <span className={`text-muted ${small ? "text-[10px]" : "text-xs"} font-medium`}>—</span>;
+    return <span className={`text-muted ${small ? "text-[12px]" : "text-[14px]"} font-medium`}>—</span>;
   if (value === 0)
     return (
       <span className={`inline-flex items-center font-semibold tabular-nums rounded-full bg-[#f0f0f3] text-muted ${
-        small ? "text-[10px] px-1.5 py-0.5" : "text-xs px-2 py-0.5"
+        small ? "text-[12px] px-1.5 py-0.5" : "text-[14px] px-2 py-0.5"
       }`}>
         0
       </span>
@@ -274,10 +274,10 @@ function DeltaPill({ value, small = false }: { value: number | null | undefined;
   const up = value > 0;
   return (
     <span className={`inline-flex items-center gap-0.5 font-semibold tabular-nums rounded-full ${
-      small ? "text-[10px] px-1.5 py-0.5" : "text-xs px-2 py-0.5"
+      small ? "text-[12px] px-1.5 py-0.5" : "text-[14px] px-2 py-0.5"
     } ${up ? "bg-[#e8f5ea] text-pos" : "bg-[#fdecea] text-neg"}`}>
       {up ? "+" : ""}{fmtFull(value)}
-      <span className={small ? "text-[8px] -mr-0.5" : "text-[10px] -mr-0.5"}>{up ? "\u2197" : "\u2198"}</span>
+      <span className={small ? "text-[10px] -mr-0.5" : "text-[12px] -mr-0.5"}>{up ? "\u2197" : "\u2198"}</span>
     </span>
   );
 }
@@ -293,22 +293,22 @@ function ChartTooltip({ active, payload, label }: any) {
   if (!rows.length) return null;
   return (
     <div className="bg-white rounded-[var(--rad)] p-3.5 min-w-[184px]" style={{ boxShadow: "0 0 0 0.5px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px -6px rgba(0,0,0,0.12), 0 24px 56px -16px rgba(0,0,0,0.16)" }}>
-      <div className="text-[11px] font-semibold uppercase tracking-wider text-muted mb-3">
+      <div className="text-[13px] font-semibold uppercase tracking-wider text-muted mb-3">
         {label && typeof label === "string" && label.includes("-") ? monthLabel(label) : label}
       </div>
       <div className="flex flex-col gap-2">
         {rows.map((p) => (
           <div key={p.dataKey || p.name} className="flex items-center gap-2.5">
             <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: p.color || p.fill }} />
-            <span className="text-[14px] font-medium text-primary flex-1 whitespace-nowrap">{p.name}</span>
-            <span className="text-[14px] font-semibold tabular-nums text-primary ml-6">{fmtFull(p.value)}</span>
+            <span className="text-[16px] font-medium text-primary flex-1 whitespace-nowrap">{p.name}</span>
+            <span className="text-[16px] font-semibold tabular-nums text-primary ml-6">{fmtFull(p.value)}</span>
           </div>
         ))}
         {rows.length > 1 && (
           <div className="flex items-center gap-2.5 pt-2 mt-0.5">
             <span className="w-2.5 h-2.5 shrink-0" />
-            <span className="text-[14px] font-semibold text-primary flex-1">Total</span>
-            <span className="text-[14px] font-bold tabular-nums text-primary ml-6">{fmtFull(rows.reduce((s, p) => s + (p.value || 0), 0))}</span>
+            <span className="text-[16px] font-semibold text-primary flex-1">Total</span>
+            <span className="text-[16px] font-bold tabular-nums text-primary ml-6">{fmtFull(rows.reduce((s, p) => s + (p.value || 0), 0))}</span>
           </div>
         )}
       </div>
@@ -692,7 +692,7 @@ export default function FanDashboard() {
         <header className="px-[var(--pad)] pt-[var(--pad)] pb-[var(--pad)] flex items-center justify-end gap-4 shrink-0">
           <div className="flex items-center gap-[var(--pad)] shrink-0 relative">
             {/* Sync status */}
-            <div className="flex items-center gap-2.5 h-12 px-4 rounded-full bg-white text-[14px] font-medium text-primary">
+            <div className="flex items-center gap-2.5 h-12 px-4 rounded-full bg-white text-[16px] font-medium text-primary">
               <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${sheetsLoading ? "bg-[#ff9f0a]" : "bg-[#34c759] animate-pulse"}`} />
               <span className="leading-none">{syncLabel}</span>
             </div>
@@ -706,7 +706,7 @@ export default function FanDashboard() {
                 onClick={() => setSwitcherOpen((o) => !o)}
                 className="relative z-50 flex items-center gap-2.5 h-12 pl-1.5 pr-3 rounded-full bg-white hover:bg-[#ebebed] transition"
               >
-                <div className="w-9 h-9 rounded-full overflow-hidden shrink-0 bg-[#f0f0f3] flex items-center justify-center font-bold text-primary text-sm">
+                <div className="w-9 h-9 rounded-full overflow-hidden shrink-0 bg-[#f0f0f3] flex items-center justify-center font-bold text-primary text-[16px]">
                   <img
                     src={iconFor(artist.slug)}
                     alt={artist.name}
@@ -719,7 +719,7 @@ export default function FanDashboard() {
                   />
                 </div>
                 <div className="text-left leading-tight min-w-0">
-                  <div className="text-[14px] font-medium text-primary truncate max-w-[150px]">{artist.name}</div>
+                  <div className="text-[16px] font-medium text-primary truncate max-w-[150px]">{artist.name}</div>
                 </div>
                 <ChevronDown size={16} className={`text-muted transition-transform ${switcherOpen ? "rotate-180" : ""}`} />
               </button>
@@ -734,7 +734,7 @@ export default function FanDashboard() {
                         onClick={() => { setSelectedSlug(a.slug); setSwitcherOpen(false); }}
                         className={`w-full flex items-center gap-2.5 py-1.5 px-2 rounded-xl transition text-left ${active ? "bg-[#f5f5f7]" : "hover:bg-[#f5f5f7]"}`}
                       >
-                        <div className="w-9 h-9 rounded-full overflow-hidden shrink-0 bg-[#f0f0f3] flex items-center justify-center font-bold text-xs text-primary">
+                        <div className="w-9 h-9 rounded-full overflow-hidden shrink-0 bg-[#f0f0f3] flex items-center justify-center font-bold text-[14px] text-primary">
                           <img
                             src={iconFor(a.slug)}
                             alt={a.name}
@@ -746,7 +746,7 @@ export default function FanDashboard() {
                             }}
                           />
                         </div>
-                        <span className="flex-1 min-w-0 text-[14px] font-medium text-primary truncate">{a.name}</span>
+                        <span className="flex-1 min-w-0 text-[16px] font-medium text-primary truncate">{a.name}</span>
                       </button>
                     );
                   })}
@@ -769,15 +769,15 @@ export default function FanDashboard() {
             <div className={`col-span-12 lg:col-span-6 ${CARD} p-[var(--pad)] min-h-0 overflow-y-auto overflow-x-hidden`}>
               <div className="flex items-center gap-2.5">
                 <PieIcon size={20} className="text-primary shrink-0" strokeWidth={2.25} />
-                <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">Fan Network Reach</h2>
+                <h2 className="text-[16px] font-semibold text-primary whitespace-nowrap leading-none">Fan Network Reach</h2>
               </div>
               <div
                 className="mt-[var(--vlg)] mb-[var(--vlg)] grid gap-x-[var(--cgap)] gap-y-[var(--vsm)]"
                 style={{ gridTemplateColumns: "max-content max-content", justifyContent: "start" }}
               >
-                <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none">Total Reach</div>
-                <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none">Last 28 Days</div>
-                <div className="flex items-center h-[14px] text-[14px] font-semibold tabular-nums text-primary leading-none">{fmtFull(artist.totals.value)}</div>
+                <div className="text-[13px] font-semibold uppercase tracking-wider text-muted leading-none">Total Reach</div>
+                <div className="text-[13px] font-semibold uppercase tracking-wider text-muted leading-none">Last 28 Days</div>
+                <div className="flex items-center h-[14px] text-[16px] font-semibold tabular-nums text-primary leading-none">{fmtFull(artist.totals.value)}</div>
                 <div className="flex items-center h-[14px]"><DeltaPill value={artist.totals.delta} /></div>
               </div>
 
@@ -787,7 +787,7 @@ export default function FanDashboard() {
                 style={{ gridTemplateColumns: "max-content max-content max-content minmax(0,1fr) max-content" }}
               >
                 <div
-                  className="grid items-center gap-x-[var(--cgap)] pb-0 leading-none text-[11px] font-semibold uppercase tracking-wider text-muted"
+                  className="grid items-center gap-x-[var(--cgap)] pb-0 leading-none text-[13px] font-semibold uppercase tracking-wider text-muted"
                   style={{ gridColumn: "1 / -1", gridTemplateColumns: "subgrid" }}
                 >
                   <span>Platform</span>
@@ -808,14 +808,14 @@ export default function FanDashboard() {
                     >
                       <div className="flex items-center gap-2.5 min-w-0">
                         <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: d.fill }} />
-                        <span className="text-[14px] font-medium text-primary whitespace-nowrap leading-none">{d.name}</span>
+                        <span className="text-[16px] font-medium text-primary whitespace-nowrap leading-none">{d.name}</span>
                       </div>
-                      <span className="text-right text-[14px] font-semibold tabular-nums text-primary leading-none">{fmtFull(d.value)}</span>
+                      <span className="text-right text-[16px] font-semibold tabular-nums text-primary leading-none">{fmtFull(d.value)}</span>
                       <div className="flex justify-end items-center h-[14px]">{pd ? <DeltaPill value={pd.delta} /> : null}</div>
                       <div className="h-2.5 rounded-full bg-[#f5f5f7] overflow-hidden">
                         <div className="h-full rounded-full" style={{ width: `${pctNum}%`, background: d.fill }} />
                       </div>
-                      <span className="text-right text-[14px] font-semibold tabular-nums text-primary leading-none">{pct}%</span>
+                      <span className="text-right text-[16px] font-semibold tabular-nums text-primary leading-none">{pct}%</span>
                     </div>
                   );
                 })}
@@ -829,7 +829,7 @@ export default function FanDashboard() {
               <div className="px-[var(--pad)] pt-[var(--pad)] pb-[var(--vlg)] shrink-0 relative">
                 <div className="flex items-center gap-2.5">
                   <LayoutList size={20} className="text-primary shrink-0" strokeWidth={2.25} />
-                  <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">Fan Page Tracker</h2>
+                  <h2 className="text-[16px] font-semibold text-primary whitespace-nowrap leading-none">Fan Page Tracker</h2>
                 </div>
                 <div className="absolute top-[var(--pad)] right-[var(--pad)] flex items-center gap-[var(--vsm)]">
                   <button
@@ -850,7 +850,7 @@ export default function FanDashboard() {
                       className="flex items-center gap-2 h-[34px] pl-3 pr-2.5 rounded-full bg-[#f5f5f7] hover:bg-[#ebebed] transition"
                     >
                       <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: PLATFORMS[fpEffectivePlatform]?.color ?? "#8e8e93" }} />
-                      <span className="text-[14px] font-medium text-primary whitespace-nowrap leading-none">{fpEffectivePlatform}</span>
+                      <span className="text-[16px] font-medium text-primary whitespace-nowrap leading-none">{fpEffectivePlatform}</span>
                       <ChevronDown size={14} className="text-muted" />
                     </button>
                     {pagesDropdownOpen && (
@@ -863,7 +863,7 @@ export default function FanDashboard() {
                               setPagesDropdownOpen(false);
                               if (pagesListRef.current) pagesListRef.current.scrollTop = 0;
                             }}
-                            className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-[14px] font-medium transition ${plat === fpEffectivePlatform ? "text-primary bg-[#f5f5f7]" : "text-muted hover:bg-[#f5f5f7]"}`}
+                            className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-[16px] font-medium transition ${plat === fpEffectivePlatform ? "text-primary bg-[#f5f5f7]" : "text-muted hover:bg-[#f5f5f7]"}`}
                           >
                             <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: PLATFORMS[plat]?.color ?? "#8e8e93" }} />
                             <span className="leading-none">{plat}</span>
@@ -882,7 +882,7 @@ export default function FanDashboard() {
                 onScroll={updateScrollbar}
               >
                 {filteredPages.length === 0 ? (
-                  <div className="h-full flex items-center justify-center text-center text-[13px] text-muted">No {fpEffectivePlatform} pages tracked yet</div>
+                  <div className="h-full flex items-center justify-center text-center text-[15px] text-muted">No {fpEffectivePlatform} pages tracked yet</div>
                 ) : (() => {
                   const unit = MEMBER_PLATFORMS.has(fpEffectivePlatform) ? "Members" : "Followers";
                   const entityCount = `${filteredPages.length} ${filteredPages.length === 1 ? fpEntitySingular : fpEntityPlural}`;
@@ -902,7 +902,7 @@ export default function FanDashboard() {
                             <button
                               key={col}
                               onClick={() => setPagesSort((s) => s.key === col ? { key: col, dir: s.dir === "asc" ? "desc" : "asc" } : { key: col, dir: col === "name" ? "asc" : "desc" })}
-                              className={`flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider whitespace-nowrap transition-colors ${active ? "text-primary" : "text-muted hover:text-primary"} ${ci > 0 ? "justify-end" : ""}`}
+                              className={`flex items-center gap-1 text-[13px] font-semibold uppercase tracking-wider whitespace-nowrap transition-colors ${active ? "text-primary" : "text-muted hover:text-primary"} ${ci > 0 ? "justify-end" : ""}`}
                             >
                               {ci > 0 && arrowSlot}
                               <span>{labels[ci]}</span>
@@ -921,11 +921,11 @@ export default function FanDashboard() {
                             style={{ gridColumn: "1 / -1", gridTemplateColumns: "subgrid" }}
                           >
                             <div className="flex items-center gap-2.5 min-w-0">
-                              <span className="text-[14px] font-medium text-primary truncate leading-none pb-[4px] -mb-[4px]">{p.name}</span>
+                              <span className="text-[16px] font-medium text-primary truncate leading-none pb-[4px] -mb-[4px]">{p.name}</span>
                               {p.managed && <Star size={12} className="shrink-0 text-[#FFCC00] fill-[#FFCC00]" />}
                             </div>
-                            <span className="text-right text-[14px] font-semibold tabular-nums text-primary leading-none">{fmtFull(p.followers)}</span>
-                            <span className="text-right text-[14px] font-semibold text-primary whitespace-nowrap leading-none">{p.latest ? fmtPageDate(p.latest) : "\u2014"}</span>
+                            <span className="text-right text-[16px] font-semibold tabular-nums text-primary leading-none">{fmtFull(p.followers)}</span>
+                            <span className="text-right text-[16px] font-semibold text-primary whitespace-nowrap leading-none">{p.latest ? fmtPageDate(p.latest) : "\u2014"}</span>
                           </Tag>
                         );
                       })}
@@ -964,20 +964,20 @@ export default function FanDashboard() {
                   <div key={grp.title} className={`${CARD} p-[var(--pad)] flex flex-col overflow-hidden`}>
                     <div className="flex items-center gap-2.5 shrink-0 mb-[var(--vlg)]">
                       <Icon size={20} className="text-primary shrink-0" strokeWidth={2.25} />
-                      <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">{grp.title}</h2>
+                      <h2 className="text-[16px] font-semibold text-primary whitespace-nowrap leading-none">{grp.title}</h2>
                     </div>
                     {grp.list.length > 0 && (
-                      <div className="flex items-center justify-between shrink-0 pb-[var(--vsm)] text-[11px] font-semibold uppercase tracking-wider text-muted leading-none">
+                      <div className="flex items-center justify-between shrink-0 pb-[var(--vsm)] text-[13px] font-semibold uppercase tracking-wider text-muted leading-none">
                         <span>Artist</span>
                         <span>Last 28 Days</span>
                       </div>
                     )}
                     <div className="flex flex-col gap-[var(--pad)]">
                       {grp.list.length === 0 ? (
-                        <div className="text-center text-[13px] text-muted py-4">No {grp.kind} in range</div>
+                        <div className="text-center text-[15px] text-muted py-4">No {grp.kind} in range</div>
                       ) : grp.list.map((a) => (
                           <div key={a.slug} className="w-full flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-full overflow-hidden shrink-0 bg-[#f0f0f3] flex items-center justify-center font-bold text-xs text-primary">
+                            <div className="w-9 h-9 rounded-full overflow-hidden shrink-0 bg-[#f0f0f3] flex items-center justify-center font-bold text-[14px] text-primary">
                               <img
                                 src={iconFor(a.slug)}
                                 alt={a.name}
@@ -989,7 +989,7 @@ export default function FanDashboard() {
                                 }}
                               />
                             </div>
-                            <span className="flex-1 text-[14px] font-medium text-primary truncate">{a.name}</span>
+                            <span className="flex-1 text-[16px] font-medium text-primary truncate">{a.name}</span>
                             <DeltaPill value={a.totals.delta} />
                           </div>
                         ))}
@@ -1007,7 +1007,7 @@ export default function FanDashboard() {
               <div className="px-[var(--pad)] pt-[var(--pad)] pb-[var(--vlg)] shrink-0 relative">
                 <div className="flex items-center gap-2.5">
                   <TrendingUp size={20} className="text-primary shrink-0" strokeWidth={2.25} />
-                  <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">Fan Network Growth</h2>
+                  <h2 className="text-[16px] font-semibold text-primary whitespace-nowrap leading-none">Fan Network Growth</h2>
                 </div>
                 <div className="absolute top-[var(--pad)] right-[var(--pad)] flex items-center gap-[var(--vsm)]">
                   <div className="flex items-center gap-1 bg-[#f5f5f7] p-1 rounded-full shrink-0">
@@ -1021,7 +1021,7 @@ export default function FanDashboard() {
                       <button
                         key={opt.key}
                         onClick={() => setYearRange(opt.key)}
-                        className={`text-[12px] font-semibold px-3 py-1 rounded-full transition-all ${
+                        className={`text-[14px] font-semibold px-3 py-1 rounded-full transition-all ${
                           yearRange === opt.key
                             ? "bg-white text-primary"
                             : "text-muted hover:text-primary"
@@ -1052,7 +1052,7 @@ export default function FanDashboard() {
                             <button
                               key={p}
                               onClick={() => togglePlat(p)}
-                              className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-[14px] font-medium transition ${off ? "text-muted hover:bg-[#f5f5f7]" : "text-primary hover:bg-[#f5f5f7]"}`}
+                              className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-[16px] font-medium transition ${off ? "text-muted hover:bg-[#f5f5f7]" : "text-primary hover:bg-[#f5f5f7]"}`}
                               title={off ? `Show ${p}` : `Hide ${p}`}
                             >
                               <span className="w-2.5 h-2.5 rounded-full shrink-0 transition-colors" style={{ background: off ? "#d2d2d7" : PLATFORMS[p].color }} />
@@ -1068,28 +1068,28 @@ export default function FanDashboard() {
                   {rangeStats && (
                     <div className="flex items-start flex-wrap gap-x-[var(--cgap)] gap-y-3 min-w-0">
                       <div>
-                        <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none mb-[var(--vsm)]">{monthLabel(history[0].date)}</div>
-                        <div className="text-[14px] font-semibold tabular-nums text-primary leading-none">{fmtFull(rangeStats.startTotal)}</div>
+                        <div className="text-[13px] font-semibold uppercase tracking-wider text-muted leading-none mb-[var(--vsm)]">{monthLabel(history[0].date)}</div>
+                        <div className="text-[16px] font-semibold tabular-nums text-primary leading-none">{fmtFull(rangeStats.startTotal)}</div>
                       </div>
                       <div className="flex items-center self-stretch -mx-[22px]" aria-hidden="true">
                         <ArrowRight size={16} strokeWidth={2.75} className="text-primary shrink-0" />
                       </div>
                       <div>
-                        <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none mb-[var(--vsm)]">{monthLabel(history[history.length - 1].date)}</div>
-                        <div className="text-[14px] font-semibold tabular-nums text-primary leading-none">{fmtFull(rangeStats.endTotal)}</div>
+                        <div className="text-[13px] font-semibold uppercase tracking-wider text-muted leading-none mb-[var(--vsm)]">{monthLabel(history[history.length - 1].date)}</div>
+                        <div className="text-[16px] font-semibold tabular-nums text-primary leading-none">{fmtFull(rangeStats.endTotal)}</div>
                       </div>
                       <div>
-                        <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none mb-[var(--vsm)]">Net Growth</div>
+                        <div className="text-[13px] font-semibold uppercase tracking-wider text-muted leading-none mb-[var(--vsm)]">Net Growth</div>
                         <div className="flex items-center gap-[var(--vsm)] h-[14px]">
                           <DeltaPill value={rangeStats.net} />
-                          <span className="text-[14px] font-semibold tabular-nums text-primary leading-none">{rangeStats.pct >= 0 ? "+" : ""}{(() => { const p = rangeStats.pct; const abs = Math.abs(p); if (abs >= 100) return Math.round(p).toString(); if (abs >= 1) return p.toFixed(1).replace(/\.0$/, ""); if (p === 0) return "0"; for (let d = 1; d <= 6; d++) { const s = abs.toFixed(d); if (/[1-9]/.test(s.split(".")[1] ?? "")) return p.toFixed(d); } return p.toFixed(2); })()}%</span>
+                          <span className="text-[16px] font-semibold tabular-nums text-primary leading-none">{rangeStats.pct >= 0 ? "+" : ""}{(() => { const p = rangeStats.pct; const abs = Math.abs(p); if (abs >= 100) return Math.round(p).toString(); if (abs >= 1) return p.toFixed(1).replace(/\.0$/, ""); if (p === 0) return "0"; for (let d = 1; d <= 6; d++) { const s = abs.toFixed(d); if (/[1-9]/.test(s.split(".")[1] ?? "")) return p.toFixed(d); } return p.toFixed(2); })()}%</span>
                         </div>
                       </div>
                       {rangeStats.bestGain > 0 && (
                         <div>
-                          <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none mb-[var(--vsm)]">Best Month</div>
+                          <div className="text-[13px] font-semibold uppercase tracking-wider text-muted leading-none mb-[var(--vsm)]">Best Month</div>
                           <div className="flex items-center gap-[var(--vsm)] h-[14px]">
-                            <span className="text-[14px] font-semibold tabular-nums text-primary whitespace-nowrap leading-none">{monthLabel(rangeStats.bestMonth)}</span>
+                            <span className="text-[16px] font-semibold tabular-nums text-primary whitespace-nowrap leading-none">{monthLabel(rangeStats.bestMonth)}</span>
                             <DeltaPill value={rangeStats.bestGain} />
                           </div>
                         </div>
@@ -1102,7 +1102,7 @@ export default function FanDashboard() {
               {/* Chart area — stacked gradient area */}
               <div className="fng-axis flex-1 min-h-0 pl-[var(--pad)] pr-[var(--pad)] pb-[var(--pad)]">
                 {history.length === 0 ? (
-                  <div className="h-full flex items-center justify-center text-muted text-sm">No data in the selected range</div>
+                  <div className="h-full flex items-center justify-center text-muted text-[16px]">No data in the selected range</div>
                 ) : (
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={chartHistory} margin={{ top: 8, right: 32, left: 0, bottom: 0 }}>
@@ -1116,7 +1116,7 @@ export default function FanDashboard() {
                         tickMargin={19}
                         height={36}
                         padding={{ left: 0, right: 0 }}
-                        tick={{ fill: "#86868b", fontSize: 11, fontWeight: 600 }}
+                        tick={{ fill: "#86868b", fontSize: 13, fontWeight: 600 }}
                       />
                       <YAxis
                         tickFormatter={fmt}
@@ -1126,7 +1126,7 @@ export default function FanDashboard() {
                         tickMargin={16}
                         ticks={yScale.ticks}
                         domain={[0, yScale.max]}
-                        tick={{ fill: "#86868b", fontSize: 11, fontWeight: 600 }}
+                        tick={{ fill: "#86868b", fontSize: 13, fontWeight: 600 }}
                       />
                       <Tooltip
                         content={<ChartTooltip />}
@@ -1160,17 +1160,17 @@ export default function FanDashboard() {
             <div className={`col-span-12 lg:col-span-4 ${CARD} p-[var(--pad)] flex flex-col overflow-hidden min-h-[480px]`}>
               <div className="flex items-center gap-2.5 shrink-0 mb-[var(--vlg)]">
                 <Gauge size={20} className="text-primary shrink-0" strokeWidth={2.25} />
-                <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">Growth Velocity</h2>
+                <h2 className="text-[16px] font-semibold text-primary whitespace-nowrap leading-none">Growth Velocity</h2>
               </div>
               {velocityData.length > 0 && (
                 <div
                   className="shrink-0 mb-[var(--vlg)] grid gap-x-[var(--cgap)] gap-y-[var(--vsm)]"
                   style={{ gridTemplateColumns: "max-content max-content", justifyContent: "start" }}
                 >
-                  <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none">Latest Month</div>
-                  <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none">Positive Months</div>
+                  <div className="text-[13px] font-semibold uppercase tracking-wider text-muted leading-none">Latest Month</div>
+                  <div className="text-[13px] font-semibold uppercase tracking-wider text-muted leading-none">Positive Months</div>
                   <div className="flex items-center h-[14px]"><DeltaPill value={velocityData[velocityData.length - 1].net} /></div>
-                  <div className="flex items-center h-[14px] text-[14px] font-semibold tabular-nums text-primary leading-none">
+                  <div className="flex items-center h-[14px] text-[16px] font-semibold tabular-nums text-primary leading-none">
                     {velocityData.filter((d) => d.net > 0).length}<span>/{velocityData.length}</span>
                   </div>
                 </div>
@@ -1186,21 +1186,21 @@ export default function FanDashboard() {
                       tickMargin={19}
                       height={36}
                       padding={{ left: 22, right: 8 }}
-                      tick={{ fill: "#86868b", fontSize: 11, fontWeight: 600 }}
+                      tick={{ fill: "#86868b", fontSize: 13, fontWeight: 600 }}
                     />
                     <YAxis
                       tickFormatter={fmt} axisLine={false} tickLine={false} width={55} tickMargin={16}
-                      tick={{ fill: "#86868b", fontSize: 11, fontWeight: 600 }}
+                      tick={{ fill: "#86868b", fontSize: 13, fontWeight: 600 }}
                     />
                     <Tooltip
                       content={({ active, payload, label }) =>
                         active && payload?.length ? (
                           <div className="bg-white rounded-[var(--rad)] p-3.5" style={{ boxShadow: "0 0 0 0.5px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px -6px rgba(0,0,0,0.12), 0 24px 56px -16px rgba(0,0,0,0.16)" }}>
-                            <div className="text-[11px] font-semibold uppercase tracking-wider text-muted mb-2">{monthLabel(label)}</div>
+                            <div className="text-[13px] font-semibold uppercase tracking-wider text-muted mb-2">{monthLabel(label)}</div>
                             <div className="flex items-center gap-2.5">
                               <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: payload[0].value >= 0 ? "#248a3d" : "#d70015" }} />
-                              <span className="text-[14px] font-medium text-primary flex-1">Net change</span>
-                              <span className="text-[14px] font-semibold tabular-nums text-primary ml-6">{payload[0].value >= 0 ? "+" : ""}{fmtFull(payload[0].value)}</span>
+                              <span className="text-[16px] font-medium text-primary flex-1">Net change</span>
+                              <span className="text-[16px] font-semibold tabular-nums text-primary ml-6">{payload[0].value >= 0 ? "+" : ""}{fmtFull(payload[0].value)}</span>
                             </div>
                           </div>
                         ) : null
