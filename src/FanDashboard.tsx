@@ -527,7 +527,12 @@ export default function FanDashboard() {
     const { key, dir } = pagesSort;
     const mul = dir === "asc" ? 1 : -1;
     return pages.sort((a, b) => {
-      if (key === "name") return mul * a.name.localeCompare(b.name);
+      if (key === "name") {
+        const cls = (s: string) => /^[a-zA-Z]/i.test(s) ? 0 : 1;
+        const ca = cls(a.name), cb = cls(b.name);
+        if (ca !== cb) return mul * (ca - cb);
+        return mul * a.name.localeCompare(b.name);
+      }
       if (key === "followers") return mul * (a.followers - b.followers);
       if (key === "latest") {
         const ta = a.latest ? new Date(a.latest).getTime() : 0;
