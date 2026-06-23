@@ -782,7 +782,7 @@ export default function FanDashboard() {
                 style={{ gridTemplateColumns: "max-content max-content", justifyContent: "start" }}
               >
                 <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none">Total Reach</div>
-                <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none">Last 28 Days</div>
+                <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none">Last Month</div>
                 <div className="flex items-center h-[14px] text-[14px] font-semibold tabular-nums text-primary leading-none">{fmtFull(artist.totals.value)}</div>
                 <div className="flex items-center h-[14px]"><DeltaPill value={artist.totals.delta} /></div>
               </div>
@@ -798,7 +798,7 @@ export default function FanDashboard() {
                 >
                   <span>Platform</span>
                   <span className="text-right">Reach</span>
-                  <span className="text-right">Last 28 days</span>
+                  <span className="text-right">Last Month</span>
                   <span>Audience Share</span>
                   <span className="text-right">%</span>
                 </div>
@@ -975,7 +975,7 @@ export default function FanDashboard() {
                     {grp.list.length > 0 && (
                       <div className="flex items-center justify-between shrink-0 pb-[var(--vsm)] text-[11px] font-semibold uppercase tracking-wider text-muted leading-none">
                         <span>Artist</span>
-                        <span>Last 28 Days</span>
+                        <span>Last Month</span>
                       </div>
                     )}
                     <div className="flex flex-col gap-[var(--pad)]">
