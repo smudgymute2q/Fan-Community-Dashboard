@@ -528,7 +528,8 @@ export default function FanDashboard() {
     const mul = dir === "asc" ? 1 : -1;
     return pages.sort((a, b) => {
       if (key === "name") {
-        const cls = (s: string) => /^[a-zA-Z]/i.test(s) ? 0 : 1;
+        const firstAlnum = (s: string) => s.match(/[a-zA-Z0-9]/)?.[0] ?? "";
+        const cls = (s: string) => /^[a-zA-Z]/i.test(firstAlnum(s)) ? 0 : 1;
         const ca = cls(a.name), cb = cls(b.name);
         if (ca !== cb) return mul * (ca - cb);
         return mul * a.name.localeCompare(b.name);
