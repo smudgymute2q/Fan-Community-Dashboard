@@ -805,7 +805,7 @@ export default function FanDashboard() {
                 {platformShareData(artist).map((d, i, arr) => {
                   const pd = artist.platforms[d.name];
                   const pctNum = artist.totals.value > 0 ? (d.value / artist.totals.value) * 100 : 0;
-                  const pct = pctNum.toFixed(1);
+                  const pct = (() => { const abs = Math.abs(pctNum); if (pctNum === 0) return "0"; for (let d = 1; d <= 6; d++) { const s = abs.toFixed(d); if (/[1-9]/.test(s.split(".")[1] ?? "")) return pctNum.toFixed(d); } return pctNum.toFixed(1); })();
                   return (
                     <div
                       key={d.name}
