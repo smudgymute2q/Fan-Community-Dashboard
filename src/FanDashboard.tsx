@@ -221,17 +221,17 @@ function parsePagesTab(rows: string[][]) {
 
 // ---- Artist roster (names/slugs only — all data comes from Sheets) ----
 const STATIC_ARTISTS = [
-  { slug: "opium", name: "Opium" },
-  { slug: "playboi-carti", name: "Playboi Carti" },
-  { slug: "ken-carson", name: "Ken Carson" },
-  { slug: "destroy-lonely", name: "Destroy Lonely" },
-  { slug: "hxg", name: "HXG" },
-  { slug: "pierre-bourne", name: "Pi'erre Bourne" },
-  { slug: "rema", name: "Rema" },
-  { slug: "untiljapan", name: "untiljapan" },
-  { slug: "jim-legxacy", name: "Jim Legxacy" },
   { slug: "apollored1", name: "ApolloRed1" },
   { slug: "destin-laurel", name: "Destin Laurel" },
+  { slug: "destroy-lonely", name: "Destroy Lonely" },
+  { slug: "hxg", name: "HXG" },
+  { slug: "jim-legxacy", name: "Jim Legxacy" },
+  { slug: "ken-carson", name: "Ken Carson" },
+  { slug: "opium", name: "Opium" },
+  { slug: "pierre-bourne", name: "Pi'erre Bourne" },
+  { slug: "playboi-carti", name: "Playboi Carti" },
+  { slug: "rema", name: "Rema" },
+  { slug: "untiljapan", name: "untiljapan" },
   { slug: "2hollis", name: "2hollis" },
 ];
 
