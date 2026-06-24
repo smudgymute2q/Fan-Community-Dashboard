@@ -853,7 +853,7 @@ export default function FanDashboard() {
                     )}
                     <button
                       onClick={() => { setSwitcherOpen(false); setPlatDropdownOpen(false); setPagesDropdownOpen((o) => !o); }}
-                      className="flex items-center gap-2 h-[34px] pl-3 pr-2.5 rounded-full bg-[#f5f5f7] hover:bg-[#ebebed] transition cursor-pointer"
+                      className="relative z-20 flex items-center gap-2 h-[34px] pl-3 pr-2.5 rounded-full bg-[#f5f5f7] hover:bg-[#ebebed] transition cursor-pointer"
                     >
                       <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: PLATFORMS[fpEffectivePlatform]?.color ?? "#8e8e93" }} />
                       <span className="text-[14px] font-medium text-primary whitespace-nowrap leading-none">{fpEffectivePlatform}</span>
