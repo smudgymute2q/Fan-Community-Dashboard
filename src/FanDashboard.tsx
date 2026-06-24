@@ -641,7 +641,7 @@ export default function FanDashboard() {
 
   if (sheetsLoading || !hasData) {
     return (
-      <div className="flex h-screen overflow-hidden bg-[#f5f5f7]" style={{ fontFamily: "'Satoshi', ui-sans-serif, system-ui, -apple-system, sans-serif" }}>
+      <div className="flex h-screen overflow-hidden bg-[#f5f5f7]" style={{ fontFamily: "'SF Pro Text', ui-sans-serif, system-ui, -apple-system, sans-serif" }}>
         <main className="flex-1 min-w-0 flex flex-col overflow-hidden">
           <header className="px-[var(--pad)] pt-[var(--pad)] pb-[var(--pad)] flex items-center justify-end gap-4 shrink-0">
             <div className="flex items-center gap-[var(--pad)]">
@@ -679,7 +679,7 @@ export default function FanDashboard() {
   return (
     <div
       className="flex h-screen overflow-hidden text-primary"
-      style={{ fontFamily: "'Satoshi', ui-sans-serif, system-ui, -apple-system, sans-serif" }}
+      style={{ fontFamily: "'SF Pro Text', ui-sans-serif, system-ui, -apple-system, sans-serif" }}
     >
       <style>{`
         .recharts-cartesian-axis-tick text { fill: #86868b; font-variant-numeric: tabular-nums; }
