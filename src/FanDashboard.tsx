@@ -709,7 +709,7 @@ export default function FanDashboard() {
                 <div className="fixed inset-0 z-40 bg-black/10" onClick={() => setSwitcherOpen(false)} />
               )}
               <button
-                onClick={() => setSwitcherOpen((o) => !o)}
+                onClick={() => { setPagesDropdownOpen(false); setPlatDropdownOpen(false); setSwitcherOpen((o) => !o); }}
                 className="relative z-50 flex items-center gap-2.5 h-12 pl-1.5 pr-3 rounded-full bg-white hover:bg-[#ebebed] transition"
               >
                 <div className="w-9 h-9 rounded-full overflow-hidden shrink-0 bg-[#f0f0f3] flex items-center justify-center font-bold text-primary text-sm">
@@ -852,7 +852,7 @@ export default function FanDashboard() {
                       <div className="fixed inset-0 z-10" onClick={() => setPagesDropdownOpen(false)} />
                     )}
                     <button
-                      onClick={() => setPagesDropdownOpen((o) => !o)}
+                      onClick={() => { setSwitcherOpen(false); setPlatDropdownOpen(false); setPagesDropdownOpen((o) => !o); }}
                       className="flex items-center gap-2 h-[34px] pl-3 pr-2.5 rounded-full bg-[#f5f5f7] hover:bg-[#ebebed] transition"
                     >
                       <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: PLATFORMS[fpEffectivePlatform]?.color ?? "#8e8e93" }} />
@@ -1042,7 +1042,7 @@ export default function FanDashboard() {
                       <div className="fixed inset-0 z-10" onClick={() => setPlatDropdownOpen(false)} />
                     )}
                     <button
-                      onClick={() => setPlatDropdownOpen((o) => !o)}
+                      onClick={() => { setSwitcherOpen(false); setPagesDropdownOpen(false); setPlatDropdownOpen((o) => !o); }}
                       className={`relative z-20 w-[34px] h-[34px] rounded-full flex items-center justify-center transition ${
                         platDropdownOpen ? "bg-[#ebebed]" : "bg-[#f5f5f7] hover:bg-[#ebebed]"
                       }`}
