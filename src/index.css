@@ -24,12 +24,6 @@
   font-style: normal;
   src: url("/fonts/SF-Pro-Text-Bold.otf") format("opentype");
 }
-@font-face {
-  font-family: "SF Pro Display";
-  font-weight: 600;
-  font-style: normal;
-  src: url("/fonts/SF-Pro-Display-Semibold.otf") format("opentype");
-}
 
 @theme {
   /*
