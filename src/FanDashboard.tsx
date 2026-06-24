@@ -320,7 +320,7 @@ function ChartTooltip({ active, payload, label }: any) {
 // ---- Main dashboard ----
 
 export default function FanDashboard() {
-  const [selectedSlug, setSelectedSlug] = useState("opium");
+  const [selectedSlug, setSelectedSlug] = useState(STATIC_ARTISTS[0].slug);
   const [hiddenPlats, setHiddenPlats] = useState(new Set());
   const [yearRange, setYearRange] = useState("all");
   const [pagesPlatform, setPagesPlatform] = useState("Discord");
