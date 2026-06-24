@@ -710,7 +710,7 @@ export default function FanDashboard() {
               )}
               <button
                 onClick={() => { setPagesDropdownOpen(false); setPlatDropdownOpen(false); setSwitcherOpen((o) => !o); }}
-                className={`relative z-50 flex items-center gap-2.5 h-12 pl-1.5 pr-3 rounded-full transition ${switcherOpen ? "bg-[#ebebed]" : "bg-white hover:bg-[#ebebed]"}`}
+                className="relative z-50 flex items-center gap-2.5 h-12 pl-1.5 pr-3 rounded-full bg-white hover:bg-[#ebebed] transition"
               >
                 <div className="w-9 h-9 rounded-full overflow-hidden shrink-0 bg-[#f0f0f3] flex items-center justify-center font-bold text-primary text-sm">
                   <img
@@ -853,7 +853,7 @@ export default function FanDashboard() {
                     )}
                     <button
                       onClick={() => { setSwitcherOpen(false); setPlatDropdownOpen(false); setPagesDropdownOpen((o) => !o); }}
-                      className={`flex items-center gap-2 h-[34px] pl-3 pr-2.5 rounded-full transition ${pagesDropdownOpen ? "bg-[#ebebed]" : "bg-[#f5f5f7] hover:bg-[#ebebed]"}`}
+                      className="flex items-center gap-2 h-[34px] pl-3 pr-2.5 rounded-full bg-[#f5f5f7] hover:bg-[#ebebed] transition"
                     >
                       <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: PLATFORMS[fpEffectivePlatform]?.color ?? "#8e8e93" }} />
                       <span className="text-[14px] font-medium text-primary whitespace-nowrap leading-none">{fpEffectivePlatform}</span>
@@ -1044,7 +1044,7 @@ export default function FanDashboard() {
                     <button
                       onClick={() => { setSwitcherOpen(false); setPagesDropdownOpen(false); setPlatDropdownOpen((o) => !o); }}
                       className={`relative z-20 w-[34px] h-[34px] rounded-full flex items-center justify-center transition ${
-                        platDropdownOpen ? "bg-[#ebebed]" : "bg-[#f5f5f7] hover:bg-[#ebebed]"
+                        "bg-[#f5f5f7] hover:bg-[#ebebed]"
                       }`}
                       title="Filter platforms"
                     >
