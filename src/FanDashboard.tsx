@@ -710,7 +710,7 @@ export default function FanDashboard() {
               )}
               <button
                 onClick={() => { setPagesDropdownOpen(false); setPlatDropdownOpen(false); setSwitcherOpen((o) => !o); }}
-                className="relative z-50 flex items-center gap-2.5 h-12 pl-1.5 pr-3 rounded-full bg-white hover:bg-[#ebebed] transition"
+                className={`relative z-50 flex items-center gap-2.5 h-12 pl-1.5 pr-3 rounded-full transition ${switcherOpen ? "bg-[#ebebed]" : "bg-white hover:bg-[#ebebed]"}`}
               >
                 <div className="w-9 h-9 rounded-full overflow-hidden shrink-0 bg-[#f0f0f3] flex items-center justify-center font-bold text-primary text-sm">
                   <img
@@ -853,7 +853,7 @@ export default function FanDashboard() {
                     )}
                     <button
                       onClick={() => { setSwitcherOpen(false); setPlatDropdownOpen(false); setPagesDropdownOpen((o) => !o); }}
-                      className="flex items-center gap-2 h-[34px] pl-3 pr-2.5 rounded-full bg-[#f5f5f7] hover:bg-[#ebebed] transition"
+                      className={`flex items-center gap-2 h-[34px] pl-3 pr-2.5 rounded-full transition ${pagesDropdownOpen ? "bg-[#ebebed]" : "bg-[#f5f5f7] hover:bg-[#ebebed]"}`}
                     >
                       <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: PLATFORMS[fpEffectivePlatform]?.color ?? "#8e8e93" }} />
                       <span className="text-[14px] font-medium text-primary whitespace-nowrap leading-none">{fpEffectivePlatform}</span>
@@ -869,7 +869,7 @@ export default function FanDashboard() {
                               setPagesDropdownOpen(false);
                               if (pagesListRef.current) pagesListRef.current.scrollTop = 0;
                             }}
-                            className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-[14px] font-medium transition ${plat === fpEffectivePlatform ? "text-primary bg-[#f5f5f7]" : "text-muted hover:bg-[#f5f5f7]"}`}
+                            className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-[14px] font-medium transition cursor-pointer ${plat === fpEffectivePlatform ? "text-primary bg-[#f5f5f7] hover:bg-[#ebebed]" : "text-muted hover:bg-[#f5f5f7]"}`}
                           >
                             <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: PLATFORMS[plat]?.color ?? "#8e8e93" }} />
                             <span className="leading-none">{plat}</span>
