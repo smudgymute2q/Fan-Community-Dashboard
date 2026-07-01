@@ -172,6 +172,14 @@ function parseDateToYearMonth(raw: string): string | null {
   return null;
 }
 
+function subtractMonths(yearMonth: string, n: number): string {
+  const [y, m] = yearMonth.split("-").map(Number);
+  const total = y * 12 + (m - 1) - n;
+  const cy = Math.floor(total / 12);
+  const cm = (total % 12) + 1;
+  return `${cy}-${String(cm).padStart(2, "0")}`;
+}
+
 const SKIP_PLATFORMS = new Set(["Total", "total", "TOTAL", "Grand Total"]);
 
 function parseNetworkTab(rows: string[][]) {
@@ -456,12 +464,12 @@ export default function FanDashboard() {
 
   const history = useMemo(() => {
     if (yearRange === "all") return fullHistory;
-    const latestDate = fullHistory.length > 0 ? new Date(fullHistory[fullHistory.length - 1].date + "-01") : new Date();
-    const latestYear = latestDate.getFullYear();
+    const latest = fullHistory.length > 0 ? fullHistory[fullHistory.length - 1].date : "";
+    const latestYear = latest.slice(0, 4);
     if (yearRange === "ytd") return fullHistory.filter((r) => r.date >= `${latestYear}-01`);
-    if (yearRange === "12m") { const c = new Date(latestDate); c.setMonth(c.getMonth() - 12); return fullHistory.filter((r) => new Date(r.date + "-01") >= c); }
-    if (yearRange === "6m") { const c = new Date(latestDate); c.setMonth(c.getMonth() - 6); return fullHistory.filter((r) => new Date(r.date + "-01") >= c); }
-    if (yearRange === "3m") { const c = new Date(latestDate); c.setMonth(c.getMonth() - 3); return fullHistory.filter((r) => new Date(r.date + "-01") >= c); }
+    if (yearRange === "12m") return fullHistory.filter((r) => r.date >= subtractMonths(latest, 12));
+    if (yearRange === "6m") return fullHistory.filter((r) => r.date >= subtractMonths(latest, 6));
+    if (yearRange === "3m") return fullHistory.filter((r) => r.date >= subtractMonths(latest, 3));
     return fullHistory.filter((r) => r.date.startsWith(yearRange));
   }, [fullHistory, yearRange]);
 
