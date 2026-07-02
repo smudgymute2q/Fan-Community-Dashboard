@@ -520,9 +520,10 @@ export default function FanDashboard() {
   }, [orderedPlats, hiddenPlats, artist, history]);
 
   const fpAvailablePlatforms = useMemo(() => {
-    const set = new Set(artist.pages.map((p) => p.platform).filter(Boolean));
+    const pages = showStarredOnly ? artist.pages.filter((p) => p.managed) : artist.pages;
+    const set = new Set(pages.map((p) => p.platform).filter(Boolean));
     return PLAT_ORDER.filter((p) => set.has(p));
-  }, [artist.pages]);
+  }, [artist.pages, showStarredOnly]);
 
   const fpEffectivePlatform = fpAvailablePlatforms.includes(pagesPlatform)
     ? pagesPlatform
