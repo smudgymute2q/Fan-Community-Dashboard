@@ -325,8 +325,8 @@ function DeltaPill({ value, small = false }: { value: number | null | undefined;
     return <span className={`text-muted ${small ? "text-[10px]" : "text-xs"} font-medium`}>—</span>;
   if (value === 0)
     return (
-      <span className={`inline-flex items-center font-semibold tabular-nums rounded-full bg-[#f0f0f3] text-muted ${
-        small ? "text-[10px] px-1.5 py-0.5" : "text-xs px-2 py-0.5"
+      <span className={`inline-flex items-center leading-none font-semibold tabular-nums rounded-full bg-[#f0f0f3] text-muted ${
+        small ? "text-[10px] px-2 py-1" : "text-xs px-2.5 py-1"
       }`}>
         0
       </span>
@@ -334,7 +334,7 @@ function DeltaPill({ value, small = false }: { value: number | null | undefined;
   const up = value > 0;
   return (
     <span className={`inline-flex items-center gap-1 leading-none font-semibold tabular-nums rounded-full ${
-      small ? "text-[10px] px-1.5 py-0.5" : "text-xs px-2 py-0.5"
+      small ? "text-[10px] px-2 py-1" : "text-xs px-2.5 py-1"
     } ${up ? "bg-[#e8f5ea] text-pos" : "bg-[#fdecea] text-neg"}`}>
       {up ? "+" : ""}{fmtFull(value)}
       {up
