@@ -257,17 +257,17 @@ const axisLabelWidth = (text: string): number => {
     const ctx = _labelCanvas.getContext("2d");
     if (ctx) {
       ctx.font = "600 11px 'Satoshi', ui-sans-serif, system-ui, -apple-system, sans-serif";
-      // measureText ignores letter-spacing, so add 0.05em (~0.55px) per char.
-      return ctx.measureText(upper).width + upper.length * 0.55;
+      // measureText ignores letter-spacing, so add 0.05em (~0.6px) per char.
+      return ctx.measureText(upper).width + upper.length * 0.6;
     }
   }
-  return upper.length * 7; // SSR / no-canvas fallback
+  return upper.length * 8; // SSR / no-canvas fallback
 };
 
 // YAxis width that fits the widest formatted tick label, leaving room for the
-// 10px tickMargin plus a few px of breathing space.
+// 10px tickMargin plus a little breathing space so nothing clips.
 const axisWidthFor = (values: number[]): number =>
-  Math.ceil(Math.max(0, ...values.map((v) => axisLabelWidth(fmt(v))))) + 14;
+  Math.ceil(Math.max(0, ...values.map((v) => axisLabelWidth(fmt(v))))) + 16;
 
 // "Nice" 5-tick scale [0 .. rounded max] for a given data maximum.
 const niceTicks = (maxVal: number): number[] => {
@@ -547,17 +547,27 @@ export default function FanDashboard() {
     return { ticks, max: ticks[ticks.length - 1] };
   }, [orderedPlats, hiddenPlats, artist, history]);
 
+  // Axis-label widths are measured against the Satoshi web font. Until it
+  // loads, measureText falls back to a narrower system font and under-reserves
+  // space, so recompute once fonts are ready.
+  const [fontsReady, setFontsReady] = useState(false);
+  useEffect(() => {
+    const fonts = (document as any).fonts;
+    if (fonts?.ready) fonts.ready.then(() => setFontsReady(true));
+    else setFontsReady(true);
+  }, []);
+
   // Reserve axis space per artist: base it on the artist's full-history max
   // across all platforms so the width stays stable across range/platform
   // toggles rather than jittering with the current view.
   const growthAxisWidth = useMemo(() => {
     const maxVal = Math.max(1, ...fullHistory.map((d) => Math.max(0, ...orderedPlats.map((p) => (d[p] as number) || 0))));
     return axisWidthFor(niceTicks(maxVal));
-  }, [fullHistory, orderedPlats]);
+  }, [fullHistory, orderedPlats, fontsReady]);
   const velocityAxisWidth = useMemo(() => {
     const nets = velocityData.map((d) => d.net);
     return axisWidthFor([Math.min(0, ...nets), Math.max(0, ...nets)]);
-  }, [velocityData]);
+  }, [velocityData, fontsReady]);
 
   const fpAvailablePlatforms = useMemo(() => {
     const pages = showStarredOnly ? artist.pages.filter((p) => p.managed) : artist.pages;
