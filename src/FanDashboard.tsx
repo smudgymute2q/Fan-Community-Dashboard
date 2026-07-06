@@ -246,6 +246,28 @@ const STATIC_ARTISTS = [
 
 const fmt = (n) => { if (n === undefined || n === null) return "—"; const abs = Math.abs(n); if (abs >= 1_000_000) return (n / 1_000_000).toFixed(n % 1_000_000 === 0 ? 0 : 2) + "M"; if (abs >= 10_000) return (n / 1_000).toFixed(0) + "K"; if (abs >= 1_000) return (n / 1_000).toFixed(1).replace(/\.0$/, "") + "K"; return n.toLocaleString(); };
 const fmtFull = (n) => (n ?? 0).toLocaleString();
+
+// Estimate the rendered width (px) of a chart axis tick label, matching the
+// uppercase + 0.05em letter-spacing styling applied via `.fng-axis`.
+let _labelCanvas: HTMLCanvasElement | null = null;
+const axisLabelWidth = (text: string): number => {
+  const upper = text.toUpperCase();
+  if (typeof document !== "undefined") {
+    if (!_labelCanvas) _labelCanvas = document.createElement("canvas");
+    const ctx = _labelCanvas.getContext("2d");
+    if (ctx) {
+      ctx.font = "600 11px 'Satoshi', ui-sans-serif, system-ui, -apple-system, sans-serif";
+      // measureText ignores letter-spacing, so add 0.05em (~0.55px) per char.
+      return ctx.measureText(upper).width + upper.length * 0.55;
+    }
+  }
+  return upper.length * 7; // SSR / no-canvas fallback
+};
+
+// YAxis width that fits the widest formatted tick label, leaving room for the
+// 10px tickMargin plus a few px of breathing space.
+const axisWidthFor = (values: number[]): number =>
+  Math.ceil(Math.max(0, ...values.map((v) => axisLabelWidth(fmt(v))))) + 14;
 const fmtPageDate = (s: string) => { const [m, d, y] = s.split("/").map(Number); const mon = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][m - 1]; return y === new Date().getFullYear() ? `${mon} ${d}` : `${mon} ${d}, ${y}`; };
 const monthLabel = (ym) => { const [y, m] = ym.split("-"); return new Date(parseInt(y), parseInt(m) - 1, 1).toLocaleString("en", { month: "short", year: "numeric" }); };
 
@@ -518,6 +540,12 @@ export default function FanDashboard() {
     const step = ([1, 1.5, 2, 2.5, 3, 4, 5, 6, 7, 8, 10].find((f) => f >= norm) ?? 10) * mag;
     return { ticks: [0, step, step * 2, step * 3, step * 4], max: step * 4 };
   }, [orderedPlats, hiddenPlats, artist, history]);
+
+  const growthAxisWidth = useMemo(() => axisWidthFor(yScale.ticks), [yScale.ticks]);
+  const velocityAxisWidth = useMemo(() => {
+    const nets = velocityData.map((d) => d.net);
+    return axisWidthFor([Math.min(0, ...nets), Math.max(0, ...nets)]);
+  }, [velocityData]);
 
   const fpAvailablePlatforms = useMemo(() => {
     const pages = showStarredOnly ? artist.pages.filter((p) => p.managed) : artist.pages;
@@ -1135,7 +1163,7 @@ export default function FanDashboard() {
                         tickFormatter={fmt}
                         axisLine={false}
                         tickLine={false}
-                        width={64}
+                        width={growthAxisWidth}
                         tickMargin={10}
                         ticks={yScale.ticks}
                         domain={[0, yScale.max]}
@@ -1202,7 +1230,7 @@ export default function FanDashboard() {
                       tick={{ fill: "#86868b", fontSize: 11, fontWeight: 600 }}
                     />
                     <YAxis
-                      tickFormatter={fmt} axisLine={false} tickLine={false} width={64} tickMargin={10}
+                      tickFormatter={fmt} axisLine={false} tickLine={false} width={velocityAxisWidth} tickMargin={10}
                       tick={{ fill: "#86868b", fontSize: 11, fontWeight: 600 }}
                     />
                     <Tooltip
