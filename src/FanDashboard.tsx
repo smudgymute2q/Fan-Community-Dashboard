@@ -1135,8 +1135,8 @@ export default function FanDashboard() {
                         tickFormatter={fmt}
                         axisLine={false}
                         tickLine={false}
-                        width={55}
-                        tickMargin={16}
+                        width={64}
+                        tickMargin={10}
                         ticks={yScale.ticks}
                         domain={[0, yScale.max]}
                         tick={{ fill: "#86868b", fontSize: 11, fontWeight: 600 }}
@@ -1202,7 +1202,7 @@ export default function FanDashboard() {
                       tick={{ fill: "#86868b", fontSize: 11, fontWeight: 600 }}
                     />
                     <YAxis
-                      tickFormatter={fmt} axisLine={false} tickLine={false} width={55} tickMargin={16}
+                      tickFormatter={fmt} axisLine={false} tickLine={false} width={64} tickMargin={10}
                       tick={{ fill: "#86868b", fontSize: 11, fontWeight: 600 }}
                     />
                     <Tooltip
