@@ -14,6 +14,8 @@ import {
 import {
   ChevronDown,
   ChevronUp,
+  ArrowUpRight,
+  ArrowDownRight,
   ArrowRight,
   PieChart as PieIcon,
   Star,
@@ -266,22 +268,6 @@ function monthlyVelocity(history, plats) {
 
 // ---- Components ----
 
-function ArrowUpForward({ size = 16, className = "", strokeWidth }: { size?: number; className?: string; strokeWidth?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 14.7974 14.419" fill="currentColor" className={className} aria-hidden="true">
-      <path d="M0.27467 14.148C0.635999 14.4996 1.13405 14.5191 1.50514 14.148L11.4172 4.24565L13.4094 2.09722C13.7415 1.76519 13.7415 1.32573 13.4192 1.01323C13.0969 0.690967 12.6477 0.681202 12.3255 1.01323L10.177 3.00542L0.27467 12.9175C-0.0964233 13.2886-0.0866577 13.7867 0.27467 14.148ZM12.6575 7.2144L12.6575 10.8179C12.6575 11.2867 13.0676 11.7066 13.5462 11.7066C14.0149 11.7066 14.4348 11.316 14.4348 10.7789L14.4251 0.964405C14.4251 0.397999 14.054 0.0171393 13.4778 0.0171393L3.65358 0.0171393C3.1067 0.0171393 2.73561 0.427296 2.73561 0.896046C2.73561 1.3648 3.15553 1.76519 3.61451 1.76519L7.01295 1.76519L12.8919 1.56987Z" />
-    </svg>
-  );
-}
-
-function ArrowDownForward({ size = 16, className = "", strokeWidth }: { size?: number; className?: string; strokeWidth?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 14.7974 14.4629" fill="currentColor" className={className} aria-hidden="true">
-      <path d="M0.27467 0.332031C-0.0866577 0.683594-0.0964233 1.19141 0.27467 1.55273L10.177 11.4746L12.3255 13.4668C12.6477 13.7891 13.0969 13.7891 13.4192 13.4668C13.7415 13.1445 13.7415 12.7051 13.4094 12.3828L11.4172 10.2344L1.50514 0.332031C1.13405-0.0390625 0.635999-0.0195312 0.27467 0.332031ZM12.6575 7.26562L12.8919 12.9004L7.01295 12.7051L3.61451 12.7051C3.15553 12.7051 2.73561 13.1055 2.73561 13.5742C2.73561 14.043 3.1067 14.4629 3.65358 14.4629L13.4778 14.4629C14.054 14.4629 14.4251 14.0723 14.4251 13.5156L14.4348 3.69141C14.4348 3.16406 14.0149 2.76367 13.5462 2.76367C13.0676 2.76367 12.6575 3.19336 12.6575 3.65234Z" />
-    </svg>
-  );
-}
-
 function DeltaPill({ value, small = false }: { value: number | null | undefined; small?: boolean }) {
   if (value === null || value === undefined)
     return <span className={`text-muted ${small ? "text-[10px]" : "text-xs"} font-medium`}>—</span>;
@@ -299,9 +285,7 @@ function DeltaPill({ value, small = false }: { value: number | null | undefined;
       small ? "text-[10px] px-1.5 py-0.5" : "text-xs px-2 py-0.5"
     } ${up ? "bg-[#e8f5ea] text-pos" : "bg-[#fdecea] text-neg"}`}>
       {up ? "+" : ""}{fmtFull(value)}
-      {up
-        ? <ArrowUpForward size={small ? 8 : 10} className="-mr-0.5" />
-        : <ArrowDownForward size={small ? 8 : 10} className="-mr-0.5" />}
+      <span className={small ? "text-[8px] -mr-0.5" : "text-[10px] -mr-0.5"}>{up ? "\u2197" : "\u2198"}</span>
     </span>
   );
 }
@@ -987,8 +971,8 @@ export default function FanDashboard() {
             {/* Fastest Movers — split into top gainers / biggest drops */}
             <div className="col-span-12 lg:col-span-3 flex flex-col gap-[var(--pad)]">
               {[
-                { title: "Top Gainers", icon: ArrowUpForward, list: artists.slice().filter((a) => a.totals.delta > 0).sort((a, b) => b.totals.delta - a.totals.delta).slice(0, 3), kind: "gains" },
-                { title: "Biggest Drops", icon: ArrowDownForward, list: artists.slice().filter((a) => a.totals.delta < 0).sort((a, b) => a.totals.delta - b.totals.delta).slice(0, 3), kind: "drops" },
+                { title: "Top Gainers", icon: ArrowUpRight, list: artists.slice().filter((a) => a.totals.delta > 0).sort((a, b) => b.totals.delta - a.totals.delta).slice(0, 3), kind: "gains" },
+                { title: "Biggest Drops", icon: ArrowDownRight, list: artists.slice().filter((a) => a.totals.delta < 0).sort((a, b) => a.totals.delta - b.totals.delta).slice(0, 3), kind: "drops" },
               ].map((grp) => {
                 const Icon = grp.icon;
                 return (
