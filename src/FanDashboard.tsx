@@ -247,27 +247,30 @@ const STATIC_ARTISTS = [
 const fmt = (n) => { if (n === undefined || n === null) return "—"; const abs = Math.abs(n); if (abs >= 1_000_000) return (n / 1_000_000).toFixed(n % 1_000_000 === 0 ? 0 : 2) + "M"; if (abs >= 10_000) return (n / 1_000).toFixed(0) + "K"; if (abs >= 1_000) return (n / 1_000).toFixed(1).replace(/\.0$/, "") + "K"; return n.toLocaleString(); };
 const fmtFull = (n) => (n ?? 0).toLocaleString();
 
-// Estimate the rendered width (px) of a chart axis tick label, matching the
-// uppercase + 0.05em letter-spacing styling applied via `.fng-axis`.
-let _labelCanvas: HTMLCanvasElement | null = null;
+// Measure the rendered width (px) of a chart axis tick label using a hidden
+// span styled exactly like the ticks (`.fng-axis` uppercase + 0.05em spacing,
+// 11px/600 Satoshi). Real DOM layout captures the true font metrics, so this
+// stays accurate where canvas measureText under-reports.
+let _measureEl: HTMLSpanElement | null = null;
 const axisLabelWidth = (text: string): number => {
   const upper = text.toUpperCase();
-  if (typeof document !== "undefined") {
-    if (!_labelCanvas) _labelCanvas = document.createElement("canvas");
-    const ctx = _labelCanvas.getContext("2d");
-    if (ctx) {
-      ctx.font = "600 11px 'Satoshi', ui-sans-serif, system-ui, -apple-system, sans-serif";
-      // measureText ignores letter-spacing, so add 0.05em (~0.6px) per char.
-      return ctx.measureText(upper).width + upper.length * 0.6;
-    }
+  if (typeof document === "undefined") return upper.length * 8; // SSR fallback
+  if (!_measureEl) {
+    _measureEl = document.createElement("span");
+    _measureEl.style.cssText =
+      "position:absolute;left:-9999px;top:-9999px;visibility:hidden;white-space:nowrap;" +
+      "font-family:'Satoshi',ui-sans-serif,system-ui,-apple-system,sans-serif;" +
+      "font-size:11px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;";
+    document.body.appendChild(_measureEl);
   }
-  return upper.length * 8; // SSR / no-canvas fallback
+  _measureEl.textContent = upper;
+  return _measureEl.getBoundingClientRect().width;
 };
 
-// YAxis width that fits the widest formatted tick label, leaving room for the
-// 10px tickMargin plus a little breathing space so nothing clips.
+// YAxis width that fits the widest formatted tick label: the label itself plus
+// the 10px tickMargin and a small left gutter so nothing touches the card edge.
 const axisWidthFor = (values: number[]): number =>
-  Math.ceil(Math.max(0, ...values.map((v) => axisLabelWidth(fmt(v))))) + 16;
+  Math.ceil(Math.max(0, ...values.map((v) => axisLabelWidth(fmt(v))))) + 18;
 
 // "Nice" 5-tick scale [0 .. rounded max] for a given data maximum.
 const niceTicks = (maxVal: number): number[] => {
