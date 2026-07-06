@@ -333,13 +333,13 @@ function DeltaPill({ value, small = false }: { value: number | null | undefined;
     );
   const up = value > 0;
   return (
-    <span className={`inline-flex items-center gap-0.5 font-semibold tabular-nums rounded-full ${
+    <span className={`inline-flex items-center gap-1 leading-none font-semibold tabular-nums rounded-full ${
       small ? "text-[10px] px-1.5 py-0.5" : "text-xs px-2 py-0.5"
     } ${up ? "bg-[#e8f5ea] text-pos" : "bg-[#fdecea] text-neg"}`}>
       {up ? "+" : ""}{fmtFull(value)}
       {up
-        ? <ArrowUpForward size={small ? 8 : 9} className="shrink-0" />
-        : <ArrowDownForward size={small ? 8 : 9} className="shrink-0" />}
+        ? <ArrowUpForward size={small ? 7 : 8} className="shrink-0" />
+        : <ArrowDownForward size={small ? 7 : 8} className="shrink-0" />}
     </span>
   );
 }
