@@ -268,6 +268,15 @@ const axisLabelWidth = (text: string): number => {
 // 10px tickMargin plus a few px of breathing space.
 const axisWidthFor = (values: number[]): number =>
   Math.ceil(Math.max(0, ...values.map((v) => axisLabelWidth(fmt(v))))) + 14;
+
+// "Nice" 5-tick scale [0 .. rounded max] for a given data maximum.
+const niceTicks = (maxVal: number): number[] => {
+  const rawStep = Math.max(1, maxVal) / 4;
+  const mag = Math.pow(10, Math.floor(Math.log10(rawStep)));
+  const norm = rawStep / mag;
+  const step = ([1, 1.5, 2, 2.5, 3, 4, 5, 6, 7, 8, 10].find((f) => f >= norm) ?? 10) * mag;
+  return [0, step, step * 2, step * 3, step * 4];
+};
 const fmtPageDate = (s: string) => { const [m, d, y] = s.split("/").map(Number); const mon = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][m - 1]; return y === new Date().getFullYear() ? `${mon} ${d}` : `${mon} ${d}, ${y}`; };
 const monthLabel = (ym) => { const [y, m] = ym.split("-"); return new Date(parseInt(y), parseInt(m) - 1, 1).toLocaleString("en", { month: "short", year: "numeric" }); };
 
@@ -534,14 +543,17 @@ export default function FanDashboard() {
   const yScale = useMemo(() => {
     const active = orderedPlats.filter((p) => !hiddenPlats.has(p));
     const maxVal = Math.max(1, ...history.map((d) => Math.max(0, ...active.map((p) => (d[p] as number) || 0))));
-    const rawStep = maxVal / 4;
-    const mag = Math.pow(10, Math.floor(Math.log10(rawStep)));
-    const norm = rawStep / mag;
-    const step = ([1, 1.5, 2, 2.5, 3, 4, 5, 6, 7, 8, 10].find((f) => f >= norm) ?? 10) * mag;
-    return { ticks: [0, step, step * 2, step * 3, step * 4], max: step * 4 };
+    const ticks = niceTicks(maxVal);
+    return { ticks, max: ticks[ticks.length - 1] };
   }, [orderedPlats, hiddenPlats, artist, history]);
 
-  const growthAxisWidth = useMemo(() => axisWidthFor(yScale.ticks), [yScale.ticks]);
+  // Reserve axis space per artist: base it on the artist's full-history max
+  // across all platforms so the width stays stable across range/platform
+  // toggles rather than jittering with the current view.
+  const growthAxisWidth = useMemo(() => {
+    const maxVal = Math.max(1, ...fullHistory.map((d) => Math.max(0, ...orderedPlats.map((p) => (d[p] as number) || 0))));
+    return axisWidthFor(niceTicks(maxVal));
+  }, [fullHistory, orderedPlats]);
   const velocityAxisWidth = useMemo(() => {
     const nets = velocityData.map((d) => d.net);
     return axisWidthFor([Math.min(0, ...nets), Math.max(0, ...nets)]);
