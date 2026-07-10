@@ -508,7 +508,6 @@ export default function FanDashboard() {
   useEffect(() => {
     setPagesPlatform("Discord");
     setHiddenPlats(new Set());
-    setShowStarredOnly(false);
   }, [selectedSlug]);
 
   const fullHistory = useMemo(
