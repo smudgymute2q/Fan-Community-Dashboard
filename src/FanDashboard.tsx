@@ -506,7 +506,6 @@ export default function FanDashboard() {
   const artist = artists.find((a) => a.slug === selectedSlug)!;
 
   useEffect(() => {
-    setPagesPlatform("Discord");
     setHiddenPlats(new Set());
   }, [selectedSlug]);
 
