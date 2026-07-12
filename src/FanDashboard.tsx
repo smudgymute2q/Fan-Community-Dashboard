@@ -259,7 +259,7 @@ const axisLabelWidth = (text: string): number => {
     _measureEl = document.createElement("span");
     _measureEl.style.cssText =
       "position:absolute;left:-9999px;top:-9999px;visibility:hidden;white-space:nowrap;" +
-      "font-family:'Satoshi',ui-sans-serif,system-ui,-apple-system,sans-serif;" +
+      "font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,ui-sans-serif,system-ui,sans-serif;" +
       "font-size:11px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;";
     document.body.appendChild(_measureEl);
   }
@@ -721,7 +721,7 @@ export default function FanDashboard() {
 
   if (sheetsLoading || !hasData) {
     return (
-      <div className="flex h-screen overflow-hidden bg-[#f5f5f7]" style={{ fontFamily: "'Satoshi', ui-sans-serif, system-ui, -apple-system, sans-serif" }}>
+      <div className="flex h-screen overflow-hidden bg-[#f5f5f7]" style={{ fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, ui-sans-serif, system-ui, sans-serif" }}>
         <main className="flex-1 min-w-0 flex flex-col overflow-hidden">
           <header className="px-[var(--pad)] pt-[var(--pad)] pb-[var(--pad)] flex items-center justify-end gap-4 shrink-0">
             <div className="flex items-center gap-[var(--pad)]">
@@ -759,7 +759,7 @@ export default function FanDashboard() {
   return (
     <div
       className="flex h-screen overflow-hidden text-primary"
-      style={{ fontFamily: "'Satoshi', ui-sans-serif, system-ui, -apple-system, sans-serif" }}
+      style={{ fontFamily: "'SF Pro Text', -apple-system, BlinkMacSystemFont, ui-sans-serif, system-ui, sans-serif" }}
     >
       <style>{`
         .recharts-cartesian-axis-tick text { fill: #86868b; font-variant-numeric: tabular-nums; }
