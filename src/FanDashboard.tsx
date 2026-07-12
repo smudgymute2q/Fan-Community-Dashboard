@@ -936,7 +936,7 @@ export default function FanDashboard() {
                       className="relative z-20 flex items-center gap-2 h-[34px] pl-3 pr-2.5 rounded-full bg-[#f5f5f7] hover:bg-[#ebebed] transition cursor-pointer"
                     >
                       <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: PLATFORMS[fpEffectivePlatform]?.color ?? "#8e8e93" }} />
-                      <span className="text-[14px] font-medium text-primary whitespace-nowrap leading-none">{fpEffectivePlatform}</span>
+                      <span className="text-[14px] font-normal text-primary whitespace-nowrap leading-none">{fpEffectivePlatform}</span>
                       <ChevronDown size={14} className="text-muted" />
                     </button>
                     {pagesDropdownOpen && (
@@ -949,7 +949,7 @@ export default function FanDashboard() {
                               setPagesDropdownOpen(false);
                               if (pagesListRef.current) pagesListRef.current.scrollTop = 0;
                             }}
-                            className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-[14px] font-medium transition cursor-pointer ${plat === fpEffectivePlatform ? "text-primary bg-[#f5f5f7] hover:bg-[#ebebed]" : "text-muted hover:bg-[#f5f5f7]"}`}
+                            className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-[14px] font-normal transition cursor-pointer ${plat === fpEffectivePlatform ? "text-primary bg-[#f5f5f7] hover:bg-[#ebebed]" : "text-muted hover:bg-[#f5f5f7]"}`}
                           >
                             <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: PLATFORMS[plat]?.color ?? "#8e8e93" }} />
                             <span className="leading-none">{plat}</span>
@@ -1136,7 +1136,7 @@ export default function FanDashboard() {
                             <button
                               key={p}
                               onClick={() => togglePlat(p)}
-                              className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-[14px] font-medium transition cursor-pointer ${off ? "text-muted hover:bg-[#f5f5f7]" : "text-primary hover:bg-[#f5f5f7]"}`}
+                              className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-[14px] font-normal transition cursor-pointer ${off ? "text-muted hover:bg-[#f5f5f7]" : "text-primary hover:bg-[#f5f5f7]"}`}
                               title={off ? `Show ${p}` : `Hide ${p}`}
                             >
                               <span className="w-2.5 h-2.5 rounded-full shrink-0 transition-colors" style={{ background: off ? "#d2d2d7" : PLATFORMS[p].color }} />
