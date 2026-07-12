@@ -362,7 +362,7 @@ function ChartTooltip({ active, payload, label }: any) {
         {rows.map((p) => (
           <div key={p.dataKey || p.name} className="flex items-center gap-2.5">
             <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: p.color || p.fill }} />
-            <span className="text-[14px] font-medium text-primary flex-1 whitespace-nowrap">{p.name}</span>
+            <span className="text-[14px] font-normal text-primary flex-1 whitespace-nowrap">{p.name}</span>
             <span className="text-[14px] font-semibold tabular-nums text-primary ml-6">{fmtFull(p.value)}</span>
           </div>
         ))}
@@ -778,7 +778,7 @@ export default function FanDashboard() {
         <header className="px-[var(--pad)] pt-[var(--pad)] pb-[var(--pad)] flex items-center justify-end gap-4 shrink-0">
           <div className="flex items-center gap-[var(--pad)] shrink-0 relative">
             {/* Sync status */}
-            <div className="flex items-center gap-2.5 h-12 px-4 rounded-full bg-white text-[14px] font-medium text-primary">
+            <div className="flex items-center gap-2.5 h-12 px-4 rounded-full bg-white text-[14px] font-normal text-primary">
               <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${sheetsLoading ? "bg-[#ff9f0a]" : "bg-[#34c759] animate-pulse"}`} />
               <span className="leading-none">{syncLabel}</span>
             </div>
@@ -805,7 +805,7 @@ export default function FanDashboard() {
                   />
                 </div>
                 <div className="text-left leading-tight min-w-0">
-                  <div className="text-[14px] font-medium text-primary truncate max-w-[150px]">{artist.name}</div>
+                  <div className="text-[14px] font-normal text-primary truncate max-w-[150px]">{artist.name}</div>
                 </div>
                 <ChevronDown size={16} className={`text-muted transition-transform ${switcherOpen ? "rotate-180" : ""}`} />
               </button>
@@ -832,7 +832,7 @@ export default function FanDashboard() {
                             }}
                           />
                         </div>
-                        <span className="flex-1 min-w-0 text-[14px] font-medium text-primary truncate">{a.name}</span>
+                        <span className="flex-1 min-w-0 text-[14px] font-normal text-primary truncate">{a.name}</span>
                       </button>
                     );
                   })}
@@ -894,7 +894,7 @@ export default function FanDashboard() {
                     >
                       <div className="flex items-center gap-2.5 min-w-0">
                         <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: d.fill }} />
-                        <span className="text-[14px] font-medium text-primary whitespace-nowrap leading-none">{d.name}</span>
+                        <span className="text-[14px] font-normal text-primary whitespace-nowrap leading-none">{d.name}</span>
                       </div>
                       <span className="text-right text-[14px] font-semibold tabular-nums text-primary leading-none">{fmtFull(d.value)}</span>
                       <div className="flex justify-end items-center h-[14px]">{pd ? <DeltaPill value={pd.delta} /> : null}</div>
@@ -1007,7 +1007,7 @@ export default function FanDashboard() {
                             style={{ gridColumn: "1 / -1", gridTemplateColumns: "subgrid" }}
                           >
                             <div className="flex items-center gap-2.5 min-w-0">
-                              <span className="text-[14px] font-medium text-primary truncate leading-none pb-[4px] -mb-[4px]">{p.name}</span>
+                              <span className="text-[14px] font-normal text-primary truncate leading-none pb-[4px] -mb-[4px]">{p.name}</span>
                               {p.managed && <Star size={12} className="shrink-0 text-[#FFCC00] fill-[#FFCC00]" />}
                             </div>
                             <span className="text-right text-[14px] font-semibold tabular-nums text-primary leading-none">{fmtFull(p.followers)}</span>
@@ -1075,7 +1075,7 @@ export default function FanDashboard() {
                                 }}
                               />
                             </div>
-                            <span className="flex-1 text-[14px] font-medium text-primary truncate">{a.name}</span>
+                            <span className="flex-1 text-[14px] font-normal text-primary truncate">{a.name}</span>
                             <DeltaPill value={a.totals.delta} />
                           </div>
                         ))}
