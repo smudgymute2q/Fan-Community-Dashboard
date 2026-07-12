@@ -1107,7 +1107,7 @@ export default function FanDashboard() {
                       <button
                         key={opt.key}
                         onClick={() => setYearRange(opt.key)}
-                        className={`text-[12px] font-semibold px-3 py-1 rounded-full transition-all cursor-pointer ${
+                        className={`text-[12px] font-medium px-3 py-1 rounded-full transition-all cursor-pointer ${
                           yearRange === opt.key
                             ? "bg-white text-primary"
                             : "text-muted hover:text-primary"
