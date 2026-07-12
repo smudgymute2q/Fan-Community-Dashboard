@@ -322,7 +322,7 @@ function ArrowDownForward({ size = 12, className = "" }: { size?: number; classN
 
 function DeltaPill({ value, small = false }: { value: number | null | undefined; small?: boolean }) {
   if (value === null || value === undefined)
-    return <span className={`text-muted ${small ? "text-[10px]" : "text-xs"} font-medium`}>—</span>;
+    return <span className={`text-muted ${small ? "text-[10px]" : "text-xs"} font-semibold`}>—</span>;
   if (value === 0)
     return (
       <span className={`inline-flex items-center leading-none font-semibold tabular-nums rounded-full bg-[#f0f0f3] text-muted ${
@@ -1283,7 +1283,7 @@ export default function FanDashboard() {
                             <div className="text-[11px] font-semibold uppercase tracking-wider text-muted mb-2">{monthLabel(label)}</div>
                             <div className="flex items-center gap-2.5">
                               <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: payload[0].value >= 0 ? "#248a3d" : "#d70015" }} />
-                              <span className="text-[14px] font-medium text-primary flex-1">Net change</span>
+                              <span className="text-[14px] font-normal text-primary flex-1">Net change</span>
                               <span className="text-[14px] font-semibold tabular-nums text-primary ml-6">{payload[0].value >= 0 ? "+" : ""}{fmtFull(payload[0].value)}</span>
                             </div>
                           </div>
