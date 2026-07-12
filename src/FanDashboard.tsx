@@ -355,7 +355,7 @@ function ChartTooltip({ active, payload, label }: any) {
   if (!rows.length) return null;
   return (
     <div className="bg-white rounded-[var(--rad)] p-3.5 min-w-[184px]" style={{ boxShadow: "0 0 0 0.5px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px -6px rgba(0,0,0,0.12), 0 24px 56px -16px rgba(0,0,0,0.16)" }}>
-      <div className="text-[11px] font-semibold uppercase tracking-wider text-muted mb-3">
+      <div className="text-[11px] font-medium uppercase tracking-wider text-muted mb-3">
         {label && typeof label === "string" && label.includes("-") ? monthLabel(label) : label}
       </div>
       <div className="flex flex-col gap-2">
@@ -861,8 +861,8 @@ export default function FanDashboard() {
                 className="mt-[var(--vlg)] mb-[var(--vlg)] grid gap-x-[var(--cgap)] gap-y-[var(--vsm)]"
                 style={{ gridTemplateColumns: "max-content max-content", justifyContent: "start" }}
               >
-                <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none">Total Reach</div>
-                <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none">Last Month</div>
+                <div className="text-[11px] font-medium uppercase tracking-wider text-muted leading-none">Total Reach</div>
+                <div className="text-[11px] font-medium uppercase tracking-wider text-muted leading-none">Last Month</div>
                 <div className="flex items-center h-[14px] text-[14px] font-semibold tabular-nums text-primary leading-none">{fmtFull(artist.totals.value)}</div>
                 <div className="flex items-center h-[14px]"><DeltaPill value={artist.totals.delta} /></div>
               </div>
@@ -873,7 +873,7 @@ export default function FanDashboard() {
                 style={{ gridTemplateColumns: "max-content max-content max-content minmax(0,1fr) max-content" }}
               >
                 <div
-                  className="grid items-center gap-x-[var(--cgap)] pb-0 leading-none text-[11px] font-semibold uppercase tracking-wider text-muted"
+                  className="grid items-center gap-x-[var(--cgap)] pb-0 leading-none text-[11px] font-medium uppercase tracking-wider text-muted"
                   style={{ gridColumn: "1 / -1", gridTemplateColumns: "subgrid" }}
                 >
                   <span>Platform</span>
@@ -988,7 +988,7 @@ export default function FanDashboard() {
                             <button
                               key={col}
                               onClick={() => setPagesSort((s) => s.key === col ? { key: col, dir: s.dir === "asc" ? "desc" : "asc" } : { key: col, dir: col === "name" ? "asc" : "desc" })}
-                              className={`flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider whitespace-nowrap transition-colors cursor-pointer ${active ? "text-primary" : "text-muted hover:text-primary"} ${ci > 0 ? "justify-end" : ""}`}
+                              className={`flex items-center gap-1 text-[11px] font-medium uppercase tracking-wider whitespace-nowrap transition-colors cursor-pointer ${active ? "text-primary" : "text-muted hover:text-primary"} ${ci > 0 ? "justify-end" : ""}`}
                             >
                               {ci > 0 && arrowSlot}
                               <span>{labels[ci]}</span>
@@ -1053,7 +1053,7 @@ export default function FanDashboard() {
                       <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">{grp.title}</h2>
                     </div>
                     {grp.list.length > 0 && (
-                      <div className="flex items-center justify-between shrink-0 pb-[var(--vsm)] text-[11px] font-semibold uppercase tracking-wider text-muted leading-none">
+                      <div className="flex items-center justify-between shrink-0 pb-[var(--vsm)] text-[11px] font-medium uppercase tracking-wider text-muted leading-none">
                         <span>Artist</span>
                         <span>Last Month</span>
                       </div>
@@ -1152,18 +1152,18 @@ export default function FanDashboard() {
                   {rangeStats && (
                     <div className="flex items-start flex-wrap gap-x-[var(--cgap)] gap-y-3 min-w-0">
                       <div>
-                        <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none mb-[var(--vsm)]">{monthLabel(history[0].date)}</div>
+                        <div className="text-[11px] font-medium uppercase tracking-wider text-muted leading-none mb-[var(--vsm)]">{monthLabel(history[0].date)}</div>
                         <div className="text-[14px] font-semibold tabular-nums text-primary leading-none">{fmtFull(rangeStats.startTotal)}</div>
                       </div>
                       <div className="flex items-center self-stretch -mx-[22px]" aria-hidden="true">
                         <ArrowRight size={16} strokeWidth={2.75} className="text-primary shrink-0" />
                       </div>
                       <div>
-                        <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none mb-[var(--vsm)]">{monthLabel(history[history.length - 1].date)}</div>
+                        <div className="text-[11px] font-medium uppercase tracking-wider text-muted leading-none mb-[var(--vsm)]">{monthLabel(history[history.length - 1].date)}</div>
                         <div className="text-[14px] font-semibold tabular-nums text-primary leading-none">{fmtFull(rangeStats.endTotal)}</div>
                       </div>
                       <div>
-                        <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none mb-[var(--vsm)]">Net Growth</div>
+                        <div className="text-[11px] font-medium uppercase tracking-wider text-muted leading-none mb-[var(--vsm)]">Net Growth</div>
                         <div className="flex items-center gap-[var(--vsm)] h-[14px]">
                           <DeltaPill value={rangeStats.net} />
                           <span className="text-[14px] font-semibold tabular-nums text-primary leading-none">{rangeStats.pct >= 0 ? "+" : ""}{(() => { const p = rangeStats.pct; const abs = Math.abs(p); if (abs >= 100) return Math.round(p).toString(); if (abs >= 1) return p.toFixed(1).replace(/\.0$/, ""); if (p === 0) return "0"; for (let d = 1; d <= 6; d++) { const s = abs.toFixed(d); if (/[1-9]/.test(s.split(".")[1] ?? "")) return p.toFixed(d); } return p.toFixed(2); })()}%</span>
@@ -1171,7 +1171,7 @@ export default function FanDashboard() {
                       </div>
                       {rangeStats.bestGain > 0 && (
                         <div>
-                          <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none mb-[var(--vsm)]">Best Month</div>
+                          <div className="text-[11px] font-medium uppercase tracking-wider text-muted leading-none mb-[var(--vsm)]">Best Month</div>
                           <div className="flex items-center gap-[var(--vsm)] h-[14px]">
                             <span className="text-[14px] font-semibold tabular-nums text-primary whitespace-nowrap leading-none">{monthLabel(rangeStats.bestMonth)}</span>
                             <DeltaPill value={rangeStats.bestGain} />
@@ -1251,8 +1251,8 @@ export default function FanDashboard() {
                   className="shrink-0 mb-[var(--vlg)] grid gap-x-[var(--cgap)] gap-y-[var(--vsm)]"
                   style={{ gridTemplateColumns: "max-content max-content", justifyContent: "start" }}
                 >
-                  <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none">Latest Month</div>
-                  <div className="text-[11px] font-semibold uppercase tracking-wider text-muted leading-none">Positive Months</div>
+                  <div className="text-[11px] font-medium uppercase tracking-wider text-muted leading-none">Latest Month</div>
+                  <div className="text-[11px] font-medium uppercase tracking-wider text-muted leading-none">Positive Months</div>
                   <div className="flex items-center h-[14px]"><DeltaPill value={velocityData[velocityData.length - 1].net} /></div>
                   <div className="flex items-center h-[14px] text-[14px] font-semibold tabular-nums text-primary leading-none">
                     {velocityData.filter((d) => d.net > 0).length}<span>/{velocityData.length}</span>
@@ -1280,7 +1280,7 @@ export default function FanDashboard() {
                       content={({ active, payload, label }) =>
                         active && payload?.length ? (
                           <div className="bg-white rounded-[var(--rad)] p-3.5" style={{ boxShadow: "0 0 0 0.5px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px -6px rgba(0,0,0,0.12), 0 24px 56px -16px rgba(0,0,0,0.16)" }}>
-                            <div className="text-[11px] font-semibold uppercase tracking-wider text-muted mb-2">{monthLabel(label)}</div>
+                            <div className="text-[11px] font-medium uppercase tracking-wider text-muted mb-2">{monthLabel(label)}</div>
                             <div className="flex items-center gap-2.5">
                               <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: payload[0].value >= 0 ? "#248a3d" : "#d70015" }} />
                               <span className="text-[14px] font-normal text-primary flex-1">Net change</span>
