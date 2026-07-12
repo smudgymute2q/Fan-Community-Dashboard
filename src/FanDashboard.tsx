@@ -260,7 +260,7 @@ const axisLabelWidth = (text: string): number => {
     _measureEl.style.cssText =
       "position:absolute;left:-9999px;top:-9999px;visibility:hidden;white-space:nowrap;" +
       "font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,ui-sans-serif,system-ui,sans-serif;" +
-      "font-size:11px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;";
+      "font-size:11px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;";
     document.body.appendChild(_measureEl);
   }
   _measureEl.textContent = upper;
@@ -1200,7 +1200,7 @@ export default function FanDashboard() {
                         tickMargin={19}
                         height={36}
                         padding={{ left: 0, right: 0 }}
-                        tick={{ fill: "#86868b", fontSize: 11, fontWeight: 600 }}
+                        tick={{ fill: "#86868b", fontSize: 11, fontWeight: 500 }}
                       />
                       <YAxis
                         tickFormatter={fmt}
@@ -1210,7 +1210,7 @@ export default function FanDashboard() {
                         tickMargin={10}
                         ticks={yScale.ticks}
                         domain={[0, yScale.max]}
-                        tick={{ fill: "#86868b", fontSize: 11, fontWeight: 600 }}
+                        tick={{ fill: "#86868b", fontSize: 11, fontWeight: 500 }}
                       />
                       <Tooltip
                         content={<ChartTooltip />}
@@ -1270,11 +1270,11 @@ export default function FanDashboard() {
                       tickMargin={19}
                       height={36}
                       padding={{ left: 22, right: 8 }}
-                      tick={{ fill: "#86868b", fontSize: 11, fontWeight: 600 }}
+                      tick={{ fill: "#86868b", fontSize: 11, fontWeight: 500 }}
                     />
                     <YAxis
                       tickFormatter={fmt} axisLine={false} tickLine={false} width={velocityAxisWidth} tickMargin={10}
-                      tick={{ fill: "#86868b", fontSize: 11, fontWeight: 600 }}
+                      tick={{ fill: "#86868b", fontSize: 11, fontWeight: 500 }}
                     />
                     <Tooltip
                       content={({ active, payload, label }) =>
