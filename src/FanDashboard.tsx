@@ -585,11 +585,6 @@ export default function FanDashboard() {
     const maxVal = Math.max(1, ...fullHistory.map((d) => Math.max(0, ...orderedPlats.map((p) => (d[p] as number) || 0))));
     return axisWidthFor(niceTicks(maxVal));
   }, [fullHistory, orderedPlats, fontsReady]);
-  const velocityAxisWidth = useMemo(() => {
-    const nets = velocityData.map((d) => d.net);
-    return axisWidthFor([Math.min(0, ...nets), Math.max(0, ...nets)]);
-  }, [velocityData, fontsReady]);
-
   // Signed "nice" scale for the velocity bars. Recharts' default auto-domain
   // rounds the max up to a nice number that can leave large headroom (e.g. a
   // ~4.2K max ballooning to a 6K axis). This ceils/floors to the nearest step
@@ -609,6 +604,14 @@ export default function FanDashboard() {
     for (let t = niceLo; t <= niceHi + step * 1e-6; t += step) ticks.push(Math.round(t));
     return { ticks, min: niceLo, max: niceHi };
   }, [velocityData]);
+
+  // Size the axis to the tick labels actually rendered (velocityScale.ticks),
+  // not the raw net range — the scale ceils/floors to nice numbers, so the
+  // widest label (e.g. "100" from a 95 max) can be wider than any net value.
+  const velocityAxisWidth = useMemo(
+    () => axisWidthFor(velocityScale.ticks),
+    [velocityScale, fontsReady]
+  );
 
   const fpAvailablePlatforms = useMemo(() => {
     const pages = showStarredOnly ? artist.pages.filter((p) => p.managed) : artist.pages;
