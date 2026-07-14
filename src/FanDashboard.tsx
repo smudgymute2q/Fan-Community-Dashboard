@@ -590,6 +590,26 @@ export default function FanDashboard() {
     return axisWidthFor([Math.min(0, ...nets), Math.max(0, ...nets)]);
   }, [velocityData, fontsReady]);
 
+  // Signed "nice" scale for the velocity bars. Recharts' default auto-domain
+  // rounds the max up to a nice number that can leave large headroom (e.g. a
+  // ~4.2K max ballooning to a 6K axis). This ceils/floors to the nearest step
+  // instead, keeping the tallest bar close to the top edge.
+  const velocityScale = useMemo(() => {
+    const nets = velocityData.map((d) => d.net);
+    const lo = Math.min(0, ...nets);
+    const hi = Math.max(0, ...nets);
+    const span = Math.max(1, hi - lo);
+    const rawStep = span / 4;
+    const mag = Math.pow(10, Math.floor(Math.log10(rawStep)));
+    const norm = rawStep / mag;
+    const step = ([1, 1.5, 2, 2.5, 3, 4, 5, 6, 7, 8, 10].find((f) => f >= norm) ?? 10) * mag;
+    const niceLo = Math.floor(lo / step) * step;
+    const niceHi = Math.ceil(hi / step) * step;
+    const ticks: number[] = [];
+    for (let t = niceLo; t <= niceHi + step * 1e-6; t += step) ticks.push(Math.round(t));
+    return { ticks, min: niceLo, max: niceHi };
+  }, [velocityData]);
+
   const fpAvailablePlatforms = useMemo(() => {
     const pages = showStarredOnly ? artist.pages.filter((p) => p.managed) : artist.pages;
     const set = new Set(pages.map((p) => p.platform).filter(Boolean));
@@ -1274,6 +1294,8 @@ export default function FanDashboard() {
                     />
                     <YAxis
                       tickFormatter={fmt} axisLine={false} tickLine={false} width={velocityAxisWidth} tickMargin={10}
+                      ticks={velocityScale.ticks}
+                      domain={[velocityScale.min, velocityScale.max]}
                       tick={{ fill: "#86868b", fontSize: 11, fontWeight: 500 }}
                     />
                     <Tooltip
