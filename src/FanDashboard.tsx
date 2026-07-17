@@ -991,7 +991,11 @@ export default function FanDashboard() {
                 onScroll={updateScrollbar}
               >
                 {filteredPages.length === 0 ? (
-                  <div className="h-full flex items-center justify-center text-center text-[13px] text-muted">No {fpEffectivePlatform} pages tracked yet</div>
+                  <div className="h-full flex items-center justify-center text-center text-[13px] text-muted">
+                    {showStarredOnly
+                      ? `No starred ${fpEffectivePlatform} ${fpEntityPlural}`
+                      : `No ${fpEffectivePlatform} ${fpEntityPlural} tracked yet`}
+                  </div>
                 ) : (() => {
                   const unit = MEMBER_PLATFORMS.has(fpEffectivePlatform) ? "Members" : "Followers";
                   const entityCount = `${filteredPages.length} ${filteredPages.length === 1 ? fpEntitySingular : fpEntityPlural}`;
@@ -1083,7 +1087,7 @@ export default function FanDashboard() {
                     )}
                     <div className="flex flex-col gap-[var(--pad)]">
                       {grp.list.length === 0 ? (
-                        <div className="text-center text-[13px] text-muted py-4">No {grp.kind} in range</div>
+                        <div className="text-center text-[13px] text-muted py-4">No {grp.kind} last month</div>
                       ) : grp.list.map((a) => (
                           <div key={a.slug} className="w-full flex items-center gap-3">
                             <div className="w-9 h-9 rounded-full overflow-hidden shrink-0 bg-[#f0f0f3] flex items-center justify-center font-bold text-xs text-primary">
