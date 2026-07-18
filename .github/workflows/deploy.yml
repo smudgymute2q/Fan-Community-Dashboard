@@ -4,6 +4,10 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # Triggered by a push to the Fan-Community-Data repo (see that repo's
+  # notify-dashboard workflow) so data changes redeploy the dashboard.
+  repository_dispatch:
+    types: [data-updated]
   schedule:
     # Refresh the data snapshot daily at 00:00 UTC
     - cron: '0 0 * * *'
