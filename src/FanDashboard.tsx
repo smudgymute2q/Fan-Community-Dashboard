@@ -1327,7 +1327,7 @@ export default function FanDashboard() {
                               ))}
                               <div className={`flex items-center gap-2.5 ${deltas.length ? "pt-2 mt-0.5" : ""}`}>
                                 <span className="w-2.5 h-2.5 shrink-0" />
-                                <span className="text-[14px] font-semibold text-primary flex-1">Net change</span>
+                                <span className="text-[14px] font-semibold text-primary flex-1">Net Change</span>
                                 <span className="text-[14px] font-bold tabular-nums text-primary ml-6">{signed(point?.net ?? 0)}</span>
                               </div>
                             </div>
