@@ -294,9 +294,12 @@ function monthlyVelocity(history, plats) {
   const recent = history.slice(startIdx);
   return recent.slice(1).map((row, i) => {
     const prev = recent[i];
-    const total = plats.reduce((s, p) => s + (row[p] || 0), 0);
-    const totalPrev = plats.reduce((s, p) => s + (prev[p] || 0), 0);
-    return { date: row.date, net: total - totalPrev };
+    const deltas = plats
+      .map((p) => ({ name: p, delta: (row[p] || 0) - (prev[p] || 0), fill: PLATFORMS[p]?.color || "#888" }))
+      .filter((d) => d.delta !== 0)
+      .sort((a, b) => b.delta - a.delta);
+    const net = deltas.reduce((s, d) => s + d.delta, 0);
+    return { date: row.date, net, deltas };
   });
 }
 
@@ -1306,18 +1309,31 @@ export default function FanDashboard() {
                       tick={{ fill: "#86868b", fontSize: 11, fontWeight: 500 }}
                     />
                     <Tooltip
-                      content={({ active, payload, label }) =>
-                        active && payload?.length ? (
-                          <div className="bg-white rounded-[var(--rad)] p-3.5" style={{ boxShadow: "0 0 0 0.5px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px -6px rgba(0,0,0,0.12), 0 24px 56px -16px rgba(0,0,0,0.16)" }}>
-                            <div className="text-[11px] font-medium uppercase tracking-wider text-muted mb-2">{monthLabel(label)}</div>
-                            <div className="flex items-center gap-2.5">
-                              <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: payload[0].value >= 0 ? "#248a3d" : "#d70015" }} />
-                              <span className="text-[14px] font-normal text-primary flex-1">Net change</span>
-                              <span className="text-[14px] font-semibold tabular-nums text-primary ml-6">{payload[0].value >= 0 ? "+" : ""}{fmtFull(payload[0].value)}</span>
+                      content={({ active, payload, label }) => {
+                        if (!active || !payload?.length) return null;
+                        const point = payload[0].payload;
+                        const deltas = point?.deltas ?? [];
+                        const signed = (v: number) => `${v >= 0 ? "+" : ""}${fmtFull(v)}`;
+                        return (
+                          <div className="bg-white rounded-[var(--rad)] p-3.5 min-w-[184px]" style={{ boxShadow: "0 0 0 0.5px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px -6px rgba(0,0,0,0.12), 0 24px 56px -16px rgba(0,0,0,0.16)" }}>
+                            <div className="text-[11px] font-medium uppercase tracking-wider text-muted mb-3">{monthLabel(label)}</div>
+                            <div className="flex flex-col gap-2">
+                              {deltas.map((d: any) => (
+                                <div key={d.name} className="flex items-center gap-2.5">
+                                  <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: d.fill }} />
+                                  <span className="text-[14px] font-normal text-primary flex-1 whitespace-nowrap">{d.name}</span>
+                                  <span className="text-[14px] font-semibold tabular-nums text-primary ml-6">{signed(d.delta)}</span>
+                                </div>
+                              ))}
+                              <div className={`flex items-center gap-2.5 ${deltas.length ? "pt-2 mt-0.5" : ""}`}>
+                                <span className="w-2.5 h-2.5 shrink-0" />
+                                <span className="text-[14px] font-semibold text-primary flex-1">Net change</span>
+                                <span className="text-[14px] font-bold tabular-nums text-primary ml-6">{signed(point?.net ?? 0)}</span>
+                              </div>
                             </div>
                           </div>
-                        ) : null
-                      }
+                        );
+                      }}
                       cursor={{ fill: "#f5f5f7" }}
                       wrapperStyle={{ transition: "none" }}
                     />
