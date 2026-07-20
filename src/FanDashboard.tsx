@@ -656,10 +656,14 @@ export default function FanDashboard() {
   const fpColSizers = useMemo(() => {
     const all = artists.flatMap((a) => a.pages);
     const pages = showStarredOnly ? all.filter((p) => p.managed) : all;
+    // Counts render tabular-nums, so equal-length strings are equal width and
+    // the longest one is the widest. Dates carry month names of differing width
+    // ("May" is wider than "Jun"), so length can't rank them — lay out every
+    // distinct date instead and let the browser pick the widest.
     const widest = (vals: string[]) => vals.reduce((a, b) => (b.length > a.length ? b : a), "");
     return {
       followers: widest(pages.map((p) => fmtFull(p.followers))),
-      latest: widest(pages.map((p) => (p.latest ? fmtPageDate(p.latest) : "—"))),
+      latest: [...new Set(pages.map((p) => (p.latest ? fmtPageDate(p.latest) : "—")))],
     };
   }, [artists, showStarredOnly]);
 
@@ -1029,9 +1033,11 @@ export default function FanDashboard() {
                               <span className="w-3 shrink-0" />
                               {label}
                             </span>
-                            <span className="text-[14px] font-semibold tabular-nums whitespace-nowrap">
-                              {ci === 0 ? fpColSizers.followers : fpColSizers.latest}
-                            </span>
+                            {(ci === 0 ? [fpColSizers.followers] : fpColSizers.latest).map((v) => (
+                              <span key={v} className="text-[14px] font-semibold tabular-nums whitespace-nowrap">
+                                {v}
+                              </span>
+                            ))}
                           </div>
                         ))}
                       </div>
@@ -1072,7 +1078,7 @@ export default function FanDashboard() {
                               {p.managed && <Star size={12} className="shrink-0 text-[#FFCC00] fill-[#FFCC00]" />}
                             </div>
                             <span className="text-right text-[14px] font-semibold tabular-nums text-primary leading-none">{fmtFull(p.followers)}</span>
-                            <span className="text-right text-[14px] font-semibold text-primary whitespace-nowrap leading-none">{p.latest ? fmtPageDate(p.latest) : "\u2014"}</span>
+                            <span className="text-right text-[14px] font-semibold tabular-nums text-primary whitespace-nowrap leading-none">{p.latest ? fmtPageDate(p.latest) : "\u2014"}</span>
                           </Tag>
                         );
                       })}
