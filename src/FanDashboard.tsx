@@ -650,16 +650,18 @@ export default function FanDashboard() {
     });
   }, [artist.pages, fpEffectivePlatform, showStarredOnly, pagesSort]);
 
-  // Widest value/date across every platform, so the numeric columns keep the
-  // same width when switching platforms instead of shifting.
+  // Widest value/date across every platform of every artist, so the numeric
+  // columns keep the same width when switching platforms or artists instead of
+  // shifting.
   const fpColSizers = useMemo(() => {
-    const pages = showStarredOnly ? artist.pages.filter((p) => p.managed) : artist.pages;
+    const all = artists.flatMap((a) => a.pages);
+    const pages = showStarredOnly ? all.filter((p) => p.managed) : all;
     const widest = (vals: string[]) => vals.reduce((a, b) => (b.length > a.length ? b : a), "");
     return {
       followers: widest(pages.map((p) => fmtFull(p.followers))),
       latest: widest(pages.map((p) => (p.latest ? fmtPageDate(p.latest) : "—"))),
     };
-  }, [artist.pages, showStarredOnly]);
+  }, [artists, showStarredOnly]);
 
   const fpEntityPlural = fpEffectivePlatform === "Discord" ? "servers"
     : fpEffectivePlatform === "Reddit" ? "subreddits"
