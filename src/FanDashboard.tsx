@@ -650,6 +650,17 @@ export default function FanDashboard() {
     });
   }, [artist.pages, fpEffectivePlatform, showStarredOnly, pagesSort]);
 
+  // Widest value/date across every platform, so the numeric columns keep the
+  // same width when switching platforms instead of shifting.
+  const fpColSizers = useMemo(() => {
+    const pages = showStarredOnly ? artist.pages.filter((p) => p.managed) : artist.pages;
+    const widest = (vals: string[]) => vals.reduce((a, b) => (b.length > a.length ? b : a), "");
+    return {
+      followers: widest(pages.map((p) => fmtFull(p.followers))),
+      latest: widest(pages.map((p) => (p.latest ? fmtPageDate(p.latest) : "—"))),
+    };
+  }, [artist.pages, showStarredOnly]);
+
   const fpEntityPlural = fpEffectivePlatform === "Discord" ? "servers"
     : fpEffectivePlatform === "Reddit" ? "subreddits"
     : fpEffectivePlatform === "Instagram Channels" ? "channels"
@@ -1004,6 +1015,24 @@ export default function FanDashboard() {
                   const entityCount = `${filteredPages.length} ${filteredPages.length === 1 ? fpEntitySingular : fpEntityPlural}`;
                   return (
                     <div className="grid grid-cols-[1fr_auto_auto] gap-x-[var(--cgap)]">
+                      <div
+                        aria-hidden
+                        className="h-0 overflow-hidden invisible grid gap-x-[var(--cgap)]"
+                        style={{ gridColumn: "1 / -1", gridTemplateColumns: "subgrid" }}
+                      >
+                        <div />
+                        {(["Followers", "Last Post"] as const).map((label, ci) => (
+                          <div key={label} className="flex flex-col items-end">
+                            <span className="flex items-center gap-1 text-[11px] font-medium uppercase tracking-wider whitespace-nowrap">
+                              <span className="w-3 shrink-0" />
+                              {label}
+                            </span>
+                            <span className="text-[14px] font-semibold tabular-nums whitespace-nowrap">
+                              {ci === 0 ? fpColSizers.followers : fpColSizers.latest}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
                       <div className="sticky top-0 z-10 bg-white grid items-center gap-x-[var(--cgap)] pb-0 leading-none -mx-2.5 px-2.5" style={{ gridColumn: "1 / -1", gridTemplateColumns: "subgrid" }}>
                         {(["name", "followers", "latest"] as const).map((col, ci) => {
                           const labels = [entityCount, unit, "Last Post"];
