@@ -1109,8 +1109,8 @@ export default function FanDashboard() {
             {/* Fastest Movers — split into top gainers / biggest drops */}
             <div className="col-span-12 lg:col-span-3 flex flex-col gap-[var(--pad)]">
               {[
-                { title: "Rising", icon: ArrowUpRight, list: artists.slice().filter((a) => a.totals.delta > 0).sort((a, b) => b.totals.delta - a.totals.delta).slice(0, 3), kind: "gains" },
-                { title: "Falling", icon: ArrowDownRight, list: artists.slice().filter((a) => a.totals.delta < 0).sort((a, b) => a.totals.delta - b.totals.delta).slice(0, 3), kind: "drops" },
+                { title: "Top Gains", icon: ArrowUpRight, list: artists.slice().filter((a) => a.totals.delta > 0).sort((a, b) => b.totals.delta - a.totals.delta).slice(0, 3), kind: "gains" },
+                { title: "Top Drops", icon: ArrowDownRight, list: artists.slice().filter((a) => a.totals.delta < 0).sort((a, b) => a.totals.delta - b.totals.delta).slice(0, 3), kind: "drops" },
               ].map((grp) => {
                 const Icon = grp.icon;
                 return (
