@@ -1153,7 +1153,7 @@ export default function FanDashboard() {
             </div>
           </div>
 
-          {/* Lower row: Fan Community Growth + Growth Velocity */}
+          {/* Lower row: Fan Community Growth + Velocity */}
           <div ref={chartRowRef} className="grid grid-cols-12 gap-[var(--pad)] items-stretch lg:h-[var(--first-row-h,480px)]">
             {/* Growth chart */}
             <div className={`col-span-12 lg:col-span-8 ${CARD} flex flex-col overflow-hidden min-h-[480px]`}>
@@ -1307,11 +1307,11 @@ export default function FanDashboard() {
               </div>
             </div>
 
-            {/* Growth Velocity */}
+            {/* Velocity */}
             <div className={`col-span-12 lg:col-span-4 ${CARD} p-[var(--pad)] flex flex-col overflow-hidden min-h-[480px]`}>
               <div className="flex items-center gap-2.5 shrink-0 mb-[var(--vlg)]">
                 <Gauge size={20} className="text-primary shrink-0" strokeWidth={2.25} />
-                <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">Growth Velocity</h2>
+                <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">Velocity</h2>
               </div>
               {velocityData.length > 0 && (
                 <div
