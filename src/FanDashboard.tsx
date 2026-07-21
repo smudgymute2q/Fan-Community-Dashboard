@@ -898,7 +898,7 @@ export default function FanDashboard() {
             <div className={`col-span-12 lg:col-span-6 ${CARD} p-[var(--pad)] min-h-0 overflow-y-auto overflow-x-hidden`}>
               <div className="flex items-center gap-2.5">
                 <PieIcon size={20} className="text-primary shrink-0" strokeWidth={2.25} />
-                <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">Fan Network Reach</h2>
+                <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">Fan Community Reach</h2>
               </div>
               <div
                 className="mt-[var(--vlg)] mb-[var(--vlg)] grid gap-x-[var(--cgap)] gap-y-[var(--vsm)]"
@@ -1153,14 +1153,14 @@ export default function FanDashboard() {
             </div>
           </div>
 
-          {/* Lower row: Fan Network Growth + Growth Velocity */}
+          {/* Lower row: Fan Community Growth + Growth Velocity */}
           <div ref={chartRowRef} className="grid grid-cols-12 gap-[var(--pad)] items-stretch lg:h-[var(--first-row-h,480px)]">
             {/* Growth chart */}
             <div className={`col-span-12 lg:col-span-8 ${CARD} flex flex-col overflow-hidden min-h-[480px]`}>
               <div className="px-[var(--pad)] pt-[var(--pad)] pb-[var(--vlg)] shrink-0 relative">
                 <div className="flex items-center gap-2.5">
                   <TrendingUp size={20} className="text-primary shrink-0" strokeWidth={2.25} />
-                  <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">Fan Network Growth</h2>
+                  <h2 className="text-[14px] font-semibold text-primary whitespace-nowrap leading-none">Fan Community Growth</h2>
                 </div>
                 <div className="absolute top-[var(--pad)] right-[var(--pad)] flex items-center gap-[var(--vsm)]">
                   <div className="flex items-center gap-1 bg-[#f5f5f7] p-1 rounded-full shrink-0">
