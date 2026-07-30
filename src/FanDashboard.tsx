@@ -235,6 +235,7 @@ const STATIC_ARTISTS = [
   { slug: "hxg", name: "HXG" },
   { slug: "jim-legxacy", name: "Jim Legxacy" },
   { slug: "ken-carson", name: "Ken Carson" },
+  { slug: "nettspend", name: "Nettspend" },
   { slug: "opium", name: "Opium" },
   { slug: "pierre-bourne", name: "Pi'erre Bourne" },
   { slug: "playboi-carti", name: "Playboi Carti" },
