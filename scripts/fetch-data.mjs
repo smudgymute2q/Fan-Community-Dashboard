@@ -24,6 +24,7 @@ const SHEET_TABS = {
   "opium": { network: "Opium (Fan Network)", pages: "Opium (Fan Pages)" },
   "playboi-carti": { network: "Playboi Carti (Fan Network)", pages: "Playboi Carti (Fan Pages)" },
   "ken-carson": { network: "Ken Carson (Fan Network)", pages: "Ken Carson (Fan Pages)" },
+  "nettspend": { network: "Nettspend (Fan Network)", pages: "Nettspend (Fan Pages)" },
   "destroy-lonely": { network: "Destroy Lonely (Fan Network)", pages: "Destroy Lonely (Fan Pages)" },
   "hxg": { network: "HXG (Fan Network)", pages: "HXG (Fan Pages)" },
   "pierre-bourne": { network: "Pi'erre Bourne (Fan Network)", pages: "Pi'erre Bourne (Fan Pages)" },
