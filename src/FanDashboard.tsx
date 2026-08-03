@@ -1041,7 +1041,7 @@ export default function FanDashboard() {
                           </div>
                         ))}
                       </div>
-                      <div className="sticky top-0 z-10 bg-white grid items-center gap-x-[var(--cgap)] pb-0 leading-none -mx-2.5 px-2.5" style={{ gridColumn: "1 / -1", gridTemplateColumns: "subgrid" }}>
+                      <div className="sticky top-0 z-10 bg-white grid items-center gap-x-[var(--cgap)] pb-0 leading-none -mx-2.5 px-2.5 -translate-y-px" style={{ gridColumn: "1 / -1", gridTemplateColumns: "subgrid" }}>
                         {(["name", "followers", "latest"] as const).map((col, ci) => {
                           const labels = [entityCount, unit, "Last Post"];
                           const active = pagesSort.key === col;
