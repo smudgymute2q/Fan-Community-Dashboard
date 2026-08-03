@@ -48,7 +48,7 @@ const WORKER_URL = "https://fanintel.smudgy-mute2q.workers.dev";
 
 // ---- Google Sheets config ----
 const SHEET_ID = "2PACX-1vRX8lP3Nb-LWMmUoTtHDHihOX-SkhFMUXoQJIuinbUhctXSjgJ1CCI9NvO1MQZKdgy9jtG33DgrOtre";
-const sheetTabs = (name: string) => ({ network: `${name} (Fan Network)`, pages: `${name} (Fan Pages)` });
+const sheetTabs = (name: string) => ({ network: `${name} (Fan Community)`, pages: `${name} (Fan Pages)` });
 
 // ---- LocalStorage cache utilities ----
 const CACHE_MS = { sheets: 86_400_000 };
