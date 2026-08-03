@@ -247,6 +247,9 @@ const STATIC_ARTISTS = [
 
 const fmt = (n) => { if (n === undefined || n === null) return "—"; const abs = Math.abs(n); if (abs >= 1_000_000) return (n / 1_000_000).toFixed(n % 1_000_000 === 0 ? 0 : 2) + "M"; if (abs >= 10_000) return (n / 1_000).toFixed(0) + "K"; if (abs >= 1_000) return (n / 1_000).toFixed(1).replace(/\.0$/, "") + "K"; return n.toLocaleString(); };
 const fmtFull = (n) => (n ?? 0).toLocaleString();
+// Percentage display: 1 decimal (trailing .0 dropped); values that would round
+// to 0.0 expand until a significant digit shows (e.g. 0.02). Sign not included.
+const fmtPct = (n) => { const abs = Math.abs(n); if (abs === 0) return "0"; if (abs >= 0.05) return n.toFixed(1).replace(/\.0$/, ""); for (let d = 2; d <= 6; d++) { if (/[1-9]/.test(n.toFixed(d).split(".")[1] ?? "")) return n.toFixed(d); } return n.toFixed(6); };
 
 // Measure the rendered width (px) of a chart axis tick label using a hidden
 // span styled exactly like the ticks (`.fng-axis` uppercase + 0.05em spacing,
@@ -929,7 +932,7 @@ export default function FanDashboard() {
                 {platformShareData(artist).map((d, i, arr) => {
                   const pd = artist.platforms[d.name];
                   const pctNum = artist.totals.value > 0 ? (d.value / artist.totals.value) * 100 : 0;
-                  const pct = (() => { const abs = Math.abs(pctNum); if (abs === 0) return "0"; if (abs >= 0.05) return pctNum.toFixed(1).replace(/\.0$/, ""); for (let d = 2; d <= 6; d++) { if (/[1-9]/.test(pctNum.toFixed(d).split(".")[1] ?? "")) return pctNum.toFixed(d); } return pctNum.toFixed(6); })();
+                  const pct = fmtPct(pctNum);
                   return (
                     <div
                       key={d.name}
@@ -1233,7 +1236,7 @@ export default function FanDashboard() {
                       <div>
                         <div className="text-[11px] font-medium uppercase tracking-wider text-muted leading-none mb-[var(--vsm)]">Net Growth</div>
                         <div className="flex items-center gap-[var(--vsm)] h-[14px]">
-                          <span className="text-[14px] font-semibold tabular-nums text-primary leading-none">{rangeStats.pct >= 0 ? "+" : ""}{(() => { const p = rangeStats.pct; const abs = Math.abs(p); if (abs >= 100) return Math.round(p).toString(); if (abs >= 1) return p.toFixed(1).replace(/\.0$/, ""); if (p === 0) return "0"; for (let d = 1; d <= 6; d++) { const s = abs.toFixed(d); if (/[1-9]/.test(s.split(".")[1] ?? "")) return p.toFixed(d); } return p.toFixed(2); })()}%</span>
+                          <span className="text-[14px] font-semibold tabular-nums text-primary leading-none">{rangeStats.pct >= 0 ? "+" : ""}{fmtPct(rangeStats.pct)}%</span>
                           <DeltaPill value={rangeStats.net} />
                         </div>
                       </div>
