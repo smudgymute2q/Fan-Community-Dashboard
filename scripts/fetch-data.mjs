@@ -21,19 +21,19 @@ const SHEET_ID =
   "2PACX-1vRX8lP3Nb-LWMmUoTtHDHihOX-SkhFMUXoQJIuinbUhctXSjgJ1CCI9NvO1MQZKdgy9jtG33DgrOtre";
 
 const SHEET_TABS = {
-  "opium": { network: "Opium (Fan Network)", pages: "Opium (Fan Pages)" },
-  "playboi-carti": { network: "Playboi Carti (Fan Network)", pages: "Playboi Carti (Fan Pages)" },
-  "ken-carson": { network: "Ken Carson (Fan Network)", pages: "Ken Carson (Fan Pages)" },
-  "nettspend": { network: "Nettspend (Fan Network)", pages: "Nettspend (Fan Pages)" },
-  "destroy-lonely": { network: "Destroy Lonely (Fan Network)", pages: "Destroy Lonely (Fan Pages)" },
-  "hxg": { network: "HXG (Fan Network)", pages: "HXG (Fan Pages)" },
-  "pierre-bourne": { network: "Pi'erre Bourne (Fan Network)", pages: "Pi'erre Bourne (Fan Pages)" },
-  "rema": { network: "Rema (Fan Network)", pages: "Rema (Fan Pages)" },
-  "2hollis": { network: "2hollis (Fan Network)", pages: "2hollis (Fan Pages)" },
-  "untiljapan": { network: "untiljapan (Fan Network)", pages: "untiljapan (Fan Pages)" },
-  "jim-legxacy": { network: "Jim Legxacy (Fan Network)", pages: "Jim Legxacy (Fan Pages)" },
-  "apollored1": { network: "ApolloRed1 (Fan Network)", pages: "ApolloRed1 (Fan Pages)" },
-  "destin-laurel": { network: "Destin Laurel (Fan Network)", pages: "Destin Laurel (Fan Pages)" },
+  "opium": { network: "Opium (Fan Community)", pages: "Opium (Fan Pages)" },
+  "playboi-carti": { network: "Playboi Carti (Fan Community)", pages: "Playboi Carti (Fan Pages)" },
+  "ken-carson": { network: "Ken Carson (Fan Community)", pages: "Ken Carson (Fan Pages)" },
+  "nettspend": { network: "Nettspend (Fan Community)", pages: "Nettspend (Fan Pages)" },
+  "destroy-lonely": { network: "Destroy Lonely (Fan Community)", pages: "Destroy Lonely (Fan Pages)" },
+  "hxg": { network: "HXG (Fan Community)", pages: "HXG (Fan Pages)" },
+  "pierre-bourne": { network: "Pi'erre Bourne (Fan Community)", pages: "Pi'erre Bourne (Fan Pages)" },
+  "rema": { network: "Rema (Fan Community)", pages: "Rema (Fan Pages)" },
+  "2hollis": { network: "2hollis (Fan Community)", pages: "2hollis (Fan Pages)" },
+  "untiljapan": { network: "untiljapan (Fan Community)", pages: "untiljapan (Fan Pages)" },
+  "jim-legxacy": { network: "Jim Legxacy (Fan Community)", pages: "Jim Legxacy (Fan Pages)" },
+  "apollored1": { network: "ApolloRed1 (Fan Community)", pages: "ApolloRed1 (Fan Pages)" },
+  "destin-laurel": { network: "Destin Laurel (Fan Community)", pages: "Destin Laurel (Fan Pages)" },
 };
 
 function parseCSVText(text) {
