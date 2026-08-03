@@ -327,26 +327,22 @@ function ArrowDownForward({ size = 12, className = "" }: { size?: number; classN
   );
 }
 
-function DeltaPill({ value, small = false }: { value: number | null | undefined; small?: boolean }) {
+function DeltaPill({ value }: { value: number | null | undefined }) {
   if (value === null || value === undefined)
-    return <span className={`text-muted ${small ? "text-[10px]" : "text-xs"} font-semibold`}>—</span>;
+    return <span className="text-muted text-xs font-semibold">—</span>;
   if (value === 0)
     return (
-      <span className={`inline-flex items-center leading-none font-semibold tabular-nums rounded-full bg-[#f0f0f3] text-muted ${
-        small ? "text-[10px] px-2 py-1" : "text-xs px-2.5 py-1"
-      }`}>
+      <span className="inline-flex items-center leading-none font-semibold tabular-nums rounded-full bg-[#f0f0f3] text-muted text-xs px-2.5 py-1">
         0
       </span>
     );
   const up = value > 0;
   return (
-    <span className={`inline-flex items-center gap-1 leading-none font-semibold tabular-nums rounded-full ${
-      small ? "text-[10px] px-2 py-1" : "text-xs px-2.5 py-1"
-    } ${up ? "bg-[#e8f5ea] text-pos" : "bg-[#fdecea] text-neg"}`}>
+    <span className={`inline-flex items-center gap-1 leading-none font-semibold tabular-nums rounded-full text-xs px-2.5 py-1 ${up ? "bg-[#e8f5ea] text-pos" : "bg-[#fdecea] text-neg"}`}>
       {up ? "+" : ""}{fmtFull(value)}
       {up
-        ? <ArrowUpForward size={small ? 7 : 8} className="shrink-0" />
-        : <ArrowDownForward size={small ? 7 : 8} className="shrink-0" />}
+        ? <ArrowUpForward size={8} className="shrink-0" />
+        : <ArrowDownForward size={8} className="shrink-0" />}
     </span>
   );
 }
