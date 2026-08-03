@@ -929,7 +929,7 @@ export default function FanDashboard() {
                 {platformShareData(artist).map((d, i, arr) => {
                   const pd = artist.platforms[d.name];
                   const pctNum = artist.totals.value > 0 ? (d.value / artist.totals.value) * 100 : 0;
-                  const pct = (() => { const abs = Math.abs(pctNum); if (abs === 0) return "0"; if (Number.isInteger(pctNum)) return pctNum.toFixed(0); if (abs >= 0.05) return pctNum.toFixed(1); for (let d = 2; d <= 6; d++) { if (/[1-9]/.test(pctNum.toFixed(d).split(".")[1] ?? "")) return pctNum.toFixed(d); } return pctNum.toFixed(6); })();
+                  const pct = (() => { const abs = Math.abs(pctNum); if (abs === 0) return "0"; if (abs >= 0.05) return pctNum.toFixed(1).replace(/\.0$/, ""); for (let d = 2; d <= 6; d++) { if (/[1-9]/.test(pctNum.toFixed(d).split(".")[1] ?? "")) return pctNum.toFixed(d); } return pctNum.toFixed(6); })();
                   return (
                     <div
                       key={d.name}
