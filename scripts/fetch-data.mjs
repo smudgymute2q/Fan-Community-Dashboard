@@ -175,7 +175,7 @@ function parsePagesTab(rows) {
       link: row[2]?.trim() || "",
       followers: parseInt(row[3]?.replace(/[^\d]/g, "") || "0", 10),
       latest: row[4]?.trim() || "",
-      managed: row[5]?.trim().toLowerCase() === "yes",
+      managed: ["yes", "true"].includes(row[5]?.trim().toLowerCase() ?? ""),
     }))
     .filter((p) => !isNaN(p.followers));
 }
