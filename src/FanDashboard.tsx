@@ -609,6 +609,25 @@ export default function FanDashboard() {
     return { ticks, min: niceLo, max: niceHi };
   }, [velocityData]);
 
+  // Audience-share display percentages (name -> string), rounded to 1 decimal
+  // via the largest-remainder method so the shown values always sum to 100.0.
+  const sharePercents = useMemo(() => {
+    const items = platformShareData(artist);
+    const total = artist.totals.value;
+    const result: Record<string, string> = {};
+    if (total <= 0) { items.forEach((d) => { result[d.name] = "0"; }); return result; }
+    const SCALE = 10; // tenths of a percent
+    const parts = items.map((d) => {
+      const tenths = (d.value / total) * 100 * SCALE;
+      const base = Math.floor(tenths);
+      return { name: d.name, base, rem: tenths - base };
+    });
+    let leftover = Math.round(100 * SCALE - parts.reduce((s, p) => s + p.base, 0));
+    parts.slice().sort((a, b) => b.rem - a.rem).forEach((p) => { if (leftover > 0) { p.base += 1; leftover -= 1; } });
+    parts.forEach((p) => { result[p.name] = (p.base / SCALE).toFixed(1).replace(/\.0$/, ""); });
+    return result;
+  }, [artist]);
+
   // Size the axis to the tick labels actually rendered (velocityScale.ticks),
   // not the raw net range — the scale ceils/floors to nice numbers, so the
   // widest label (e.g. "100" from a 95 max) can be wider than any net value.
@@ -929,7 +948,7 @@ export default function FanDashboard() {
                 {platformShareData(artist).map((d, i, arr) => {
                   const pd = artist.platforms[d.name];
                   const pctNum = artist.totals.value > 0 ? (d.value / artist.totals.value) * 100 : 0;
-                  const pct = (() => { if (pctNum === 0) return "0"; if (pctNum === 100) return "100"; for (let d = 1; d <= 6; d++) { const r = Number(pctNum.toFixed(d)); if (r !== 0 && r !== 100) return pctNum.toFixed(d).replace(/\.0$/, ""); } return pctNum.toFixed(6).replace(/\.0$/, ""); })();
+                  const pct = sharePercents[d.name] ?? "0";
                   return (
                     <div
                       key={d.name}
