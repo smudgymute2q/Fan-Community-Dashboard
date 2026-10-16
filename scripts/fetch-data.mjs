@@ -23,6 +23,7 @@ const SHEET_ID =
 const SHEET_TABS = {
   "opium": { network: "Opium (Fan Community)", pages: "Opium (Fan Pages)" },
   "playboi-carti": { network: "Playboi Carti (Fan Community)", pages: "Playboi Carti (Fan Pages)" },
+  "pz": { network: "Pz' (Fan Community)", pages: "Pz' (Fan Pages)" },
   "ken-carson": { network: "Ken Carson (Fan Community)", pages: "Ken Carson (Fan Pages)" },
   "nettspend": { network: "Nettspend (Fan Community)", pages: "Nettspend (Fan Pages)" },
   "destroy-lonely": { network: "Destroy Lonely (Fan Community)", pages: "Destroy Lonely (Fan Pages)" },
