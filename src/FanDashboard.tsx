@@ -239,6 +239,7 @@ const STATIC_ARTISTS = [
   { slug: "opium", name: "Opium" },
   { slug: "pierre-bourne", name: "Pi'erre Bourne" },
   { slug: "playboi-carti", name: "Playboi Carti" },
+  { slug: "pz", name: "Pz'" },
   { slug: "rema", name: "Rema" },
   { slug: "untiljapan", name: "untiljapan" },
   { slug: "2hollis", name: "2hollis" },
