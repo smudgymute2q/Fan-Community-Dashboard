@@ -203,7 +203,7 @@ function parseNetworkTab(rows: string[][]) {
     for (const [key, val] of Object.entries(latest)) {
       if (key === "date") continue;
       const value = val as number;
-      const prevVal = prev && typeof prev[key] === "number" ? (prev[key] as number) : value;
+      const prevVal = prev ? (typeof prev[key] === "number" ? (prev[key] as number) : 0) : value;
       platforms[key] = { value, delta: value - prevVal };
     }
   }
