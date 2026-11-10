@@ -196,15 +196,17 @@ function parseNetworkTab(rows: string[][]) {
   }
   const sortedDates = Array.from(dateMap.keys()).sort();
   const history = sortedDates.map((date) => ({ date, ...dateMap.get(date)! }));
-  const platforms: Record<string, { value: number; delta: number }> = {};
+  // delta is like-for-like: a platform not tracked last month is flagged isNew
+  // and contributes 0, so newly tracked audiences don't count as growth.
+  const platforms: Record<string, { value: number; delta: number; isNew: boolean }> = {};
   if (history.length > 0) {
     const latest = history[history.length - 1];
     const prev = history.length >= 2 ? history[history.length - 2] : null;
     for (const [key, val] of Object.entries(latest)) {
       if (key === "date") continue;
       const value = val as number;
-      const prevVal = prev ? (typeof prev[key] === "number" ? (prev[key] as number) : 0) : value;
-      platforms[key] = { value, delta: value - prevVal };
+      const tracked = !!prev && typeof prev[key] === "number";
+      platforms[key] = { value, delta: tracked ? value - (prev![key] as number) : 0, isNew: !!prev && !tracked };
     }
   }
   const totalValue = Object.values(platforms).reduce((s, p) => s + p.value, 0);
@@ -291,6 +293,20 @@ const monthLabel = (ym) => { const [y, m] = ym.split("-"); return new Date(parse
 function platformShareData(artist) {
   return Object.entries(artist.platforms).map(([name, v]) => ({ name, value: v.value, fill: PLATFORMS[name]?.color || "#888" })).sort((a, b) => b.value - a.value);
 }
+// Month-over-month change counted like-for-like: a platform contributes only
+// when it was tracked in both months, so starting to track a platform doesn't
+// read as growth. Platforms first tracked in `row` are returned in `added`.
+function monthChange(prev, row, plats) {
+  const deltas = [];
+  const added = [];
+  for (const p of plats) {
+    if (typeof row[p] !== "number") continue;
+    if (typeof prev[p] !== "number") { added.push(p); continue; }
+    deltas.push({ name: p, delta: row[p] - prev[p], fill: PLATFORMS[p]?.color || "#888" });
+  }
+  return { net: deltas.reduce((s, d) => s + d.delta, 0), deltas, added };
+}
+
 function monthlyVelocity(history, plats) {
   if (history.length < 2) return [];
   const latestYear = history[history.length - 1].date.slice(0, 4);
@@ -298,13 +314,13 @@ function monthlyVelocity(history, plats) {
   const startIdx = Math.max(0, (firstIdx === -1 ? history.length - 1 : firstIdx) - 1);
   const recent = history.slice(startIdx);
   return recent.slice(1).map((row, i) => {
-    const prev = recent[i];
-    const deltas = plats
-      .map((p) => ({ name: p, delta: (row[p] || 0) - (prev[p] || 0), fill: PLATFORMS[p]?.color || "#888" }))
-      .filter((d) => d.delta !== 0)
-      .sort((a, b) => b.delta - a.delta);
-    const net = deltas.reduce((s, d) => s + d.delta, 0);
-    return { date: row.date, net, deltas };
+    const { net, deltas, added } = monthChange(recent[i], row, plats);
+    return {
+      date: row.date,
+      net,
+      deltas: deltas.filter((d) => d.delta !== 0).sort((a, b) => b.delta - a.delta),
+      added: added.map((p) => ({ name: p, fill: PLATFORMS[p]?.color || "#888" })),
+    };
   });
 }
 
@@ -328,13 +344,13 @@ function ArrowDownForward({ size = 12, className = "" }: { size?: number; classN
   );
 }
 
-function DeltaPill({ value }: { value: number | null | undefined }) {
+function DeltaPill({ value, isNew = false }: { value: number | null | undefined; isNew?: boolean }) {
   if (value === null || value === undefined)
     return <span className="text-muted text-xs font-semibold">—</span>;
-  if (value === 0)
+  if (isNew || value === 0)
     return (
       <span className="inline-flex items-center leading-none font-semibold tabular-nums rounded-full bg-[#f0f0f3] text-muted text-xs px-2.5 py-1">
-        0
+        {isNew ? "New" : 0}
       </span>
     );
   const up = value > 0;
@@ -536,16 +552,17 @@ export default function FanDashboard() {
     const plats = Object.keys(artist.platforms);
     const startTotal = plats.reduce((s, p) => s + (first[p] || 0), 0);
     const endTotal = plats.reduce((s, p) => s + (last[p] || 0), 0);
-    const net = endTotal - startTotal;
-    const pct = startTotal > 0 ? ((net / startTotal) * 100) : 0;
+    // Net growth sums like-for-like monthly changes, so platforms first tracked
+    // inside the range aren't counted as growth (end − start can exceed it).
+    let net = 0;
     let bestMonth = null;
     let bestGain = -Infinity;
     for (let i = 1; i < history.length; i++) {
-      const prev = plats.reduce((s, p) => s + (history[i - 1][p] || 0), 0);
-      const cur = plats.reduce((s, p) => s + (history[i][p] || 0), 0);
-      const gain = cur - prev;
+      const gain = monthChange(history[i - 1], history[i], plats).net;
+      net += gain;
       if (gain > bestGain) { bestGain = gain; bestMonth = history[i].date; }
     }
+    const pct = startTotal > 0 ? ((net / startTotal) * 100) : 0;
     return { startTotal, endTotal, net, pct, bestMonth, bestGain };
   }, [history, artist]);
 
@@ -941,7 +958,7 @@ export default function FanDashboard() {
                         <span className="text-[14px] font-normal text-primary whitespace-nowrap leading-none">{d.name}</span>
                       </div>
                       <span className="text-right text-[14px] font-semibold tabular-nums text-primary leading-none">{fmtFull(d.value)}</span>
-                      <div className="flex justify-end items-center h-[14px]">{pd ? <DeltaPill value={pd.delta} /> : null}</div>
+                      <div className="flex justify-end items-center h-[14px]">{pd ? <DeltaPill value={pd.delta} isNew={pd.isNew} /> : null}</div>
                       <div className="h-2.5 rounded-full bg-[#f5f5f7] overflow-hidden">
                         <div className="h-full rounded-full" style={{ width: `${pctNum}%`, background: d.fill }} />
                       </div>
@@ -1351,6 +1368,7 @@ export default function FanDashboard() {
                         if (!active || !payload?.length) return null;
                         const point = payload[0].payload;
                         const deltas = point?.deltas ?? [];
+                        const added = point?.added ?? [];
                         const signed = (v: number) => `${v >= 0 ? "+" : ""}${fmtFull(v)}`;
                         return (
                           <div className="bg-white rounded-[var(--rad)] p-3.5 min-w-[184px]" style={{ boxShadow: "0 0 0 0.5px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px -6px rgba(0,0,0,0.12), 0 24px 56px -16px rgba(0,0,0,0.16)" }}>
@@ -1363,7 +1381,14 @@ export default function FanDashboard() {
                                   <span className="text-[14px] font-semibold tabular-nums text-primary ml-6">{signed(d.delta)}</span>
                                 </div>
                               ))}
-                              <div className={`flex items-center gap-2.5 ${deltas.length ? "pt-2 mt-0.5" : ""}`}>
+                              {added.map((d: any) => (
+                                <div key={d.name} className="flex items-center gap-2.5">
+                                  <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: d.fill }} />
+                                  <span className="text-[14px] font-normal text-primary flex-1 whitespace-nowrap">{d.name}</span>
+                                  <span className="text-[14px] font-semibold text-muted ml-6">New</span>
+                                </div>
+                              ))}
+                              <div className={`flex items-center gap-2.5 ${deltas.length || added.length ? "pt-2 mt-0.5" : ""}`}>
                                 <span className="w-2.5 h-2.5 shrink-0" />
                                 <span className="text-[14px] font-semibold text-primary flex-1">Net Change</span>
                                 <span className="text-[14px] font-bold tabular-nums text-primary ml-6">{signed(point?.net ?? 0)}</span>

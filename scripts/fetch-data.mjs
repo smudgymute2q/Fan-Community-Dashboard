@@ -157,8 +157,8 @@ function parseNetworkTab(rows) {
     for (const [key, val] of Object.entries(latest)) {
       if (key === "date") continue;
       const value = val;
-      const prevVal = prev ? (typeof prev[key] === "number" ? prev[key] : 0) : value;
-      platforms[key] = { value, delta: value - prevVal };
+      const tracked = !!prev && typeof prev[key] === "number";
+      platforms[key] = { value, delta: tracked ? value - prev[key] : 0, isNew: !!prev && !tracked };
     }
   }
   const totalValue = Object.values(platforms).reduce((s, p) => s + p.value, 0);
