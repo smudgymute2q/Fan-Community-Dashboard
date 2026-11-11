@@ -318,7 +318,7 @@ function monthlyVelocity(history, plats) {
     return {
       date: row.date,
       net,
-      deltas: deltas.filter((d) => d.delta !== 0).sort((a, b) => b.delta - a.delta),
+      deltas: deltas.sort((a, b) => b.delta - a.delta),
       added: added.map((p) => ({ name: p, fill: PLATFORMS[p]?.color || "#888" })),
     };
   });
@@ -1369,7 +1369,7 @@ export default function FanDashboard() {
                         const point = payload[0].payload;
                         const deltas = point?.deltas ?? [];
                         const added = point?.added ?? [];
-                        const signed = (v: number) => `${v >= 0 ? "+" : ""}${fmtFull(v)}`;
+                        const signed = (v: number) => `${v > 0 ? "+" : ""}${fmtFull(v)}`;
                         return (
                           <div className="bg-white rounded-[var(--rad)] p-3.5 min-w-[184px]" style={{ boxShadow: "0 0 0 0.5px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px -6px rgba(0,0,0,0.12), 0 24px 56px -16px rgba(0,0,0,0.16)" }}>
                             <div className="text-[11px] font-medium uppercase tracking-wider text-muted mb-3">{monthLabel(label)}</div>
