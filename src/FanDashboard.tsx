@@ -768,6 +768,12 @@ export default function FanDashboard() {
     setHiddenPlats(next);
   };
 
+  // Show only `p`; if `p` is already the only one shown, show everything again.
+  const soloPlat = (p) => {
+    const isSolo = orderedPlats.every((x) => x === p || hiddenPlats.has(x)) && !hiddenPlats.has(p);
+    setHiddenPlats(isSolo ? new Set() : new Set(orderedPlats.filter((x) => x !== p)));
+  };
+
   const syncLabel = sheetsLoading
     ? "Syncing…"
     : syncedAt
@@ -1217,16 +1223,27 @@ export default function FanDashboard() {
                       <div className="absolute right-0 top-full mt-2 z-20 bg-white rounded-[var(--rad)] p-1.5 min-w-[200px]" style={{ boxShadow: "0 0 0 0.5px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px -6px rgba(0,0,0,0.12), 0 24px 56px -16px rgba(0,0,0,0.16)" }}>
                         {orderedPlats.map((p) => {
                           const off = hiddenPlats.has(p);
+                          const solo = !off && orderedPlats.every((x) => x === p || hiddenPlats.has(x));
                           return (
-                            <button
-                              key={p}
-                              onClick={() => togglePlat(p)}
-                              className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-[14px] font-normal transition cursor-pointer ${off ? "text-muted hover:bg-[#f5f5f7]" : "text-primary hover:bg-[#f5f5f7]"}`}
-                              title={off ? `Show ${p}` : `Hide ${p}`}
-                            >
-                              <span className="w-2.5 h-2.5 rounded-full shrink-0 transition-colors" style={{ background: off ? "#d2d2d7" : PLATFORMS[p].color }} />
-                              <span className="leading-none flex-1 text-left">{p}</span>
-                            </button>
+                            <div key={p} className="group relative">
+                              <button
+                                onClick={() => togglePlat(p)}
+                                className={`w-full flex items-center gap-2.5 pl-2.5 pr-14 py-2 rounded-xl text-[14px] font-normal transition cursor-pointer ${off ? "text-muted hover:bg-[#f5f5f7]" : "text-primary hover:bg-[#f5f5f7]"}`}
+                                title={off ? `Show ${p}` : `Hide ${p}`}
+                              >
+                                <span className="w-2.5 h-2.5 rounded-full shrink-0 transition-colors" style={{ background: off ? "#d2d2d7" : PLATFORMS[p].color }} />
+                                <span className="leading-none flex-1 text-left">{p}</span>
+                              </button>
+                              {orderedPlats.length > 1 && (
+                                <button
+                                  onClick={() => soloPlat(p)}
+                                  className="absolute right-1.5 top-1/2 -translate-y-1/2 px-2 py-1 rounded-lg text-[12px] font-medium leading-none text-muted hover:text-primary hover:bg-[#ebebed] transition cursor-pointer opacity-0 group-hover:opacity-100 focus-visible:opacity-100 [@media(hover:none)]:opacity-100"
+                                  title={solo ? "Show all platforms" : `Show only ${p}`}
+                                >
+                                  {solo ? "All" : "Only"}
+                                </button>
+                              )}
+                            </div>
                           );
                         })}
                       </div>
