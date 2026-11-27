@@ -1232,7 +1232,7 @@ export default function FanDashboard() {
                                 title={off ? `Show ${p}` : `Hide ${p}`}
                               >
                                 <span className="w-2.5 h-2.5 rounded-full shrink-0 transition-colors" style={{ background: off ? "#d2d2d7" : PLATFORMS[p].color }} />
-                                <span className="leading-none flex-1 text-left">{p}</span>
+                                <span className="leading-none flex-1 text-left whitespace-nowrap">{p}</span>
                               </button>
                               {orderedPlats.length > 1 && (
                                 <button
